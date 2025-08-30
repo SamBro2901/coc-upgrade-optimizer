@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/SamBro2901/coc-upgrade-optimizer/static/css/main.30b74bea.css",
+    "main.js": "/SamBro2901/coc-upgrade-optimizer/static/js/main.d3a18619.js",
+    "static/js/453.fe48b56a.chunk.js": "/SamBro2901/coc-upgrade-optimizer/static/js/453.fe48b56a.chunk.js",
+    "index.html": "/SamBro2901/coc-upgrade-optimizer/index.html",
+    "main.30b74bea.css.map": "/SamBro2901/coc-upgrade-optimizer/static/css/main.30b74bea.css.map",
+    "main.d3a18619.js.map": "/SamBro2901/coc-upgrade-optimizer/static/js/main.d3a18619.js.map",
+    "453.fe48b56a.chunk.js.map": "/SamBro2901/coc-upgrade-optimizer/static/js/453.fe48b56a.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.30b74bea.css",
+    "static/js/main.d3a18619.js"
+  ]
+}
