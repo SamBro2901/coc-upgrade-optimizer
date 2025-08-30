@@ -1,0 +1,1923 @@
+{
+	"1": [
+		{
+			"GoldMine": 1
+		},
+		{
+			"ElixirCollector": 1
+		},
+		{
+			"GoldStorage": 1
+		},
+		{
+			"ElixirStorage": 1
+		},
+		{
+			"DarkElixirDrill": 0
+		},
+		{
+			"DarkElixirStorage": 0
+		},
+		{
+			"ClanCastle": 0
+		},
+		{
+			"HelperHut": 0
+		},
+		{
+			"ArmyCamp": 1
+		},
+		{
+			"Barracks": 1
+		},
+		{
+			"Laboratory": 0
+		},
+		{
+			"SpellFactory": 0
+		},
+		{
+			"DarkBarracks": 0
+		},
+		{
+			"HeroHall": 0
+		},
+		{
+			"DarkSpellFactory": 0
+		},
+		{
+			"Blacksmith": 0
+		},
+		{
+			"Workshop": 0
+		},
+		{
+			"PetHouse": 0
+		},
+		{
+			"Cannon": 1
+		},
+		{
+			"ArcherTower": 0
+		},
+		{
+			"Wall": 0
+		},
+		{
+			"Mortar": 0
+		},
+		{
+			"AirDefense": 0
+		},
+		{
+			"WizardTower": 0
+		},
+		{
+			"AirSweeper": 0
+		},
+		{
+			"HiddenTesla": 0
+		},
+		{
+			"BombTower": 0
+		},
+		{
+			"XBow": 0
+		},
+		{
+			"InfernoTower": 0
+		},
+		{
+			"Bomb": 0
+		},
+		{
+			"SpringTrap": 0
+		},
+		{
+			"AirBomb": 0
+		},
+		{
+			"GiantBomb": 0
+		},
+		{
+			"SeekingAirMine": 0
+		},
+		{
+			"SkeletonTrap": 0
+		},
+		{
+			"TornadoTrap": 0
+		},
+		{
+			"GigaBomb": 0
+		}
+	],
+	"2": [
+		{
+			"GoldMine": 2
+		},
+		{
+			"ElixirCollector": 2
+		},
+		{
+			"GoldStorage": 1
+		},
+		{
+			"ElixirStorage": 1
+		},
+		{
+			"DarkElixirDrill": 0
+		},
+		{
+			"DarkElixirStorage": 0
+		},
+		{
+			"ClanCastle": 1
+		},
+		{
+			"HelperHut": 0
+		},
+		{
+			"ArmyCamp": 1
+		},
+		{
+			"Barracks": 1
+		},
+		{
+			"Laboratory": 0
+		},
+		{
+			"SpellFactory": 0
+		},
+		{
+			"DarkBarracks": 0
+		},
+		{
+			"HeroHall": 0
+		},
+		{
+			"DarkSpellFactory": 0
+		},
+		{
+			"Blacksmith": 0
+		},
+		{
+			"Workshop": 0
+		},
+		{
+			"PetHouse": 0
+		},
+		{
+			"Cannon": 2
+		},
+		{
+			"ArcherTower": 1
+		},
+		{
+			"Wall": 25
+		},
+		{
+			"Mortar": 0
+		},
+		{
+			"AirDefense": 0
+		},
+		{
+			"WizardTower": 0
+		},
+		{
+			"AirSweeper": 0
+		},
+		{
+			"HiddenTesla": 0
+		},
+		{
+			"BombTower": 0
+		},
+		{
+			"XBow": 0
+		},
+		{
+			"InfernoTower": 0
+		},
+		{
+			"Bomb": 0
+		},
+		{
+			"SpringTrap": 0
+		},
+		{
+			"AirBomb": 0
+		},
+		{
+			"GiantBomb": 0
+		},
+		{
+			"SeekingAirMine": 0
+		},
+		{
+			"SkeletonTrap": 0
+		},
+		{
+			"TornadoTrap": 0
+		},
+		{
+			"GigaBomb": 0
+		}
+	],
+	"3": [
+		{
+			"GoldMine": 3
+		},
+		{
+			"ElixirCollector": 3
+		},
+		{
+			"GoldStorage": 2
+		},
+		{
+			"ElixirStorage": 2
+		},
+		{
+			"DarkElixirDrill": 0
+		},
+		{
+			"DarkElixirStorage": 0
+		},
+		{
+			"ClanCastle": 1
+		},
+		{
+			"HelperHut": 0
+		},
+		{
+			"ArmyCamp": 2
+		},
+		{
+			"Barracks": 1
+		},
+		{
+			"Laboratory": 1
+		},
+		{
+			"SpellFactory": 0
+		},
+		{
+			"DarkBarracks": 0
+		},
+		{
+			"HeroHall": 0
+		},
+		{
+			"DarkSpellFactory": 0
+		},
+		{
+			"Blacksmith": 0
+		},
+		{
+			"Workshop": 0
+		},
+		{
+			"PetHouse": 0
+		},
+		{
+			"Cannon": 2
+		},
+		{
+			"ArcherTower": 2
+		},
+		{
+			"Wall": 50
+		},
+		{
+			"Mortar": 1
+		},
+		{
+			"AirDefense": 0
+		},
+		{
+			"WizardTower": 0
+		},
+		{
+			"AirSweeper": 0
+		},
+		{
+			"HiddenTesla": 0
+		},
+		{
+			"BombTower": 0
+		},
+		{
+			"XBow": 0
+		},
+		{
+			"InfernoTower": 0
+		},
+		{
+			"Bomb": 2
+		},
+		{
+			"SpringTrap": 0
+		},
+		{
+			"AirBomb": 0
+		},
+		{
+			"GiantBomb": 0
+		},
+		{
+			"SeekingAirMine": 0
+		},
+		{
+			"SkeletonTrap": 0
+		},
+		{
+			"TornadoTrap": 0
+		},
+		{
+			"GigaBomb": 0
+		}
+	],
+	"4": [
+		{
+			"GoldMine": 4
+		},
+		{
+			"ElixirCollector": 4
+		},
+		{
+			"GoldStorage": 2
+		},
+		{
+			"ElixirStorage": 2
+		},
+		{
+			"DarkElixirDrill": 0
+		},
+		{
+			"DarkElixirStorage": 0
+		},
+		{
+			"ClanCastle": 1
+		},
+		{
+			"HelperHut": 0
+		},
+		{
+			"ArmyCamp": 2
+		},
+		{
+			"Barracks": 1
+		},
+		{
+			"Laboratory": 1
+		},
+		{
+			"SpellFactory": 0
+		},
+		{
+			"DarkBarracks": 0
+		},
+		{
+			"HeroHall": 0
+		},
+		{
+			"DarkSpellFactory": 0
+		},
+		{
+			"Blacksmith": 0
+		},
+		{
+			"Workshop": 0
+		},
+		{
+			"PetHouse": 0
+		},
+		{
+			"Cannon": 2
+		},
+		{
+			"ArcherTower": 2
+		},
+		{
+			"Wall": 75
+		},
+		{
+			"Mortar": 1
+		},
+		{
+			"AirDefense": 1
+		},
+		{
+			"WizardTower": 0
+		},
+		{
+			"AirSweeper": 0
+		},
+		{
+			"HiddenTesla": 0
+		},
+		{
+			"BombTower": 0
+		},
+		{
+			"XBow": 0
+		},
+		{
+			"InfernoTower": 0
+		},
+		{
+			"Bomb": 2
+		},
+		{
+			"SpringTrap": 2
+		},
+		{
+			"AirBomb": 0
+		},
+		{
+			"GiantBomb": 0
+		},
+		{
+			"SeekingAirMine": 0
+		},
+		{
+			"SkeletonTrap": 0
+		},
+		{
+			"TornadoTrap": 0
+		},
+		{
+			"GigaBomb": 0
+		}
+	],
+	"5": [
+		{
+			"GoldMine": 5
+		},
+		{
+			"ElixirCollector": 5
+		},
+		{
+			"GoldStorage": 2
+		},
+		{
+			"ElixirStorage": 2
+		},
+		{
+			"DarkElixirDrill": 0
+		},
+		{
+			"DarkElixirStorage": 0
+		},
+		{
+			"ClanCastle": 1
+		},
+		{
+			"HelperHut": 0
+		},
+		{
+			"ArmyCamp": 3
+		},
+		{
+			"Barracks": 1
+		},
+		{
+			"Laboratory": 1
+		},
+		{
+			"SpellFactory": 1
+		},
+		{
+			"DarkBarracks": 0
+		},
+		{
+			"HeroHall": 0
+		},
+		{
+			"DarkSpellFactory": 0
+		},
+		{
+			"Blacksmith": 0
+		},
+		{
+			"Workshop": 0
+		},
+		{
+			"PetHouse": 0
+		},
+		{
+			"Cannon": 3
+		},
+		{
+			"ArcherTower": 3
+		},
+		{
+			"Wall": 100
+		},
+		{
+			"Mortar": 1
+		},
+		{
+			"AirDefense": 1
+		},
+		{
+			"WizardTower": 1
+		},
+		{
+			"AirSweeper": 0
+		},
+		{
+			"HiddenTesla": 0
+		},
+		{
+			"BombTower": 0
+		},
+		{
+			"XBow": 0
+		},
+		{
+			"InfernoTower": 0
+		},
+		{
+			"Bomb": 4
+		},
+		{
+			"SpringTrap": 2
+		},
+		{
+			"AirBomb": 2
+		},
+		{
+			"GiantBomb": 0
+		},
+		{
+			"SeekingAirMine": 0
+		},
+		{
+			"SkeletonTrap": 0
+		},
+		{
+			"TornadoTrap": 0
+		},
+		{
+			"GigaBomb": 0
+		}
+	],
+	"6": [
+		{
+			"GoldMine": 6
+		},
+		{
+			"ElixirCollector": 6
+		},
+		{
+			"GoldStorage": 2
+		},
+		{
+			"ElixirStorage": 2
+		},
+		{
+			"DarkElixirDrill": 0
+		},
+		{
+			"DarkElixirStorage": 0
+		},
+		{
+			"ClanCastle": 1
+		},
+		{
+			"HelperHut": 0
+		},
+		{
+			"ArmyCamp": 3
+		},
+		{
+			"Barracks": 1
+		},
+		{
+			"Laboratory": 1
+		},
+		{
+			"SpellFactory": 0
+		},
+		{
+			"DarkBarracks": 0
+		},
+		{
+			"HeroHall": 0
+		},
+		{
+			"DarkSpellFactory": 0
+		},
+		{
+			"Blacksmith": 0
+		},
+		{
+			"Workshop": 0
+		},
+		{
+			"PetHouse": 0
+		},
+		{
+			"Cannon": 4
+		},
+		{
+			"ArcherTower": 3
+		},
+		{
+			"Wall": 125
+		},
+		{
+			"Mortar": 2
+		},
+		{
+			"AirDefense": 1
+		},
+		{
+			"WizardTower": 1
+		},
+		{
+			"AirSweeper": 1
+		},
+		{
+			"HiddenTesla": 0
+		},
+		{
+			"BombTower": 0
+		},
+		{
+			"XBow": 0
+		},
+		{
+			"InfernoTower": 0
+		},
+		{
+			"Bomb": 4
+		},
+		{
+			"SpringTrap": 4
+		},
+		{
+			"AirBomb": 2
+		},
+		{
+			"GiantBomb": 1
+		},
+		{
+			"SeekingAirMine": 0
+		},
+		{
+			"SkeletonTrap": 0
+		},
+		{
+			"TornadoTrap": 0
+		},
+		{
+			"GigaBomb": 0
+		}
+	],
+	"7": [
+		{
+			"GoldMine": 6
+		},
+		{
+			"ElixirCollector": 6
+		},
+		{
+			"GoldStorage": 2
+		},
+		{
+			"ElixirStorage": 2
+		},
+		{
+			"DarkElixirDrill": 1
+		},
+		{
+			"DarkElixirStorage": 1
+		},
+		{
+			"ClanCastle": 1
+		},
+		{
+			"HelperHut": 0
+		},
+		{
+			"ArmyCamp": 4
+		},
+		{
+			"Barracks": 1
+		},
+		{
+			"Laboratory": 1
+		},
+		{
+			"SpellFactory": 1
+		},
+		{
+			"DarkBarracks": 1
+		},
+		{
+			"HeroHall": 1
+		},
+		{
+			"DarkSpellFactory": 0
+		},
+		{
+			"Blacksmith": 0
+		},
+		{
+			"Workshop": 0
+		},
+		{
+			"PetHouse": 0
+		},
+		{
+			"Cannon": 5
+		},
+		{
+			"ArcherTower": 4
+		},
+		{
+			"Wall": 175
+		},
+		{
+			"Mortar": 3
+		},
+		{
+			"AirDefense": 2
+		},
+		{
+			"WizardTower": 2
+		},
+		{
+			"AirSweeper": 1
+		},
+		{
+			"HiddenTesla": 2
+		},
+		{
+			"BombTower": 0
+		},
+		{
+			"XBow": 0
+		},
+		{
+			"InfernoTower": 0
+		},
+		{
+			"Bomb": 6
+		},
+		{
+			"SpringTrap": 4
+		},
+		{
+			"AirBomb": 2
+		},
+		{
+			"GiantBomb": 2
+		},
+		{
+			"SeekingAirMine": 1
+		},
+		{
+			"SkeletonTrap": 0
+		},
+		{
+			"TornadoTrap": 0
+		},
+		{
+			"GigaBomb": 0
+		}
+	],
+	"8": [
+		{
+			"GoldMine": 6
+		},
+		{
+			"ElixirCollector": 6
+		},
+		{
+			"GoldStorage": 3
+		},
+		{
+			"ElixirStorage": 3
+		},
+		{
+			"DarkElixirDrill": 2
+		},
+		{
+			"DarkElixirStorage": 1
+		},
+		{
+			"ClanCastle": 1
+		},
+		{
+			"HelperHut": 0
+		},
+		{
+			"ArmyCamp": 4
+		},
+		{
+			"Barracks": 1
+		},
+		{
+			"Laboratory": 1
+		},
+		{
+			"SpellFactory": 1
+		},
+		{
+			"DarkBarracks": 1
+		},
+		{
+			"HeroHall": 1
+		},
+		{
+			"DarkSpellFactory": 1
+		},
+		{
+			"Blacksmith": 0
+		},
+		{
+			"Workshop": 1
+		},
+		{
+			"PetHouse": 0
+		},
+		{
+			"Cannon": 5
+		},
+		{
+			"ArcherTower": 5
+		},
+		{
+			"Wall": 225
+		},
+		{
+			"Mortar": 4
+		},
+		{
+			"AirDefense": 3
+		},
+		{
+			"WizardTower": 2
+		},
+		{
+			"AirSweeper": 2
+		},
+		{
+			"HiddenTesla": 3
+		},
+		{
+			"BombTower": 1
+		},
+		{
+			"XBow": 0
+		},
+		{
+			"InfernoTower": 0
+		},
+		{
+			"Bomb": 6
+		},
+		{
+			"SpringTrap": 6
+		},
+		{
+			"AirBomb": 4
+		},
+		{
+			"GiantBomb": 3
+		},
+		{
+			"SeekingAirMine": 2
+		},
+		{
+			"SkeletonTrap": 2
+		},
+		{
+			"TornadoTrap": 0
+		},
+		{
+			"GigaBomb": 0
+		}
+	],
+	"9": [
+		{
+			"GoldMine": 7
+		},
+		{
+			"ElixirCollector": 7
+		},
+		{
+			"GoldStorage": 4
+		},
+		{
+			"ElixirStorage": 4
+		},
+		{
+			"DarkElixirDrill": 3
+		},
+		{
+			"DarkElixirStorage": 1
+		},
+		{
+			"ClanCastle": 1
+		},
+		{
+			"HelperHut": 1
+		},
+		{
+			"ArmyCamp": 4
+		},
+		{
+			"Barracks": 1
+		},
+		{
+			"Laboratory": 1
+		},
+		{
+			"SpellFactory": 1
+		},
+		{
+			"DarkBarracks": 1
+		},
+		{
+			"HeroHall": 1
+		},
+		{
+			"DarkSpellFactory": 1
+		},
+		{
+			"Blacksmith": 1
+		},
+		{
+			"Workshop": 0
+		},
+		{
+			"PetHouse": 0
+		},
+		{
+			"Cannon": 6
+		},
+		{
+			"ArcherTower": 6
+		},
+		{
+			"Wall": 250
+		},
+		{
+			"Mortar": 4
+		},
+		{
+			"AirDefense": 4
+		},
+		{
+			"WizardTower": 3
+		},
+		{
+			"AirSweeper": 2
+		},
+		{
+			"HiddenTesla": 3
+		},
+		{
+			"BombTower": 1
+		},
+		{
+			"XBow": 2
+		},
+		{
+			"InfernoTower": 0
+		},
+		{
+			"Bomb": 6
+		},
+		{
+			"SpringTrap": 6
+		},
+		{
+			"AirBomb": 4
+		},
+		{
+			"GiantBomb": 4
+		},
+		{
+			"SeekingAirMine": 4
+		},
+		{
+			"SkeletonTrap": 2
+		},
+		{
+			"TornadoTrap": 0
+		},
+		{
+			"GigaBomb": 0
+		}
+	],
+	"10": [
+		{
+			"GoldMine": 7
+		},
+		{
+			"ElixirCollector": 7
+		},
+		{
+			"GoldStorage": 4
+		},
+		{
+			"ElixirStorage": 4
+		},
+		{
+			"DarkElixirDrill": 3
+		},
+		{
+			"DarkElixirStorage": 1
+		},
+		{
+			"ClanCastle": 1
+		},
+		{
+			"HelperHut": 1
+		},
+		{
+			"ArmyCamp": 4
+		},
+		{
+			"Barracks": 1
+		},
+		{
+			"Laboratory": 1
+		},
+		{
+			"SpellFactory": 1
+		},
+		{
+			"DarkBarracks": 1
+		},
+		{
+			"HeroHall": 1
+		},
+		{
+			"DarkSpellFactory": 1
+		},
+		{
+			"Blacksmith": 1
+		},
+		{
+			"Workshop": 1
+		},
+		{
+			"PetHouse": 0
+		},
+		{
+			"Cannon": 6
+		},
+		{
+			"ArcherTower": 7
+		},
+		{
+			"Wall": 275
+		},
+		{
+			"Mortar": 4
+		},
+		{
+			"AirDefense": 4
+		},
+		{
+			"WizardTower": 4
+		},
+		{
+			"AirSweeper": 2
+		},
+		{
+			"HiddenTesla": 3
+		},
+		{
+			"BombTower": 2
+		},
+		{
+			"XBow": 4
+		},
+		{
+			"InfernoTower": 2
+		},
+		{
+			"Bomb": 6
+		},
+		{
+			"SpringTrap": 6
+		},
+		{
+			"AirBomb": 5
+		},
+		{
+			"GiantBomb": 5
+		},
+		{
+			"SeekingAirMine": 5
+		},
+		{
+			"SkeletonTrap": 3
+		},
+		{
+			"TornadoTrap": 0
+		},
+		{
+			"GigaBomb": 0
+		}
+	],
+	"11": [
+		{
+			"GoldMine": 7
+		},
+		{
+			"ElixirCollector": 7
+		},
+		{
+			"GoldStorage": 4
+		},
+		{
+			"ElixirStorage": 4
+		},
+		{
+			"DarkElixirDrill": 3
+		},
+		{
+			"DarkElixirStorage": 1
+		},
+		{
+			"ClanCastle": 1
+		},
+		{
+			"HelperHut": 1
+		},
+		{
+			"ArmyCamp": 4
+		},
+		{
+			"Barracks": 1
+		},
+		{
+			"Laboratory": 1
+		},
+		{
+			"SpellFactory": 1
+		},
+		{
+			"DarkBarracks": 1
+		},
+		{
+			"HeroHall": 1
+		},
+		{
+			"DarkSpellFactory": 1
+		},
+		{
+			"Blacksmith": 1
+		},
+		{
+			"Workshop": 1
+		},
+		{
+			"PetHouse": 0
+		},
+		{
+			"Cannon": 7
+		},
+		{
+			"ArcherTower": 8
+		},
+		{
+			"Wall": 300
+		},
+		{
+			"Mortar": 4
+		},
+		{
+			"AirDefense": 4
+		},
+		{
+			"WizardTower": 4
+		},
+		{
+			"AirSweeper": 2
+		},
+		{
+			"HiddenTesla": 5
+		},
+		{
+			"BombTower": 2
+		},
+		{
+			"XBow": 4
+		},
+		{
+			"InfernoTower": 2
+		},
+		{
+			"Bomb": 6
+		},
+		{
+			"SpringTrap": 6
+		},
+		{
+			"AirBomb": 5
+		},
+		{
+			"GiantBomb": 5
+		},
+		{
+			"SeekingAirMine": 5
+		},
+		{
+			"SkeletonTrap": 3
+		},
+		{
+			"TornadoTrap": 1
+		},
+		{
+			"GigaBomb": 0
+		}
+	],
+	"12": [
+		{
+			"GoldMine": 7
+		},
+		{
+			"ElixirCollector": 7
+		},
+		{
+			"GoldStorage": 4
+		},
+		{
+			"ElixirStorage": 4
+		},
+		{
+			"DarkElixirDrill": 3
+		},
+		{
+			"DarkElixirStorage": 1
+		},
+		{
+			"ClanCastle": 1
+		},
+		{
+			"HelperHut": 1
+		},
+		{
+			"ArmyCamp": 4
+		},
+		{
+			"Barracks": 1
+		},
+		{
+			"Laboratory": 1
+		},
+		{
+			"SpellFactory": 1
+		},
+		{
+			"DarkBarracks": 1
+		},
+		{
+			"HeroHall": 1
+		},
+		{
+			"DarkSpellFactory": 1
+		},
+		{
+			"Blacksmith": 1
+		},
+		{
+			"Workshop": 1
+		},
+		{
+			"PetHouse": 0
+		},
+		{
+			"Cannon": 7
+		},
+		{
+			"ArcherTower": 9
+		},
+		{
+			"Wall": 300
+		},
+		{
+			"Mortar": 4
+		},
+		{
+			"AirDefense": 4
+		},
+		{
+			"WizardTower": 5
+		},
+		{
+			"AirSweeper": 2
+		},
+		{
+			"HiddenTesla": 5
+		},
+		{
+			"BombTower": 2
+		},
+		{
+			"XBow": 4
+		},
+		{
+			"InfernoTower": 3
+		},
+		{
+			"Bomb": 6
+		},
+		{
+			"SpringTrap": 8
+		},
+		{
+			"AirBomb": 6
+		},
+		{
+			"GiantBomb": 6
+		},
+		{
+			"SeekingAirMine": 6
+		},
+		{
+			"SkeletonTrap": 3
+		},
+		{
+			"TornadoTrap": 1
+		},
+		{
+			"GigaBomb": 0
+		}
+	],
+	"13": [
+		{
+			"GoldMine": 7
+		},
+		{
+			"ElixirCollector": 7
+		},
+		{
+			"GoldStorage": 4
+		},
+		{
+			"ElixirStorage": 4
+		},
+		{
+			"DarkElixirDrill": 3
+		},
+		{
+			"DarkElixirStorage": 1
+		},
+		{
+			"ClanCastle": 1
+		},
+		{
+			"HelperHut": 1
+		},
+		{
+			"ArmyCamp": 4
+		},
+		{
+			"Barracks": 1
+		},
+		{
+			"Laboratory": 1
+		},
+		{
+			"SpellFactory": 1
+		},
+		{
+			"DarkBarracks": 1
+		},
+		{
+			"HeroHall": 1
+		},
+		{
+			"DarkSpellFactory": 1
+		},
+		{
+			"Blacksmith": 1
+		},
+		{
+			"Workshop": 1
+		},
+		{
+			"PetHouse": 1
+		},
+		{
+			"Cannon": 7
+		},
+		{
+			"ArcherTower": 9
+		},
+		{
+			"Wall": 300
+		},
+		{
+			"Mortar": 4
+		},
+		{
+			"AirDefense": 4
+		},
+		{
+			"WizardTower": 5
+		},
+		{
+			"AirSweeper": 2
+		},
+		{
+			"HiddenTesla": 5
+		},
+		{
+			"BombTower": 2
+		},
+		{
+			"XBow": 4
+		},
+		{
+			"InfernoTower": 3
+		},
+		{
+			"Bomb": 7
+		},
+		{
+			"SpringTrap": 9
+		},
+		{
+			"AirBomb": 6
+		},
+		{
+			"GiantBomb": 6
+		},
+		{
+			"SeekingAirMine": 7
+		},
+		{
+			"SkeletonTrap": 3
+		},
+		{
+			"TornadoTrap": 1
+		},
+		{
+			"GigaBomb": 0
+		}
+	],
+	"14": [
+		{
+			"GoldMine": 7
+		},
+		{
+			"ElixirCollector": 7
+		},
+		{
+			"GoldStorage": 4
+		},
+		{
+			"ElixirStorage": 4
+		},
+		{
+			"DarkElixirDrill": 3
+		},
+		{
+			"DarkElixirStorage": 1
+		},
+		{
+			"ClanCastle": 1
+		},
+		{
+			"HelperHut": 1
+		},
+		{
+			"ArmyCamp": 4
+		},
+		{
+			"Barracks": 1
+		},
+		{
+			"Laboratory": 1
+		},
+		{
+			"SpellFactory": 1
+		},
+		{
+			"DarkBarracks": 1
+		},
+		{
+			"HeroHall": 1
+		},
+		{
+			"DarkSpellFactory": 1
+		},
+		{
+			"Blacksmith": 1
+		},
+		{
+			"Workshop": 1
+		},
+		{
+			"PetHouse": 1
+		},
+		{
+			"Cannon": 7
+		},
+		{
+			"ArcherTower": 8
+		},
+		{
+			"Wall": 325
+		},
+		{
+			"Mortar": 4
+		},
+		{
+			"AirDefense": 4
+		},
+		{
+			"WizardTower": 5
+		},
+		{
+			"AirSweeper": 2
+		},
+		{
+			"HiddenTesla": 5
+		},
+		{
+			"BombTower": 2
+		},
+		{
+			"XBow": 4
+		},
+		{
+			"InfernoTower": 3
+		},
+		{
+			"Bomb": 8
+		},
+		{
+			"SpringTrap": 9
+		},
+		{
+			"AirBomb": 7
+		},
+		{
+			"GiantBomb": 7
+		},
+		{
+			"SeekingAirMine": 8
+		},
+		{
+			"SkeletonTrap": 4
+		},
+		{
+			"TornadoTrap": 1
+		},
+		{
+			"GigaBomb": 0
+		}
+	],
+	"15": [
+		{
+			"GoldMine": 7
+		},
+		{
+			"ElixirCollector": 7
+		},
+		{
+			"GoldStorage": 4
+		},
+		{
+			"ElixirStorage": 4
+		},
+		{
+			"DarkElixirDrill": 3
+		},
+		{
+			"DarkElixirStorage": 1
+		},
+		{
+			"ClanCastle": 1
+		},
+		{
+			"HelperHut": 1
+		},
+		{
+			"ArmyCamp": 4
+		},
+		{
+			"Barracks": 1
+		},
+		{
+			"Laboratory": 1
+		},
+		{
+			"SpellFactory": 1
+		},
+		{
+			"DarkBarracks": 1
+		},
+		{
+			"HeroHall": 1
+		},
+		{
+			"DarkSpellFactory": 1
+		},
+		{
+			"Blacksmith": 1
+		},
+		{
+			"Workshop": 1
+		},
+		{
+			"PetHouse": 1
+		},
+		{
+			"Cannon": 7
+		},
+		{
+			"ArcherTower": 8
+		},
+		{
+			"Wall": 325
+		},
+		{
+			"Mortar": 4
+		},
+		{
+			"AirDefense": 4
+		},
+		{
+			"WizardTower": 5
+		},
+		{
+			"AirSweeper": 2
+		},
+		{
+			"HiddenTesla": 5
+		},
+		{
+			"BombTower": 2
+		},
+		{
+			"XBow": 4
+		},
+		{
+			"InfernoTower": 3
+		},
+		{
+			"Bomb": 8
+		},
+		{
+			"SpringTrap": 9
+		},
+		{
+			"AirBomb": 7
+		},
+		{
+			"GiantBomb": 7
+		},
+		{
+			"SeekingAirMine": 8
+		},
+		{
+			"SkeletonTrap": 4
+		},
+		{
+			"TornadoTrap": 1
+		},
+		{
+			"GigaBomb": 0
+		}
+	],
+	"16": [
+		{
+			"GoldMine": 7
+		},
+		{
+			"ElixirCollector": 7
+		},
+		{
+			"GoldStorage": 4
+		},
+		{
+			"ElixirStorage": 4
+		},
+		{
+			"DarkElixirDrill": 3
+		},
+		{
+			"DarkElixirStorage": 1
+		},
+		{
+			"ClanCastle": 1
+		},
+		{
+			"HelperHut": 1
+		},
+		{
+			"ArmyCamp": 4
+		},
+		{
+			"Barracks": 1
+		},
+		{
+			"Laboratory": 1
+		},
+		{
+			"SpellFactory": 1
+		},
+		{
+			"DarkBarracks": 1
+		},
+		{
+			"HeroHall": 1
+		},
+		{
+			"DarkSpellFactory": 1
+		},
+		{
+			"Blacksmith": 1
+		},
+		{
+			"Workshop": 1
+		},
+		{
+			"PetHouse": 1
+		},
+		{
+			"Cannon": 3
+		},
+		{
+			"ArcherTower": 4
+		},
+		{
+			"Wall": 325
+		},
+		{
+			"Mortar": 4
+		},
+		{
+			"AirDefense": 4
+		},
+		{
+			"WizardTower": 5
+		},
+		{
+			"AirSweeper": 2
+		},
+		{
+			"HiddenTesla": 5
+		},
+		{
+			"BombTower": 2
+		},
+		{
+			"XBow": 4
+		},
+		{
+			"InfernoTower": 3
+		},
+		{
+			"Bomb": 8
+		},
+		{
+			"SpringTrap": 9
+		},
+		{
+			"AirBomb": 7
+		},
+		{
+			"GiantBomb": 7
+		},
+		{
+			"SeekingAirMine": 8
+		},
+		{
+			"SkeletonTrap": 4
+		},
+		{
+			"TornadoTrap": 1
+		},
+		{
+			"GigaBomb": 0
+		}
+	],
+	"17": [
+		{
+			"GoldMine": 7
+		},
+		{
+			"ElixirCollector": 7
+		},
+		{
+			"GoldStorage": 4
+		},
+		{
+			"ElixirStorage": 4
+		},
+		{
+			"DarkElixirDrill": 3
+		},
+		{
+			"DarkElixirStorage": 1
+		},
+		{
+			"ClanCastle": 1
+		},
+		{
+			"HelperHut": 1
+		},
+		{
+			"ArmyCamp": 4
+		},
+		{
+			"Barracks": 1
+		},
+		{
+			"Laboratory": 1
+		},
+		{
+			"SpellFactory": 1
+		},
+		{
+			"DarkBarracks": 1
+		},
+		{
+			"HeroHall": 1
+		},
+		{
+			"DarkSpellFactory": 1
+		},
+		{
+			"Blacksmith": 1
+		},
+		{
+			"Workshop": 1
+		},
+		{
+			"PetHouse": 1
+		},
+		{
+			"Cannon": 0
+		},
+		{
+			"ArcherTower": 2
+		},
+		{
+			"Wall": 325
+		},
+		{
+			"Mortar": 4
+		},
+		{
+			"AirDefense": 4
+		},
+		{
+			"WizardTower": 5
+		},
+		{
+			"AirSweeper": 2
+		},
+		{
+			"HiddenTesla": 5
+		},
+		{
+			"BombTower": 4
+		},
+		{
+			"XBow": 4
+		},
+		{
+			"InfernoTower": 3
+		},
+		{
+			"Bomb": 8
+		},
+		{
+			"SpringTrap": 9
+		},
+		{
+			"AirBomb": 7
+		},
+		{
+			"GiantBomb": 8
+		},
+		{
+			"SeekingAirMine": 9
+		},
+		{
+			"SkeletonTrap": 4
+		},
+		{
+			"TornadoTrap": 1
+		},
+		{
+			"GigaBomb": 1
+		}
+	]
+}
