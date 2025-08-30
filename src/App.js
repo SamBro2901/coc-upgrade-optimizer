@@ -4,9 +4,9 @@ import { generateSchedule } from './scheduler.js';
 import "./App.css";
 
 function formatTime(val) {
-  if (val < 60) return `${val.toFixed(2)}s`;
-  if (val < 3600) return `${(val / 60).toFixed(2)}m`;
-  return `${(val / 3600)}h`;
+  if (val < 60) return `${Number(Math.round(val + 'e' + 2) + 'e-' + 2)}s`;
+  if (val < 3600) return `${Number(Math.round((val / 60) + 'e' + 2) + 'e-' + 2)}m`;
+  return `${Number(Math.round((val / 3600) + 'e' + 2) + 'e-' + 2)}h`;
 }
 
 /** ---------- GanttChart component (SVG) ---------- */
@@ -48,8 +48,12 @@ function GanttChart({
 
   const colorMap = React.useMemo(() => {
     const palette = [
-      "#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF", "#E3BAFF", "#FFD6E0", "#C7FFD8", "#FFF5BA", "#BAFFD6",
-      "#D6FFBA", "#FFBABA", "#BAE7FF", "#E0BAFF", "#FFE0BA", "#BAFFD4", "#FFBAF2", "#E0FFBA", "#BAC2FF", "#FFC2BA"
+      "#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF",
+      "#E3BAFF", "#FFD6E0", "#C7FFD8", "#FFF5BA", "#BAFFD6",
+      "#FFD1BA", "#D6FFBA", "#FFBABA", "#BAE7FF", "#E0BAFF",
+      "#FFE0BA", "#BAFFD4", "#FFBAF2", "#E0FFBA", "#BAC2FF",
+      "#FFC2BA", "#C2FFBA", "#BAFFC2", "#C2BAFF", "#FFBAC2",
+      "#BAFFF2", "#FFDABA", "#F2FFBA", "#BACFFF", "#FFBAE1"
     ];
     const map = {};
     uniqueIds.forEach((id, i) => { map[id] = palette[i % palette.length]; });
@@ -177,7 +181,7 @@ function Legend({ items }) {
 
 /** ---------- App with exponential zoom ---------- */
 export default function App() {
-  const [dark, setDark] = useState(false);
+  // const [dark, setDark] = useState(false);
   const [currentTH, setCurrentTH] = useState(7);
   const [targetTH, setTargetTH] = useState(8);
   const [builders, setBuilders] = useState(5);
@@ -226,8 +230,8 @@ export default function App() {
   }
 
   return (
-    <div className={clsx("app-wrap", dark && "dark")}
-      style={{ minHeight: "100vh", background: dark ? "var(--bg)" : undefined }}>
+    <div className={clsx("app-wrap", "light")}
+      style={{ minHeight: "100vh", background: undefined }}>
       <div className="card" style={{ boxShadow: "0 8px 32px rgba(37,99,235,0.10)", borderRadius: 18 }}>
         <div className="header" style={{
           background: "linear-gradient(90deg, #2563eb 0%, #60a5fa 100%)",
@@ -289,14 +293,14 @@ export default function App() {
         </div>
 
         {/* Chart */}
-        <div className="chart-shell" style={{ background: dark ? "#0b1220" : "#fff", borderRadius: 16, boxShadow: dark ? "0 2px 12px #111827" : "0 2px 12px #e0e7ff" }}>
+        <div className="chart-shell" style={{ background: "#fff", borderRadius: 16, boxShadow: "0 2px 12px #e0e7ff" }}>
           <GanttChart tasks={tasks} groupBy="worker" pxPerSec={pxPerSec} />
         </div>
 
         {/* Metrics */}
         {tasks.length > 0 && (
           <div className="metrics" style={{ marginTop: 18 }}>
-            <div className="pill" style={{ fontSize: 15, background: dark ? "#1e293b" : "#eef2ff", color: dark ? "#e0e7ff" : "#3730a3" }}>Makespan: {makespan}</div>
+            <div className="pill" style={{ fontSize: 15, background: "#eef2ff", color: "#3730a3" }}>Makespan: {makespan}</div>
           </div>
         )}
       </div>

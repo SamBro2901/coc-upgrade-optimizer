@@ -1,6 +1,10 @@
-# Getting Started with Create React App
+# Clash of Clans Upgrade Optimizer
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was started to develop a schedule optimizer to make the most efficient schedule of upgrades when moving from one townhall to the next. The project uses two simple scheduling methods - Shortest Possible Task and Longest Possible Task.
+
+The project will explore more optimizing functions with time.
+
+Please feel free to experiment and play around with the tool and most importantly, have fun!
 
 ## Available Scripts
 
