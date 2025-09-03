@@ -861,10 +861,10 @@
 			"AirDefense": 3
 		},
 		{
-			"WizardTower": 2
+			"WizardTower": 3
 		},
 		{
-			"AirSweeper": 2
+			"AirSweeper": 1
 		},
 		{
 			"HiddenTesla": 3

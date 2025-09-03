@@ -83,6 +83,12 @@ body {
   transition: transform .06s ease, box-shadow .2s ease, background .2s ease;
   box-shadow: 0 6px 16px rgba(37,99,235,0.25);
 }
+.button:disabled{
+  background: var(--muted);
+  border-color: var(--muted);
+  cursor: not-allowed;
+  box-shadow: none;
+}
 .button:hover { background: var(--primary-600); }
 .button:active { transform: translateY(1px); }
 .button.secondary{

@@ -179,15 +179,155 @@ function Legend({ items }) {
   );
 }
 
+/**
+ * JsonInput (resizable both axes + size persistence)
+ * Props:
+ *  - label?: string
+ *  - initial?: object | string
+ *  - onValid?: (obj:any)=>void
+ *  - storageKey?: string   // optional key to persist size
+ */
+export function JsonInput({ label = "JSON Input", initial = "", onValid, onValidityChange, storageKey = "JSON" }) {
+  // const [text, setText] = React.useState(initial);
+  const [text, setText] = React.useState(
+    typeof initial === "string"
+      ? initial
+      : initial
+        ? JSON.stringify(initial, null, 2)
+        : ""
+  );
+  const [error, setError] = React.useState("");
+
+
+  // --- load saved width/height (optional) ---
+  const [boxSize, setBoxSize] = React.useState(() => {
+    try {
+      const saved = storageKey && JSON.parse(localStorage.getItem(storageKey) || "{}");
+      return {
+        width: saved.width || 560,   // starting size
+        height: saved.height || 200,
+      };
+    } catch {
+      return { width: 560, height: 200 };
+    }
+  });
+
+  const areaRef = React.useRef(null);
+
+  // Check validity on every change
+  const isValid = React.useMemo(() => {
+    try {
+      JSON.parse(text);
+      return true;
+    } catch {
+      return false;
+    }
+  }, [text]);
+
+  // Notify parent about validity
+  React.useEffect(() => {
+    onValidityChange?.(isValid);
+
+    if (isValid) {
+      try {
+        const obj = JSON.parse(text);
+        onValid?.(obj);   // 🔥 automatically push parsed JSON up
+      } catch {
+        /* should not happen since isValid is true */
+      }
+    }
+  }, [isValid, text, onValid, onValidityChange]);
+
+  // Persist size after user resizes (mouseup is enough for native resize handles)
+  const saveSize = () => {
+    const el = areaRef.current;
+    if (!el || !storageKey) return;
+    const width = el.offsetWidth;
+    const height = el.offsetHeight;
+    setBoxSize({ width, height });
+    try {
+      localStorage.setItem(storageKey, JSON.stringify({ width, height }));
+    } catch { }
+  };
+
+  const handleFormat = () => {
+    try {
+      const obj = JSON.parse(text);
+      setText(JSON.stringify(obj, null, 2));
+      setError("");
+    } catch (e) {
+      setError("Cannot format: " + e.message);
+    }
+  };
+
+  const handleClear = () => {
+    setText("");
+    setError("");
+  };
+
+  return (
+    <div style={{ display: "grid", gap: 8 }}>
+      <label style={{ fontSize: 13, color: "#64748b" }}>{label}</label>
+
+      <textarea
+        ref={areaRef}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onMouseUp={saveSize}                 // save new size after drag
+        placeholder='{"foo": 1, "bar": [2,3]}'
+        spellCheck={false}
+        style={{
+          display: "block",                   // stays in normal flow so others reflow
+          width: boxSize.width,               // initial/persisted size
+          height: boxSize.height,
+          maxWidth: "100%",                   // don’t overflow parent
+          minWidth: 260,
+          minHeight: 120,
+          boxSizing: "border-box",
+          resize: "both",                     // 👈 enables horizontal + vertical resize
+          overflow: "auto",
+          fontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
+          fontSize: 13,
+          padding: 12,
+          borderRadius: 10,
+          border: `1px solid ${isValid ? "#cbd5e1" : "#fca5a5"}`,
+          outline: "none",
+          background: "#fff",
+          color: "#0f172a",
+          boxShadow: isValid ? "none" : "0 0 0 3px rgba(239,68,68,0.12)",
+        }}
+      />
+
+      <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+        <button onClick={handleFormat} style={btnSecondary}>Format</button>
+        <button onClick={handleClear} style={btnGhost}>Clear</button>
+
+        <span style={{ marginLeft: "auto", fontSize: 12, color: isValid ? "#16a34a" : "#ef4444", fontWeight: 600 }}>
+          {isValid ? "Valid JSON" : "Invalid JSON"}
+        </span>
+      </div>
+
+      {error && <div style={{ fontSize: 12, color: "#b91c1c" }}>{error}</div>}
+    </div>
+  );
+}
+
+const btnBase = { padding: "8px 12px", borderRadius: 10, fontWeight: 600, cursor: "pointer", border: "1px solid" };
+const btnSecondary = { ...btnBase, background: "#fff", color: "#0f172a", borderColor: "#cbd5e1" };
+const btnGhost = { ...btnBase, background: "transparent", color: "#0f172a", borderColor: "#e5e7eb" };
+
+
+
 /** ---------- App with exponential zoom ---------- */
 export default function App() {
-  // const [dark, setDark] = useState(false);
-  const [currentTH, setCurrentTH] = useState(7);
-  const [targetTH, setTargetTH] = useState(8);
   const [builders, setBuilders] = useState(5);
+  const [jsonData, setJsonData] = React.useState(null);
+  const [jsonValid, setJsonValid] = React.useState(false);
 
   const [tasks, setTasks] = useState([]);
   const [makespan, setMakespan] = useState(0);
+  const [err, setErr] = useState(false);
+  const [scheduleType, setScheduleType] = useState("Longest Processing Time (LPT)");
 
   // Zoom mapping (exponential)
   const MIN = 0.005;
@@ -208,26 +348,27 @@ export default function App() {
   const reset = () => setZoom(toZoom(DEFAULT_PX_PER_SEC));
 
   const handleGenerateSPT = () => {
-    const currTH = Number(currentTH);
-    const nextTH = Number(targetTH);
+    if (!jsonData) { setErr(true); return; }            // guard
     const workers = Number(builders);
-
-    const schedule = generateSchedule(currTH, nextTH, workers, "SPT");
-
-    setTasks(schedule.schedule);
-    setMakespan(schedule.makespan);
+    const { sch, valid } = generateSchedule(jsonData, workers, "SPT");
+    if (!valid) { setErr(true); return; }
+    setErr(false);
+    setTasks(sch.schedule);
+    setMakespan(sch.makespan);
+    setScheduleType("Shortest Processing Time (SPT)");
   };
 
   const handleGenerateLPT = () => {
-    const currTH = Number(currentTH);
-    const nextTH = Number(targetTH);
+    if (!jsonData) { setErr(true); return; }            // guard
     const workers = Number(builders);
+    const { sch, valid } = generateSchedule(jsonData, workers, "LPT");
+    if (!valid) { setErr(true); return; }
+    setErr(false);
+    setTasks(sch.schedule);
+    setMakespan(sch.makespan);
+    setScheduleType("Longest Processing Time (LPT)");
+  };
 
-    const schedule = generateSchedule(currTH, nextTH, workers, "LPT");
-
-    setTasks(schedule.schedule);
-    setMakespan(schedule.makespan);
-  }
 
   return (
     <div className={clsx("app-wrap", "light")}
@@ -242,7 +383,7 @@ export default function App() {
           boxShadow: "0 4px 16px rgba(37,99,235,0.10)",
           position: "relative"
         }}>
-          <div className="title" style={{ fontSize: 28, fontWeight: 700, letterSpacing: "-1px" }}>Upgrade Planner</div>
+          <div className="title" style={{ fontSize: 28, fontWeight: 700, letterSpacing: "-1px" }}>Upgrade Optimizer</div>
           <div className="subtitle" style={{ fontSize: 15, color: "#e0e7ff", marginTop: 4 }}>Plan, visualize, and optimize your build queue</div>
           {/* <button
             className="button ghost"
@@ -254,14 +395,15 @@ export default function App() {
 
         {/* Controls */}
         <div className="controls" style={{ marginBottom: 18 }}>
-          <div className="field" style={{ minWidth: 180 }}>
-            <label>Current Town Hall</label>
-            <input type="number" value={currentTH} onChange={e => setCurrentTH(Number(e.target.value))} />
-          </div>
 
           <div className="field" style={{ minWidth: 180 }}>
-            <label>Target Town Hall</label>
-            <input type="number" value={targetTH} onChange={e => setTargetTH(Number(e.target.value))} />
+            <JsonInput
+              label="Paste schedule JSON"
+              initial='[{"id":"Cannon","start":0,"end":3600}]'
+              onValid={setJsonData}
+              onValidityChange={setJsonValid}
+            />
+
           </div>
 
           <div className="field" style={{ minWidth: 180 }}>
@@ -269,8 +411,8 @@ export default function App() {
             <input type="number" value={builders} onChange={e => setBuilders(Number(e.target.value))} />
           </div>
 
-          <button className="button" style={{ fontSize: 16, padding: "12px 22px", borderRadius: 12 }} onClick={handleGenerateSPT}>Generate SPT</button>
-          <button className="button" style={{ fontSize: 16, padding: "12px 22px", borderRadius: 12 }} onClick={handleGenerateLPT}>Generate LPT</button>
+          <button disabled={!jsonValid} className="button" style={{ fontSize: 16, padding: "12px 22px", borderRadius: 12 }} onClick={handleGenerateSPT}>Generate SPT</button>
+          <button disabled={!jsonValid} className="button" style={{ fontSize: 16, padding: "12px 22px", borderRadius: 12 }} onClick={handleGenerateLPT}>Generate LPT</button>
 
           {/* Exponential Zoom */}
           <div className="slider-group" title="Zoom timeline" style={{ minWidth: 220 }}>
@@ -292,6 +434,19 @@ export default function App() {
           </div>
         </div>
 
+        {/* Metrics */}
+        {tasks.length > 0 && (
+          <div className="metrics" style={{ marginTop: 18 }}>
+            <div className="pill" style={{ fontSize: 15, background: "#eef2ff", color: "#3730a3" }}>{scheduleType}</div>
+          </div>
+        )}
+
+        {err && (<div className="metrics" style={{ marginTop: 18 }}>
+          <div className="pill" style={{ fontSize: 15, background: "#eef2ff", color: "#3730a3" }}>There was an error parsing your JSON!</div>
+        </div>)}
+
+        <br></br>
+
         {/* Chart */}
         <div className="chart-shell" style={{ background: "#fff", borderRadius: 16, boxShadow: "0 2px 12px #e0e7ff" }}>
           <GanttChart tasks={tasks} groupBy="worker" pxPerSec={pxPerSec} />
@@ -304,6 +459,6 @@ export default function App() {
           </div>
         )}
       </div>
-    </div>
+    </div >
   );
 }
