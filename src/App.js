@@ -116,7 +116,7 @@ function GanttChart({
             const x = 120 + (t.start - minStart) * pxPerSec;
             const w = Math.max(2, (t.end - t.start) * pxPerSec);
             const hrs = formatTime(t.duration); //Math.round(((t.end - t.start) / 3600) * 10) / 10
-            const label = `${t.id} L${t.level} (${hrs})`;
+            const label = `${t.id} L${t.level} ${t.iter} (${hrs})`;
             return (
               <g key={i}>
                 <rect x={x} y={y} width={w} height={rowHeight - 8} rx="6" ry="6" fill={colorMap[t.id]} opacity="0.92" style={{ cursor: "pointer" }} />
@@ -396,7 +396,7 @@ export default function App() {
         {/* Controls */}
         <div className="controls" style={{ marginBottom: 18 }}>
 
-          <div className="field" style={{ flexGrow: 1, minWidth: 300 }}>
+          <div className="field">
             <JsonInput
               label="Paste schedule JSON"
               initial='[{"id":"Cannon","start":0,"end":3600}]'
