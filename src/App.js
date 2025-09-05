@@ -127,7 +127,7 @@ function GanttChart({
                 <text x={x + 10} y={y + (rowHeight - 8) * 0.62} fontSize="13" fontWeight={500} fill="#0f172a" clipPath={`url(#clip-${i})`}>
                   {label}
                 </text>
-                <title>{`${t.id} L${t.level}\n• Builder ${t.worker}\n• Group: ${t.iter}\n•start ${formatTime(t.start)} • end ${formatTime(t.end)}\nduration ${formatTime(t.duration)}`}</title>
+                <title>{`${t.id} L${t.level}\n• Builder ${t.worker + 1}\n• Group: ${t.iter}\n• Start ${formatTime(t.start)} • End ${formatTime(t.end)}\n• Duration ${formatTime(t.duration)}`}</title>
               </g>
             );
           })}
@@ -396,7 +396,7 @@ export default function App() {
         {/* Controls */}
         <div className="controls" style={{ marginBottom: 18 }}>
 
-          <div className="field" style={{ minWidth: 180 }}>
+          <div className="field" style={{ flexGrow: 1, minWidth: 300 }}>
             <JsonInput
               label="Paste schedule JSON"
               initial='[{"id":"Cannon","start":0,"end":3600}]'

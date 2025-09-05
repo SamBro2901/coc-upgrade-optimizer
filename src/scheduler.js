@@ -5,7 +5,7 @@ import armyConfig from './data/army.json' with { type: "json" };
 import thConfig from './data/th.json' with { type: "json" };
 import mapping from './data/mapping.json' with { type: "json" };
 
-// import playerData from './data/coc_data.json' with { type: "json" };
+import playerData from './data/coc_data.json' with { type: "json" };
 
 function arrayToObject(arr) {
 	return arr.reduce((acc, item) => {
@@ -67,7 +67,7 @@ function constructTasks(inputData, currTH) {
 
 		// Existing Buildings
 		for (let c of currBuild) {
-			// Currently upgrading buildings
+			// Currently upgrading buildings - Priority 1
 			if (c.timer) {
 				let task = { id: b, level: String(c.lvl), duration: c.timer, priority: 1, iter: String.fromCharCode(char) };
 				tasks.push(task);
@@ -87,7 +87,7 @@ function constructTasks(inputData, currTH) {
 		}
 	}
 
-	return { tasks };
+	return { tasks, pData };
 
 
 	// for (const i of dataJSON) {
@@ -154,6 +154,150 @@ function constructTasks(inputData, currTH) {
 	// return { tasks: tasks };
 }
 
+function myScheduler(playerData, tasks, numWorkers, scheme = 'LPT') {
+
+	tasks = tasks.map((t, idx) => ({ ...t, index: idx, worker: null, pred: null, key: `${t.id}_${t.iter}_${t.level}` }));
+	const taskLength = tasks.length;
+
+	for (const t of tasks) {
+		const pred = tasks.find(pt => pt.key === `${t.id}_${t.iter}_${t.level - 1}`);
+		if (pred) t.pred = pred.index;
+	}
+
+	let ready = tasks.filter(t => t.pred === null);
+	let notReady = tasks.filter(t => t.pred !== null);
+	let running = [], completed = [];
+
+	let workers = Array.from({ length: numWorkers }, () => null); // null means idle
+
+	switch (scheme) {
+		case 'LPT':
+			ready = ready.sort((a, b) => a.priority !== b.priority ? a.priority - b.priority : b.duration - a.duration);
+			break;
+		case 'SPT':
+			ready = ready.sort((a, b) => a.priority !== b.priority ? a.priority - b.priority : a.duration - b.duration);
+			break;
+		default:
+			throw new Error("Unknown scheduling scheme: " + scheme);
+	}
+
+	let currTime = 0
+	while (ready.length > 0 || completed.length !== taskLength || notReady.length > 0) {
+		let idx = 0;
+		const runningTasks = ready.filter(t => t.priority === 1 && t.pred === null);
+
+		for (let w = 0; w < numWorkers && ready.length > 0; w++) {
+			if (workers[w] !== null) continue;
+
+			// Prioritize running tasks (priority 1)
+			if (runningTasks.length > 0) {
+				const arrIdx = ready.findIndex(t => t.key === runningTasks[0].key);
+				ready[arrIdx].worker = w;
+				ready[arrIdx].start = currTime;
+				ready[arrIdx].end = currTime + ready[arrIdx].duration;
+				workers[w] = ready[arrIdx];
+				running.push(ready[arrIdx]);
+				runningTasks.shift();
+				ready.splice(arrIdx, 1);
+				continue;
+			}
+
+			if (ready[idx].pred !== null) {
+				const pred = ready[idx].pred;
+				const predTask = completed.find(t => t.index === pred);
+				if (!predTask) idx++;
+				else {
+					if (workers[predTask.worker] === null) {
+						w = predTask.worker;
+					}
+				}
+			}
+
+			ready[idx].worker = w;
+			ready[idx].start = currTime;
+			ready[idx].end = currTime + ready[idx].duration;
+			workers[w] = ready[idx];
+			running.push(ready[idx]);
+			ready.splice(idx, 1);
+		}
+
+		const finishedTime = Math.min(...running.map(wd => wd.end));
+		currTime = finishedTime;
+		const finishedTask = workers.filter(wd => wd?.end === finishedTime);
+		for (let ft of finishedTask) {
+			completed.push(ft);
+			workers[ft.worker] = null;
+			running = running.filter(t => t.index !== ft.index);
+
+			// Release successor tasks
+			const succTask = notReady.find(t => t.pred === ft.index);
+			if (succTask) {
+				ready.push(succTask);
+				notReady = notReady.filter(t => t.index !== succTask.index);
+			}
+		}
+	}
+
+	if (running.length > 0) {
+		completed.push(...running);
+		running = [];
+	}
+
+
+	completed.sort((a, b) => (a.start - b.start) || (a.worker - b.worker));
+	let makespan = completed.reduce((m, r) => Math.max(m, r.end), 0);
+	makespan = formatTime(makespan);
+
+	return { schedule: completed, makespan };
+
+
+
+
+	// let notReady = [], ready = [], running = [], completed = [];
+	// notReady = tasks.filter(t => t.HH && t.HH > 0);
+	// ready = tasks.filter(t => !t.HH || t.HH === 0);
+
+	// if (notReady.length > 0) {
+	// 	const hh = playerData.find(t => t.id === "HeroHall");
+	// 	if (hh.length === 0) return { schedule: [], makespan: 0 };
+
+	// 	const hhLevel = hh.lvl;
+	// 	for (let nr of notReady) {
+	// 		if (nr.HH && nr.HH <= hhLevel) {
+	// 			ready.push(nr);
+	// 		}
+	// 	}
+	// }
+	// if (ready.length === 0) {
+	// 	throw new Error("No initial tasks are ready to start. Check your dependencies.");
+	// }
+
+
+	// function pickNextTask() {
+	// }
+
+	// switch (scheme) {
+	// 	case 'LPT':
+	// 		// Longest Processing Time first
+	// 		ready.sort((a, b) => a.priority - b.priority || b.duration - a.duration); // Priority sort and LPT
+
+	// 		// Initialize workers
+	// 		const workers = Array.from({ length: numWorkers }, () => null); // null means idle
+
+	// 		let currentTime = 0;
+
+	// 		let currIdx = 0
+	// 		while (ready.length > 0 || running.length > 0 || notReady.length > 0) {
+	// 			// Assign tasks to idle workers
+
+	// 		}
+	// 		break;
+	// 	case 'SPT':
+	// 	// Shortest Processing Time first
+	// 	default:
+	// 		throw new Error("Unknown scheduling scheme: " + scheme);
+	// }
+}
 
 function scheduleSPT(tasks, numWorkers) {
 	if (!Array.isArray(tasks) || tasks.length === 0) {
@@ -167,7 +311,7 @@ function scheduleSPT(tasks, numWorkers) {
 		...t,
 		_idx: idx,
 		level: typeof t.level === "string" ? parseInt(t.level, 10) : t.level,
-		priority: t.priority ?? 0, // default priority if missing
+		priority: t.priority ?? 100, // default priority if missing
 	}));
 
 	const key = (id, iter, level) => `${id}||${iter}||${level}`;
@@ -309,151 +453,151 @@ function scheduleSPT(tasks, numWorkers) {
 
 
 // Schedules Longest Processing Time first with the same precedence semantics as scheduleSPT
-function scheduleLPT(tasks, numWorkers) {
-	if (!Array.isArray(tasks) || tasks.length === 0) {
-		return { schedule: [], makespan: 0 };
-	}
-	if (!Number.isInteger(numWorkers) || numWorkers <= 0) {
-		throw new Error("numWorkers must be a positive integer");
-	}
+// function scheduleLPT(tasks, numWorkers) {
+// 	if (!Array.isArray(tasks) || tasks.length === 0) {
+// 		return { schedule: [], makespan: 0 };
+// 	}
+// 	if (!Number.isInteger(numWorkers) || numWorkers <= 0) {
+// 		throw new Error("numWorkers must be a positive integer");
+// 	}
 
-	const normalized = tasks.map((t, idx) => ({
-		...t,
-		_idx: idx,
-		level: typeof t.level === "string" ? parseInt(t.level, 10) : t.level,
-		priority: t.priority ?? 0, // default priority if missing
-	}));
+// 	const normalized = tasks.map((t, idx) => ({
+// 		...t,
+// 		_idx: idx,
+// 		level: typeof t.level === "string" ? parseInt(t.level, 10) : t.level,
+// 		priority: t.priority ?? 0, // default priority if missing
+// 	}));
 
-	// Build predecessor/successor by (id, iter, level)
-	const key = (id, iter, level) => `${id}||${iter}||${level}`;
-	const indexByKey = new Map();
-	for (let i = 0; i < normalized.length; i++) {
-		const t = normalized[i];
-		indexByKey.set(key(t.id, t.iter, t.level), i);
-	}
+// 	// Build predecessor/successor by (id, iter, level)
+// 	const key = (id, iter, level) => `${id}||${iter}||${level}`;
+// 	const indexByKey = new Map();
+// 	for (let i = 0; i < normalized.length; i++) {
+// 		const t = normalized[i];
+// 		indexByKey.set(key(t.id, t.iter, t.level), i);
+// 	}
 
-	const predecessor = new Array(normalized.length).fill(null);
-	const successors = Array.from({ length: normalized.length }, () => []);
-	for (let i = 0; i < normalized.length; i++) {
-		const t = normalized[i];
-		const predIdx = indexByKey.get(key(t.id, t.iter, t.level - 1));
-		if (typeof predIdx === "number") {
-			predecessor[i] = predIdx;
-			successors[predIdx].push(i);
-		}
-	}
+// 	const predecessor = new Array(normalized.length).fill(null);
+// 	const successors = Array.from({ length: normalized.length }, () => []);
+// 	for (let i = 0; i < normalized.length; i++) {
+// 		const t = normalized[i];
+// 		const predIdx = indexByKey.get(key(t.id, t.iter, t.level - 1));
+// 		if (typeof predIdx === "number") {
+// 			predecessor[i] = predIdx;
+// 			successors[predIdx].push(i);
+// 		}
+// 	}
 
-	// Earliest start = 0 for roots, Infinity until predecessor finishes otherwise
-	const earliestStart = normalized.map((_, i) =>
-		typeof predecessor[i] === "number" ? Infinity : 0
-	);
+// 	// Earliest start = 0 for roots, Infinity until predecessor finishes otherwise
+// 	const earliestStart = normalized.map((_, i) =>
+// 		typeof predecessor[i] === "number" ? Infinity : 0
+// 	);
 
-	const released = new Set();
-	for (let i = 0; i < normalized.length; i++) {
-		if (earliestStart[i] === 0) released.add(i);
-	}
+// 	const released = new Set();
+// 	for (let i = 0; i < normalized.length; i++) {
+// 		if (earliestStart[i] === 0) released.add(i);
+// 	}
 
-	const running = [];
-	const freeWorkers = Array.from({ length: numWorkers }, (_, w) => w);
+// 	const running = [];
+// 	const freeWorkers = Array.from({ length: numWorkers }, (_, w) => w);
 
-	// Decision hierarchy among *ready* tasks:
-	// 1) priority DESC
-	// 2) duration DESC (LPT)
-	// 3) earliestStart ASC (earlier predecessor deadline first)  [tiebreak]
-	// 4) iter ASC                                                [tiebreak]
-	// 5) _idx ASC                                                [stable]
-	function pickReadyTasks(currentTime) {
-		const ready = [];
-		for (const i of released) {
-			if (earliestStart[i] <= currentTime) ready.push(i);
-		}
-		ready.sort((a, b) => {
-			const pa = normalized[a].priority, pb = normalized[b].priority;
-			if (pa !== pb) return pa - pb;
+// 	// Decision hierarchy among *ready* tasks:
+// 	// 1) priority DESC
+// 	// 2) duration DESC (LPT)
+// 	// 3) earliestStart ASC (earlier predecessor deadline first)  [tiebreak]
+// 	// 4) iter ASC                                                [tiebreak]
+// 	// 5) _idx ASC                                                [stable]
+// 	function pickReadyTasks(currentTime) {
+// 		const ready = [];
+// 		for (const i of released) {
+// 			if (earliestStart[i] <= currentTime) ready.push(i);
+// 		}
+// 		ready.sort((a, b) => {
+// 			const pa = normalized[a].priority, pb = normalized[b].priority;
+// 			if (pa !== pb) return pa - pb;
 
-			const da = normalized[a].duration, db = normalized[b].duration;
-			if (da !== db) return db - da;
+// 			const da = normalized[a].duration, db = normalized[b].duration;
+// 			if (da !== db) return db - da;
 
-			const ea = earliestStart[a], eb = earliestStart[b];
-			if (ea !== eb) return ea - eb;
+// 			const ea = earliestStart[a], eb = earliestStart[b];
+// 			if (ea !== eb) return ea - eb;
 
-			const ia = normalized[a].iter, ib = normalized[b].iter;
-			if (ia !== ib) return ia - ib;
+// 			const ia = normalized[a].iter, ib = normalized[b].iter;
+// 			if (ia !== ib) return ia - ib;
 
-			return normalized[a]._idx - normalized[b]._idx;
-		});
-		return ready;
-	}
+// 			return normalized[a]._idx - normalized[b]._idx;
+// 		});
+// 		return ready;
+// 	}
 
-	const result = [];
-	let time = 0;
-	let remaining = normalized.length;
+// 	const result = [];
+// 	let time = 0;
+// 	let remaining = normalized.length;
 
-	while (remaining > 0) {
-		// Assign ready tasks to available workers
-		while (freeWorkers.length > 0) {
-			const ready = pickReadyTasks(time);
-			if (ready.length === 0) break;
+// 	while (remaining > 0) {
+// 		// Assign ready tasks to available workers
+// 		while (freeWorkers.length > 0) {
+// 			const ready = pickReadyTasks(time);
+// 			if (ready.length === 0) break;
 
-			const idx = ready[0];
-			released.delete(idx);
+// 			const idx = ready[0];
+// 			released.delete(idx);
 
-			const w = freeWorkers.pop();
-			const start = Math.max(time, earliestStart[idx]);
-			const end = start + normalized[idx].duration;
+// 			const w = freeWorkers.pop();
+// 			const start = Math.max(time, earliestStart[idx]);
+// 			const end = start + normalized[idx].duration;
 
-			running.push({ idx, worker: w, end });
+// 			running.push({ idx, worker: w, end });
 
-			result.push({
-				id: normalized[idx].id,
-				level: normalized[idx].level,
-				iter: normalized[idx].iter,
-				priority: normalized[idx].priority,
-				duration: normalized[idx].duration,
-				worker: w,
-				start,
-				end,
-			});
-		}
+// 			result.push({
+// 				id: normalized[idx].id,
+// 				level: normalized[idx].level,
+// 				iter: normalized[idx].iter,
+// 				priority: normalized[idx].priority,
+// 				duration: normalized[idx].duration,
+// 				worker: w,
+// 				start,
+// 				end,
+// 			});
+// 		}
 
-		if (remaining === 0) break;
+// 		if (remaining === 0) break;
 
-		if (running.length === 0) {
-			// No task can start now; jump to the next release time
-			let nextTime = Infinity;
-			for (const i of released) {
-				if (earliestStart[i] < nextTime) nextTime = earliestStart[i];
-			}
-			if (!isFinite(nextTime)) {
-				throw new Error(
-					"Deadlock detected: tasks have unmet dependencies. Check your (id, iter, level) chains."
-				);
-			}
-			time = nextTime;
-			continue;
-		}
+// 		if (running.length === 0) {
+// 			// No task can start now; jump to the next release time
+// 			let nextTime = Infinity;
+// 			for (const i of released) {
+// 				if (earliestStart[i] < nextTime) nextTime = earliestStart[i];
+// 			}
+// 			if (!isFinite(nextTime)) {
+// 				throw new Error(
+// 					"Deadlock detected: tasks have unmet dependencies. Check your (id, iter, level) chains."
+// 				);
+// 			}
+// 			time = nextTime;
+// 			continue;
+// 		}
 
-		// Advance to next finishing task
-		running.sort((a, b) => a.end - b.end);
-		const next = running.shift();
-		time = next.end;
-		freeWorkers.push(next.worker);
-		remaining--;
+// 		// Advance to next finishing task
+// 		running.sort((a, b) => a.end - b.end);
+// 		const next = running.shift();
+// 		time = next.end;
+// 		freeWorkers.push(next.worker);
+// 		remaining--;
 
-		// Release successors: they become schedulable right after predecessor finishes
-		for (const succ of successors[next.idx]) {
-			if (earliestStart[succ] === Infinity) {
-				earliestStart[succ] = time;
-				released.add(succ);
-			}
-		}
-	}
+// 		// Release successors: they become schedulable right after predecessor finishes
+// 		for (const succ of successors[next.idx]) {
+// 			if (earliestStart[succ] === Infinity) {
+// 				earliestStart[succ] = time;
+// 				released.add(succ);
+// 			}
+// 		}
+// 	}
 
-	result.sort((a, b) => (a.start - b.start) || (a.worker - b.worker));
-	let makespan = result.reduce((m, r) => Math.max(m, r.end), 0);
-	makespan = formatTime(makespan); // keep consistent with your SPT formatter
-	return { schedule: result, makespan };
-}
+// 	result.sort((a, b) => (a.start - b.start) || (a.worker - b.worker));
+// 	let makespan = result.reduce((m, r) => Math.max(m, r.end), 0);
+// 	makespan = formatTime(makespan); // keep consistent with your SPT formatter
+// 	return { schedule: result, makespan };
+// }
 
 
 
@@ -526,10 +670,12 @@ export function generateSchedule(dataJSON, builders, scheme = 'LPT') {
 		return { sch: resp, valid: false }
 	}
 
-	const { tasks } = constructTasks(dataJSON, 5);
+	const { tasks, pData } = constructTasks(dataJSON, 5);
 
-	const schedule = scheduleSPT(tasks, builders);
-	// console.log("\n=== SPT with Precedence Constraints ===");
+	const schedule = myScheduler(pData, tasks, builders, scheme);
+
+	// const schedule = scheduleSPT(pData, tasks, builders);
+	// // console.log("\n=== SPT with Precedence Constraints ===");
 
 	for (const t of schedule.schedule) {
 		t.start_iso = toISOString(t.start);
@@ -537,25 +683,25 @@ export function generateSchedule(dataJSON, builders, scheme = 'LPT') {
 		t.duration_iso = toISOString(t.duration);
 	}
 
-	// console.log(`\nTotal project time (makespan): ${schedule.makespan}`);
+	// console.log(`\nMY SCHEDULE Total project time (makespan): ${schedule.makespan}`);
 	// printSchedule(schedule.schedule);
 
-	const schedule2 = scheduleLPT(tasks, builders);
+	// const schedule2 = scheduleLPT(tasks, builders);
 	// console.log("\n=== LPT with Precedence Constraints ===");
 
-	for (const t of schedule2.schedule) {
-		t.start_iso = toISOString(t.start);
-		t.end_iso = toISOString(t.end);
-		t.duration_iso = toISOString(t.duration);
-	}
+	// for (const t of schedule2.schedule) {
+	// 	t.start_iso = toISOString(t.start);
+	// 	t.end_iso = toISOString(t.end);
+	// 	t.duration_iso = toISOString(t.duration);
+	// }
 
-	// console.log(`\nTotal project time (makespan): ${schedule2.makespan}`);
+	// console.log(`\nLPT Total project time (makespan): ${schedule2.makespan}`);
 	// printSchedule(schedule2.schedule);
 
-	const resp = scheme === 'LPT' ? schedule2 : schedule;
+	// const resp = scheme === 'LPT' ? schedule2 : schedule;
 
-	return { sch: resp, valid: true }
+	return { sch: schedule, valid: true }
 
 }
 
-// generateSchedule(5);
+generateSchedule(playerData, 5);

@@ -366,7 +366,7 @@
 		{
 			"id": "4",
 			"duration": 64800,
-			"TH": 8
+			"TH": 9
 		},
 		{
 			"id": "5",
@@ -396,7 +396,7 @@
 		{
 			"id": "10",
 			"duration": 345600,
-			"TH": 13
+			"TH": 14
 		}
 	],
 	"DarkElixirStorage": [
