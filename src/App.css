@@ -224,3 +224,22 @@ body {
 .gantt-tooltip.left  { transform: translate(10px, -50%); }
 .gantt-tooltip.right { transform: translate(calc(-100% - 10px), -50%); }
 
+.timeline-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  padding: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  cursor: pointer;
+  transition: opacity 600ms ease, filter 600ms ease, box-shadow 200ms ease;
+}
+
+.timeline-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.timeline-card.done {
+  opacity: 0.45;
+  filter: grayscale(100%) brightness(0.95);
+}
+

@@ -9,14 +9,12 @@ function formatHMS(seconds) {
     .join(" ");
 }
 
-export function TimelineCards({ tasks = [], colorForId }) {
-  if (!tasks.length) return null;
+// const taskKey = (t) => `${t.id}|L${t.level}|w${t.worker}|${t.start}-${t.end}`;
 
-  // makespanSeconds = parseMakespanToSeconds(makespanSeconds)
-  // Compute schedule window (min start, max end) & makespan if not provided
-  // const minStart = Math.min(...tasks.map(t => t.start));
-  // const maxEnd   = Math.max(...tasks.map(t => t.end));
-  // const totalSec = Math.max(1, makespanSeconds ?? (maxEnd - minStart)); // avoid /0
+export function TimelineCards({ tasks = [], colorForId, doneKeys, onToggle, taskKeyFn }) {
+  // const [done, setDone] = React.useState(() => new Set());
+
+  if (!tasks.length) return null;
 
   // Chronological order
   const sorted = [...tasks].sort((a, b) => a.start - b.start);
@@ -29,16 +27,37 @@ export function TimelineCards({ tasks = [], colorForId }) {
     makespan[w] = currMake;
   }
 
+  // const toggleDone = (k) => {
+  //   setDone(prev => {
+  //     const next = new Set(prev);
+  //     if (next.has(k)) next.delete(k); else next.add(k);
+  //     return next;
+  //   });
+  // };
+
   return (
     <div style={{ display: "grid", gap: 10 }}>
       {sorted.map((t, i) => {
         const dur = Math.max(0, t.duration);
         // % of total schedule for width and left offset
+        const k = taskKeyFn(t);
+        const isDone = doneKeys?.has(k);
         const widthPct = Math.min(100, (t.duration / makespan[t.worker]) * 100);
         const leftPct  = Math.min(100, (t.start / makespan[t.worker]) * 100);
 
         return (
           <div
+            key={k}
+            className={`timeline-card ${isDone ? "done" : ""}`}
+            onClick={() => onToggle?.(t)}
+            role="button"
+            aria-pressed={isDone}
+            title={isDone ? "Click to unmark" : "Click to mark as done"}
+            style={{
+              background: colorForId(t.id)
+            }}
+          >
+          {/* <div
             key={i}
             style={{
               border: "1px solid #b7b8bbff",
@@ -50,7 +69,7 @@ export function TimelineCards({ tasks = [], colorForId }) {
               marginLeft: 4,
               boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
             }}
-          >
+          > */}
             <div style={{ fontWeight: 600, fontSize: 15 }}>
               {t.id} · L{t.level}
             </div>

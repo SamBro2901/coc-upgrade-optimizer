@@ -17,6 +17,7 @@ function GanttChart({
   groupBy = "worker",
   pxPerSec = 0.03,
   colorForId,
+  doneKeys, onToggle, taskKeyFn,
   rowHeight = 34,
   rowGap = 6,
   axisHeight = 28,
@@ -119,11 +120,18 @@ function GanttChart({
             const y = axisHeight + row * (rowHeight + rowGap) + 4;
             const x = 120 + (t.start - minStart) * pxPerSec;
             const w = Math.max(2, (t.end - t.start) * pxPerSec);
+            const isDone = doneKeys?.has(taskKeyFn(t));
             const hrs = formatTime(t.duration); //Math.round(((t.end - t.start) / 3600) * 10) / 10
             const label = `${t.id} L${t.level} ${t.iter} (${hrs})`;
             return (
               <g key={i}>
-                <rect x={x} y={y} width={w} height={rowHeight - 8} rx="6" ry="6" fill={fill} opacity="0.92" style={{ cursor: "pointer" }} />
+                <rect x={x} y={y} width={w} height={rowHeight - 8} rx="6" ry="6" fill={fill} opacity="0.92" style={{
+                  cursor: onToggle ? "pointer" : "default",
+                  opacity: isDone ? 0.45 : 0.9,
+                  filter: isDone ? "grayscale(100%) brightness(0.9)" : "none",
+                  transition: "opacity 300ms ease, filter 300ms ease"
+                }}
+                  onClick={() => onToggle?.(t)} />
                 <rect x={x} y={y} width={w} height={rowHeight - 8} rx="6" ry="6" fill="none" stroke="rgba(0,0,0,0.15)" />
                 <clipPath id={`clip-${i}`}>
                   <rect x={x + 6} y={y} width={Math.max(0, w - 12)} height={rowHeight - 8} />
@@ -349,12 +357,14 @@ function shuffleWithRng(arr, rng) {
   return a;
 }
 
+const taskKey = (t) => `${t.id}|L${t.level}|w${t.worker}|${t.start}-${t.end}`;
 
 /** ---------- App with exponential zoom ---------- */
 export default function App() {
   // const [builders, setBuilders] = useState(5);
   const [jsonData, setJsonData] = React.useState(null);
   const [jsonValid, setJsonValid] = React.useState(false);
+  const [doneKeys, setDoneKeys] = React.useState(() => new Set());
 
   const [tasks, setTasks] = useState([]);
   const [makespan, setMakespan] = useState(0);
@@ -372,6 +382,15 @@ export default function App() {
   const [zoom, setZoom] = useState(() => toZoom(DEFAULT_PX_PER_SEC));
   const pxPerSec = toPxPerSec(zoom);
 
+  const toggleDone = (task) => {
+    const k = taskKey(task);
+    setDoneKeys(prev => {
+      const next = new Set(prev);
+      next.has(k) ? next.delete(k) : next.add(k);
+      return next;
+    });
+  };
+
   // UI helpers
   const pxPerHour = Math.round(pxPerSec * 3600);
   const clamp01 = (v) => Math.min(1, Math.max(0, v));
@@ -380,7 +399,6 @@ export default function App() {
   const reset = () => setZoom(toZoom(DEFAULT_PX_PER_SEC));
 
   const handleGenerateSPT = () => {
-    console.log('generating')
     if (!jsonData) { setErr(true); return; }
     const { sch, err } = generateSchedule(jsonData, "SPT");
     setErr(err);
@@ -492,7 +510,7 @@ export default function App() {
             border: "2px solid #7096e7ff",
             borderRadius: 12
           }}>
-            <TimelineCards tasks={tasks} colorForId={colorForId} />
+            <TimelineCards tasks={tasks} colorForId={colorForId} doneKeys={doneKeys} onToggle={toggleDone} taskKeyFn={taskKey} />
           </div>
 
         )}
@@ -525,7 +543,7 @@ export default function App() {
 
         {/* Chart */}
         <div className="chart-shell" style={{ background: "#fff", borderRadius: 16, boxShadow: "0 2px 12px #e0e7ff" }}>
-          <GanttChart tasks={tasks} groupBy="worker" pxPerSec={pxPerSec} colorForId={colorForId} />
+          <GanttChart tasks={tasks} groupBy="worker" pxPerSec={pxPerSec} colorForId={colorForId} doneKeys={doneKeys} onToggle={toggleDone} taskKeyFn={taskKey} />
         </div>
 
       </div>
