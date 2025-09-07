@@ -3,9 +3,10 @@ import trapConfig from './data/traps.json' with { type: "json" };
 import resConfig from './data/resources.json' with { type: "json" };
 import armyConfig from './data/army.json' with { type: "json" };
 import thConfig from './data/th.json' with { type: "json" };
+import heroConfig from './data/heroes.json' with { type: "json" }
 import mapping from './data/mapping.json' with { type: "json" };
 
-import playerData from './data/coc_data.json' with { type: "json" };
+// import playerData from './data/coc_data.json' with { type: "json" };
 
 function arrayToObject(arr) {
 	return arr.reduce((acc, item) => {
@@ -28,22 +29,27 @@ function objToArray(task, qty = 1, char = 65) {
 	return { arr, char };
 }
 
-// function loadJSON(filePath) {
-// 	const full = path.resolve(filePath);
-// 	const raw = fs.readFileSync(full, "utf-8");
-// 	return JSON.parse(raw);
-// }
 
 function constructTasks(inputData) {
 	let itemData = { ...defenseConfig, ...trapConfig, ...resConfig, ...armyConfig };
 
 	let pData = inputData.buildings;
-	let buildData = [], buildings = [], tasks = [];
+	const hData = inputData.heroes;
+	let buildData = [], buildings = [], heroes = [], heroData = [], tasks = [];
 	for (let item of pData) {
 		if (mapping[item.data] === undefined) continue;
 		if (!buildings.includes(mapping[item.data])) buildings.push(mapping[item.data])
 
 		buildData.push({ ...item, name: mapping[item.data] });
+	}
+
+	if (hData.length > 0) {
+		for (let h of hData) {
+			if (mapping[h.data] === undefined) continue;
+			if (!heroes.includes(mapping[h.data])) heroes.push(mapping[h.data])
+
+			heroData.push({ ...h, name: mapping[h.data] })
+		}
 	}
 
 	const currTH = buildData.find(b => b.name === 'TownHall').lvl;
@@ -70,8 +76,9 @@ function constructTasks(inputData) {
 		for (let c of currBuild) {
 			// Currently upgrading buildings - Priority 1
 			if (c.timer) {
-				let task = { id: b, level: String(c.lvl), duration: c.timer, priority: 1, iter: String.fromCharCode(char) };
+				let task = { id: b, level: String(c.lvl + 1), duration: c.timer, priority: 1, iter: String.fromCharCode(char) };
 				tasks.push(task);
+				c.lvl += 1;
 			}
 
 			let currTask = itemData[b]?.filter(item => item.TH === currTH)?.sort((a, b) => b.id - a.id).map(item => ({ id: b, level: item.id, duration: item.duration }))[0];
@@ -83,21 +90,60 @@ function constructTasks(inputData) {
 				char = resp1.char;
 				tasks.push(...resp1.arr);
 			}
+			else {
+				char++;
+			}
 		}
 	}
 
-	return { tasks, pData, numWorkers };
+	for (let h of heroes) {
+		const maxHeroHall = itemData['HeroHall'].filter(i => i.TH <= currTH)?.sort((a, b) => b.id - a.id).map(item => ({ id: 'HeroHall', level: item.id, duration: item.duration }))[0] || 0;
+		let currHero = heroData.find(he => he.name === h);
+
+		if (currHero.timer) {
+			currHero.lvl += 1;
+			tasks.push({ id: h, level: currHero.lvl, duration: currHero.timer, priority: 1, iter: 'A' })
+		}
+		let missingHLvls = heroConfig[h].filter(i => i.HH <= maxHeroHall.level && i.id > currHero.lvl);
+		missingHLvls = missingHLvls.map(he => ({ id: h, level: he.id, duration: he.duration, HH: he.HH, priority: 2, iter: 'A' }));
+
+		tasks.push(...missingHLvls)
+	}
+
+	return { tasks, numWorkers };
 }
 
 function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT') {
 
-	console.log('here 1')
 	tasks = tasks.map((t, idx) => ({ ...t, index: idx, worker: null, pred: null, key: `${t.id}_${t.iter}_${t.level}` }));
 	const taskLength = tasks.length;
 
+	// Lock to predecessor - Buildings
 	for (const t of tasks) {
 		const pred = tasks.find(pt => pt.key === `${t.id}_${t.iter}_${t.level - 1}`);
 		if (pred) t.pred = pred.index;
+	}
+
+	const heroes = ['BarbarianKing', 'ArcherQueen', 'MinionPrince'];
+	const heroTasks = tasks.filter(t => heroes.includes(t.id));
+	const heroHall = playerData.buildings.find(b => b.data === 1000071); // Exisitng HH
+	const hhTask = tasks.filter(t => t.id === "HeroHall"); // To construct HH
+	// Lock to predecessor - Heroes
+	if (heroTasks.length > 0) {
+		let hhLvl = 0;
+		if (heroHall) {
+			hhLvl = heroHall.lvl;
+		}
+		for (const hero of heroTasks) {
+			if (hero.priority === 1) continue;
+			if (hero.HH > hhLvl) {
+				const reqTask = hhTask.find(t => t.level === hero.HH);
+				if (!reqTask) throw new Error("Missing Hero Hall Task");
+				const reqIdx = tasks.findIndex(t => t.key === reqTask.key);
+				const heroIdx = tasks.findIndex(t => t.key === hero.key);
+				tasks[heroIdx].pred = tasks[reqIdx].index
+			}
+		}
 	}
 
 	let ready = tasks.filter(t => t.pred === null);
@@ -114,12 +160,12 @@ function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT') {
 			ready = ready.sort((a, b) => a.priority !== b.priority ? a.priority - b.priority : a.duration - b.duration);
 			break;
 		default:
-			throw new Error("Unknown scheduling scheme: " + scheme);
+			return { sch: { schedule: [], makespan: 0 }, err: [true, `Unknown scheduling scheme provided: ${scheme}`] };
 	}
 
 	let currTime = 0
 	while (ready.length > 0 || completed.length !== taskLength || notReady.length > 0) {
-		// console.log(`Ready Tasks: ${ready.length}, Not Ready Tasks: ${notReady.length}, Running Tasks: ${running.length}, Completed Tasks: ${completed.length}`);
+		// console.log(`Total Tasks: ${taskLength}, Ready Tasks: ${ready.length}, Not Ready Tasks: ${notReady.length}, Running Tasks: ${running.length}, Completed Tasks: ${completed.length}`);
 		let idx = 0;
 		const runningTasks = ready.filter(t => t.priority === 1 && t.pred === null);
 
@@ -167,10 +213,14 @@ function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT') {
 			running = running.filter(t => t.index !== ft.index);
 
 			// Release successor tasks
-			const succTask = notReady.find(t => t.pred === ft.index);
-			if (succTask) {
-				ready.push(succTask);
-				notReady = notReady.filter(t => t.index !== succTask.index);
+			const succTask = notReady.filter(t => t.pred === ft.index);
+			if (succTask.length > 0) {
+				for (const s of succTask) {
+					ready.push(s);
+					const remIdx = notReady.findIndex(t => t.index === s.index);
+					notReady.splice(remIdx, 1);
+
+				}
 			}
 		}
 	}
@@ -242,19 +292,16 @@ function toISOString(seconds) {
 }
 
 
-export function generateSchedule(dataJSON, workers, scheme = 'LPT') {
+export function generateSchedule(dataJSON, scheme = 'LPT') {
 
 	if (!dataJSON || !dataJSON.buildings || dataJSON.buildings?.length === 0) {
 		let resp = { schedule: [], makespan: 0 };
-		return { sch: resp, valid: false }
+		return { sch: resp, err: [true, "Failed to parse building data from JSON"] }
 	}
 
-	const { tasks, pData, numWorkers } = constructTasks(dataJSON, 5);
+	const { tasks, numWorkers } = constructTasks(dataJSON, 5);
 
-	const schedule = myScheduler(pData, tasks, numWorkers, scheme);
-
-	// const schedule = scheduleSPT(pData, tasks, builders);
-	// // console.log("\n=== SPT with Precedence Constraints ===");
+	const schedule = myScheduler(dataJSON, tasks, numWorkers, scheme);
 
 	for (const t of schedule.schedule) {
 		t.start_iso = toISOString(t.start);
@@ -262,25 +309,8 @@ export function generateSchedule(dataJSON, workers, scheme = 'LPT') {
 		t.duration_iso = toISOString(t.duration);
 	}
 
-	// console.log(`\nMY SCHEDULE Total project time (makespan): ${schedule.makespan}`);
-	// printSchedule(schedule.schedule);
-
-	// const schedule2 = scheduleLPT(tasks, builders);
-	// console.log("\n=== LPT with Precedence Constraints ===");
-
-	// for (const t of schedule2.schedule) {
-	// 	t.start_iso = toISOString(t.start);
-	// 	t.end_iso = toISOString(t.end);
-	// 	t.duration_iso = toISOString(t.duration);
-	// }
-
-	// console.log(`\nLPT Total project time (makespan): ${schedule2.makespan}`);
-	// printSchedule(schedule2.schedule);
-
-	// const resp = scheme === 'LPT' ? schedule2 : schedule;
-
-	return { sch: schedule, valid: true }
+	return { sch: schedule, err: [false] }
 
 }
 
-// generateSchedule(playerData, 5);
+// generateSchedule(playerData);

@@ -21,8 +21,9 @@ body {
 
 /* Layout */
 .app-wrap {
-  max-width: 90vw;
-  margin: 24px auto;
+  /* max-width: 90vw; */
+  margin: 12px 0;
+  width: 100%;
   padding: 0 16px;
 }
 
@@ -31,7 +32,7 @@ body {
   border: 1px solid var(--border);
   border-radius: 14px;
   box-shadow: var(--shadow);
-  padding: 16px;
+  padding: 10px;
 }
 
 /* Header */

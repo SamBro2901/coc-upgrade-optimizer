@@ -1,7 +1,9 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useRef, useMemo, useState } from "react";
 import clsx from "clsx";
 import { generateSchedule } from './scheduler.js';
 import "./App.css";
+
+import { TimelineCards } from "./TimelineCards.jsx";
 
 function formatTime(val) {
   if (val < 60) return `${Number(Math.round(val + 'e' + 2) + 'e-' + 2)}s`;
@@ -14,6 +16,7 @@ function GanttChart({
   tasks,
   groupBy = "worker",
   pxPerSec = 0.03,
+  colorForId,
   rowHeight = 34,
   rowGap = 6,
   axisHeight = 28,
@@ -46,19 +49,19 @@ function GanttChart({
   const hoursTotal = (maxEnd - minStart) / 3600;
   const tickEveryHours = hoursTotal > 24 ? 4 : hoursTotal > 8 ? 2 : 1;
 
-  const colorMap = React.useMemo(() => {
-    const palette = [
-      "#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF",
-      "#E3BAFF", "#FFD6E0", "#C7FFD8", "#FFF5BA", "#BAFFD6",
-      "#FFD1BA", "#D6FFBA", "#FFBABA", "#BAE7FF", "#E0BAFF",
-      "#FFE0BA", "#BAFFD4", "#FFBAF2", "#E0FFBA", "#BAC2FF",
-      "#FFC2BA", "#C2FFBA", "#BAFFC2", "#C2BAFF", "#FFBAC2",
-      "#BAFFF2", "#FFDABA", "#F2FFBA", "#BACFFF", "#FFBAE1"
-    ];
-    const map = {};
-    uniqueIds.forEach((id, i) => { map[id] = palette[i % palette.length]; });
-    return map;
-  }, [uniqueIds]);
+  // const colorMap = React.useMemo(() => {
+  //   const palette = [
+  //     "#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF",
+  //     "#E3BAFF", "#FFD6E0", "#C7FFD8", "#FFF5BA", "#BAFFD6",
+  //     "#FFD1BA", "#D6FFBA", "#FFBABA", "#BAE7FF", "#E0BAFF",
+  //     "#FFE0BA", "#BAFFD4", "#FFBAF2", "#E0FFBA", "#BAC2FF",
+  //     "#FFC2BA", "#C2FFBA", "#BAFFC2", "#C2BAFF", "#FFBAC2",
+  //     "#BAFFF2", "#FFDABA", "#F2FFBA", "#BACFFF", "#FFBAE1"
+  //   ];
+  //   const map = {};
+  //   uniqueIds.forEach((id, i) => { map[id] = palette[i % palette.length]; });
+  //   return map;
+  // }, [uniqueIds]);
 
   return (
     <div>
@@ -111,6 +114,7 @@ function GanttChart({
 
           {/* Bars with tooltip */}
           {tasks.map((t, i) => {
+            const fill = colorForId(t.id)
             const row = groups.indexOf(String(t[groupBy]));
             const y = axisHeight + row * (rowHeight + rowGap) + 4;
             const x = 120 + (t.start - minStart) * pxPerSec;
@@ -119,7 +123,7 @@ function GanttChart({
             const label = `${t.id} L${t.level} ${t.iter} (${hrs})`;
             return (
               <g key={i}>
-                <rect x={x} y={y} width={w} height={rowHeight - 8} rx="6" ry="6" fill={colorMap[t.id]} opacity="0.92" style={{ cursor: "pointer" }} />
+                <rect x={x} y={y} width={w} height={rowHeight - 8} rx="6" ry="6" fill={fill} opacity="0.92" style={{ cursor: "pointer" }} />
                 <rect x={x} y={y} width={w} height={rowHeight - 8} rx="6" ry="6" fill="none" stroke="rgba(0,0,0,0.15)" />
                 <clipPath id={`clip-${i}`}>
                   <rect x={x + 6} y={y} width={Math.max(0, w - 12)} height={rowHeight - 8} />
@@ -137,7 +141,7 @@ function GanttChart({
       <Legend
         items={uniqueIds.map(id => ({
           label: id,
-          color: colorMap[id]
+          color: colorForId(id)
         }))}
       />
     </div>
@@ -280,9 +284,10 @@ export function JsonInput({ label = "JSON Input", initial = "", onValid, onValid
           display: "block",                   // stays in normal flow so others reflow
           width: boxSize.width,               // initial/persisted size
           height: boxSize.height,
-          maxWidth: "100%",                   // don’t overflow parent
-          minWidth: 260,
-          minHeight: 120,
+          minWidth: "30vw",
+          minHeight: "10vh",
+          maxWidth: "70vw",    // 👈 cap width
+          maxHeight: "30vh",
           boxSizing: "border-box",
           resize: "both",                     // 👈 enables horizontal + vertical resize
           overflow: "auto",
@@ -316,11 +321,38 @@ const btnBase = { padding: "8px 12px", borderRadius: 10, fontWeight: 600, cursor
 const btnSecondary = { ...btnBase, background: "#fff", color: "#0f172a", borderColor: "#cbd5e1" };
 const btnGhost = { ...btnBase, background: "transparent", color: "#0f172a", borderColor: "#e5e7eb" };
 
+// 20-color palette (good contrast with black text)
+const PALETTE = [
+  "#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF",
+  "#E3BAFF", "#FFD6E0", "#C7FFD8", "#FFF5BA", "#BAFFD6",
+  "#D6FFBA", "#FFBABA", "#BAE7FF", "#E0BAFF", "#FFE0BA",
+  "#BAFFD4", "#FFBAF2", "#E0FFBA", "#BAC2FF", "#FFC2BA"
+];
+
+// tiny seeded RNG (mulberry32) so the shuffle is stable for a given seed
+function mulberry32(seed) {
+  return function () {
+    let t = (seed += 0x6D2B79F5);
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+// Fisher–Yates using provided rng()
+function shuffleWithRng(arr, rng) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
 
 /** ---------- App with exponential zoom ---------- */
 export default function App() {
-  const [builders, setBuilders] = useState(5);
+  // const [builders, setBuilders] = useState(5);
   const [jsonData, setJsonData] = React.useState(null);
   const [jsonValid, setJsonValid] = React.useState(false);
 
@@ -348,25 +380,49 @@ export default function App() {
   const reset = () => setZoom(toZoom(DEFAULT_PX_PER_SEC));
 
   const handleGenerateSPT = () => {
-    if (!jsonData) { setErr(true); return; }            // guard
-    const workers = Number(builders);
-    const { sch, valid } = generateSchedule(jsonData, workers, "SPT");
-    if (!valid) { setErr(true); return; }
-    setErr(false);
+    console.log('generating')
+    if (!jsonData) { setErr(true); return; }
+    const { sch, err } = generateSchedule(jsonData, "SPT");
+    setErr(err);
     setTasks(sch.schedule);
     setMakespan(sch.makespan);
     setScheduleType("Shortest Processing Time (SPT)");
   };
 
   const handleGenerateLPT = () => {
-    if (!jsonData) { setErr(true); return; }            // guard
-    const workers = Number(builders);
-    const { sch, valid } = generateSchedule(jsonData, workers, "LPT");
-    if (!valid) { setErr(true); return; }
-    setErr(false);
+    if (!jsonData) { setErr(true); return; }
+    const { sch, err } = generateSchedule(jsonData, "LPT");
+    setErr(err);
     setTasks(sch.schedule);
     setMakespan(sch.makespan);
     setScheduleType("Longest Processing Time (LPT)");
+  };
+
+  const colorMapRef = useRef({});     // { [id]: "#hex" }
+  const paletteRef = useRef([]);     // shuffled colors
+
+  useEffect(() => {
+    // Seed from crypto (falls back to Date.now if unavailable)
+    let seed = Date.now();
+    try {
+      const u32 = new Uint32Array(1);
+      crypto.getRandomValues(u32);
+      seed = u32[0] || seed;
+    } catch { }
+    const rng = mulberry32(seed);
+    paletteRef.current = shuffleWithRng(PALETTE, rng);
+  }, []);
+
+  // Call this to get a color for any id (assigns once, then reuses)
+  const colorForId = (id) => {
+    const key = String(id);
+    const m = colorMapRef.current;
+    if (!m[key]) {
+      const nextIdx = Object.keys(m).length % (paletteRef.current.length || PALETTE.length);
+      const palette = paletteRef.current.length ? paletteRef.current : PALETTE;
+      m[key] = palette[nextIdx];
+    }
+    return m[key];
   };
 
 
@@ -394,70 +450,84 @@ export default function App() {
         </div>
 
         {/* Controls */}
+        <div className="field" style={{ maxWidth: "100vw", marginBottom: 18 }}>
+          <JsonInput
+            label="Paste village JSON data"
+            initial='[{"id":"Cannon","start":0,"end":3600}]'
+            onValid={setJsonData}
+            onValidityChange={setJsonValid}
+          />
+        </div>
         <div className="controls" style={{ marginBottom: 18 }}>
 
-          <div className="field">
-            <JsonInput
-              label="Paste schedule JSON"
-              initial='[{"id":"Cannon","start":0,"end":3600}]'
-              onValid={setJsonData}
-              onValidityChange={setJsonValid}
-            />
-
-          </div>
-
-          <div className="field" style={{ minWidth: 180 }}>
-            <label>Number of Builders</label>
-            <input type="number" value={builders} onChange={e => setBuilders(Number(e.target.value))} />
-          </div>
 
           <button disabled={!jsonValid} className="button" style={{ fontSize: 16, padding: "12px 22px", borderRadius: 12 }} onClick={handleGenerateSPT}>Generate SPT</button>
           <button disabled={!jsonValid} className="button" style={{ fontSize: 16, padding: "12px 22px", borderRadius: 12 }} onClick={handleGenerateLPT}>Generate LPT</button>
 
-          {/* Exponential Zoom */}
-          <div className="slider-group" title="Zoom timeline" style={{ minWidth: 220 }}>
-            <button className="button secondary" style={{ fontSize: 16 }} onClick={zoomOut} aria-label="Zoom out">–</button>
-            <input
-              className="range"
-              type="range"
-              min={0}
-              max={1}
-              step={0.01}
-              value={zoom}
-              onChange={(e) => setZoom(Number(e.target.value))}
-            />
-            <button className="button secondary" style={{ fontSize: 16 }} onClick={zoomIn} aria-label="Zoom in">+</button>
-            <button className="button ghost" style={{ fontSize: 14 }} onClick={reset}>Reset</button>
-            <span style={{ fontSize: 13, color: "var(--muted)" }}>
-              {pxPerHour} px/hr · {(zoom * 100).toFixed(0)}%
-            </span>
-          </div>
         </div>
 
         {/* Metrics */}
         {tasks.length > 0 && (
-          <div className="metrics" style={{ marginTop: 18 }}>
+          <div className="metrics" style={{ marginTop: 18, marginBottom: 10 }}>
             <div className="pill" style={{ fontSize: 15, background: "#eef2ff", color: "#3730a3" }}>{scheduleType}</div>
           </div>
         )}
 
-        {err && (<div className="metrics" style={{ marginTop: 18 }}>
-          <div className="pill" style={{ fontSize: 15, background: "#eef2ff", color: "#3730a3" }}>There was an error parsing your JSON!</div>
+        {err[0] && (<div className="metrics" style={{ marginTop: 10, marginBottom: 10 }}>
+          <div className="pill" style={{ fontSize: 15, background: "#eef2ff", color: "#3730a3" }}>{err[0] ? err[1] : "There was an error parsing your JSON!"}</div>
         </div>)}
-
-        <br></br>
-
-        {/* Chart */}
-        <div className="chart-shell" style={{ background: "#fff", borderRadius: 16, boxShadow: "0 2px 12px #e0e7ff" }}>
-          <GanttChart tasks={tasks} groupBy="worker" pxPerSec={pxPerSec} />
-        </div>
 
         {/* Metrics */}
         {tasks.length > 0 && (
-          <div className="metrics" style={{ marginTop: 18 }}>
+          <div className="metrics" style={{ marginTop: 10, marginBottom: 10 }}>
             <div className="pill" style={{ fontSize: 15, background: "#eef2ff", color: "#3730a3" }}>Makespan: {makespan}</div>
           </div>
         )}
+
+        {tasks.length > 0 && (
+          <div style={{
+            maxHeight: "50vh",   // adjust how tall you want it
+            overflowY: "auto",
+            paddingRight: 6,      // avoid scrollbar overlap
+            border: "2px solid #7096e7ff",
+            borderRadius: 12
+          }}>
+            <TimelineCards tasks={tasks} colorForId={colorForId} />
+          </div>
+
+        )}
+
+
+        {tasks.length > 0 && (
+          <div className="metrics" style={{ marginTop: 22, marginBottom: 12 }}>
+            <div className="pill" style={{ fontSize: 15, background: "#eef2ff", color: "#3730a3" }}>Schedule Chart</div>
+          </div>
+        )}
+
+        {/* Exponential Zoom */}
+        <div className="slider-group" title="Zoom timeline" style={{ minWidth: 320, maxWidth: 506, marginBottom: 12 }}>
+          <button className="button secondary" style={{ fontSize: 16 }} onClick={zoomOut} aria-label="Zoom out">–</button>
+          <input
+            className="range"
+            type="range"
+            min={0}
+            max={1}
+            step={0.01}
+            value={zoom}
+            onChange={(e) => setZoom(Number(e.target.value))}
+          />
+          <button className="button secondary" style={{ fontSize: 16 }} onClick={zoomIn} aria-label="Zoom in">+</button>
+          <button className="button ghost" style={{ fontSize: 14 }} onClick={reset}>Reset</button>
+          <span style={{ fontSize: 13, color: "var(--muted)" }}>
+            {pxPerHour} px/hr · {(zoom * 100).toFixed(0)}%
+          </span>
+        </div>
+
+        {/* Chart */}
+        <div className="chart-shell" style={{ background: "#fff", borderRadius: 16, boxShadow: "0 2px 12px #e0e7ff" }}>
+          <GanttChart tasks={tasks} groupBy="worker" pxPerSec={pxPerSec} colorForId={colorForId} />
+        </div>
+
       </div>
     </div >
   );
