@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import clsx from "clsx";
 import { generateSchedule } from './scheduler.js';
 import "./App.css";
@@ -379,6 +379,18 @@ export default function App() {
   const toPxPerSec = (z) => MIN * Math.pow(MAX / MIN, z);
   const toZoom = (p) => Math.log(p / MIN) / Math.log(MAX / MIN);
 
+  const colorMapRef = React.useRef({});  // persistent mapping
+  const paletteRef = React.useRef([...PALETTE]); // simple copy
+
+  const colorForId = (id) => {
+    const m = colorMapRef.current;
+    if (!m[id]) {
+      const nextIdx = Object.keys(m).length % paletteRef.current.length;
+      m[id] = paletteRef.current[nextIdx];
+    }
+    return m[id];
+  };
+
   const [zoom, setZoom] = useState(() => toZoom(DEFAULT_PX_PER_SEC));
   const pxPerSec = toPxPerSec(zoom);
 
@@ -398,26 +410,39 @@ export default function App() {
   const zoomOut = () => setZoom((z) => clamp01(z - 0.08));
   const reset = () => setZoom(toZoom(DEFAULT_PX_PER_SEC));
 
-  const handleGenerateSPT = () => {
-    if (!jsonData) { setErr(true); return; }
-    const { sch, err } = generateSchedule(jsonData, "SPT");
+  const runSchedule = (jD, strategy) => {
+    if (!jD) {
+      console.error("No JSON data provided");
+      setErr(true);
+      return;
+    }
+    const { sch, err } = generateSchedule(jsonData, strategy);
     setErr(err);
     setTasks(sch.schedule);
     setMakespan(sch.makespan);
-    setScheduleType("Shortest Processing Time (SPT)");
+    setScheduleType(strategy === "SPT" ? "Shortest Processing Time (SPT)" : "Longest Processing Time (LPT)");
+
+    // 🔑 ensure all ids get mapped now
+    sch.schedule.forEach(t => { colorForId(t.id); });
   };
 
-  const handleGenerateLPT = () => {
-    if (!jsonData) { setErr(true); return; }
-    const { sch, err } = generateSchedule(jsonData, "LPT");
-    setErr(err);
-    setTasks(sch.schedule);
-    setMakespan(sch.makespan);
-    setScheduleType("Longest Processing Time (LPT)");
-  };
+  // const handleGenerateSPT = () => {
+  //   if (!jsonData) { setErr(true); return; }
+  //   const { sch, err } = generateSchedule(jsonData, "SPT");
+  //   setErr(err);
+  //   setTasks(sch.schedule);
+  //   setMakespan(sch.makespan);
+  //   setScheduleType("Shortest Processing Time (SPT)");
+  // };
 
-  const colorMapRef = useRef({});     // { [id]: "#hex" }
-  const paletteRef = useRef([]);     // shuffled colors
+  // const handleGenerateLPT = () => {
+  //   if (!jsonData) { setErr(true); return; }
+  //   const { sch, err } = generateSchedule(jsonData, "LPT");
+  //   setErr(err);
+  //   setTasks(sch.schedule);
+  //   setMakespan(sch.makespan);
+  //   setScheduleType("Longest Processing Time (LPT)");
+  // };
 
   useEffect(() => {
     // Seed from crypto (falls back to Date.now if unavailable)
@@ -432,16 +457,16 @@ export default function App() {
   }, []);
 
   // Call this to get a color for any id (assigns once, then reuses)
-  const colorForId = (id) => {
-    const key = String(id);
-    const m = colorMapRef.current;
-    if (!m[key]) {
-      const nextIdx = Object.keys(m).length % (paletteRef.current.length || PALETTE.length);
-      const palette = paletteRef.current.length ? paletteRef.current : PALETTE;
-      m[key] = palette[nextIdx];
-    }
-    return m[key];
-  };
+  // const colorForId = (id) => {
+  //   const key = String(id);
+  //   const m = colorMapRef.current;
+  //   if (!m[key]) {
+  //     const nextIdx = Object.keys(m).length % (paletteRef.current.length || PALETTE.length);
+  //     const palette = paletteRef.current.length ? paletteRef.current : PALETTE;
+  //     m[key] = palette[nextIdx];
+  //   }
+  //   return m[key];
+  // };
 
 
   return (
@@ -479,8 +504,8 @@ export default function App() {
         <div className="controls" style={{ marginBottom: 18 }}>
 
 
-          <button disabled={!jsonValid} className="button" style={{ fontSize: 16, padding: "12px 22px", borderRadius: 12 }} onClick={handleGenerateSPT}>Generate SPT</button>
-          <button disabled={!jsonValid} className="button" style={{ fontSize: 16, padding: "12px 22px", borderRadius: 12 }} onClick={handleGenerateLPT}>Generate LPT</button>
+          <button disabled={!jsonValid} className="button" style={{ fontSize: 16, padding: "12px 22px", borderRadius: 12 }} onClick={() => runSchedule(jsonData, "SPT")}>Generate SPT</button>
+          <button disabled={!jsonValid} className="button" style={{ fontSize: 16, padding: "12px 22px", borderRadius: 12 }} onClick={() => runSchedule(jsonData, "LPT")}>Generate LPT</button>
 
         </div>
 

@@ -33,7 +33,8 @@ function objToArray(task, qty = 1, char = 65) {
 function constructTasks(inputData) {
 	let itemData = { ...defenseConfig, ...trapConfig, ...resConfig, ...armyConfig };
 
-	let pData = inputData.buildings;
+	let pData = [...inputData.buildings];
+	if (inputData.traps) pData.push(...inputData.traps);
 	const hData = inputData.heroes;
 	let buildData = [], buildings = [], heroes = [], heroData = [], tasks = [];
 	for (let item of pData) {

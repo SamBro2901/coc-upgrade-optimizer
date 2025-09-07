@@ -36,7 +36,12 @@
   "1000070": "Blacksmith",
   "1000071": "HeroHall",
 
-
+  "12000000": "Bomb",
+  "12000001": "SpringTrap",
+  "12000002": "GiantBomb",
+  "12000005": "AirBomb",
+  "12000006": "SeekingAirMine",
+  "12000008": "SkeletonTrap",
 
 
   "28000000": "BarbarianKing",
