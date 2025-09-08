@@ -6,6 +6,8 @@ import thConfig from './data/th.json' with { type: "json" };
 import heroConfig from './data/heroes.json' with { type: "json" }
 import mapping from './data/mapping.json' with { type: "json" };
 
+import priority from './data/priority.json' with { type: "json" }
+
 // import playerData from './data/coc_data.json' with { type: "json" };
 
 function arrayToObject(arr) {
@@ -67,7 +69,7 @@ function constructTasks(inputData) {
 
 		// Missing Buildings
 		if (currCount < maxBuilds[b]) {
-			const task = itemData[b].filter(item => item.TH > 0 && item.TH <= currTH).map(item => ({ id: b, level: item.id, duration: item.duration, priority: 2 }));
+			const task = itemData[b].filter(item => item.TH > 0 && item.TH <= currTH).map(item => ({ id: b, level: item.id, duration: item.duration, priority: 2 })); // Immediate priority to build
 			const resp = objToArray(task, maxBuilds[b] - currCount, char);
 			char = resp.char;
 			tasks.push(...resp.arr);
@@ -86,7 +88,7 @@ function constructTasks(inputData) {
 			let missingLvls = currTask?.level - c.lvl || 0;
 			if (missingLvls > 0) {
 				let missingTask = itemData[b].filter(item => Number(item.id) > c.lvl && Number(item.id) <= currTask.level && item.TH <= currTH);
-				missingTask = missingTask.map(item => ({ id: b, level: item.id, duration: item.duration, priority: 2 }));
+				missingTask = missingTask.map(item => ({ id: b, level: item.id, duration: item.duration, priority: priority[b] ? priority[b] : 100 }));
 				const resp1 = objToArray(missingTask, (c.timer ? 1 : c.cnt || c.gear_up || 1), char);
 				char = resp1.char;
 				tasks.push(...resp1.arr);
@@ -106,12 +108,26 @@ function constructTasks(inputData) {
 			tasks.push({ id: h, level: currHero.lvl, duration: currHero.timer, priority: 1, iter: 'A' })
 		}
 		let missingHLvls = heroConfig[h].filter(i => i.HH <= maxHeroHall.level && i.id > currHero.lvl);
-		missingHLvls = missingHLvls.map(he => ({ id: h, level: he.id, duration: he.duration, HH: he.HH, priority: 2, iter: 'A' }));
+		missingHLvls = missingHLvls.map(he => ({ id: h, level: he.id, duration: he.duration, HH: he.HH, priority: priority[h] ? priority[h] : 100, iter: 'A' }));
 
 		tasks.push(...missingHLvls)
 	}
 
 	return { tasks, numWorkers };
+}
+
+function sortTasks(arr, scheme) {
+	switch (scheme) {
+		case 'LPT':
+			arr = arr.sort((a, b) => a.priority - b.priority || b.duration - a.duration);
+			break;
+		case 'SPT':
+			arr = arr.sort((a, b) => a.priority - b.priority || a.duration - b.duration);
+			break;
+		default:
+			return { sch: { schedule: [], makespan: 0 }, err: [true, `Unknown scheduling scheme provided: ${scheme}`] };
+	}
+	return arr;
 }
 
 function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT') {
@@ -153,16 +169,7 @@ function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT') {
 
 	let workers = Array.from({ length: numWorkers }, () => null); // null means idle
 
-	switch (scheme) {
-		case 'LPT':
-			ready = ready.sort((a, b) => a.priority !== b.priority ? a.priority - b.priority : b.duration - a.duration);
-			break;
-		case 'SPT':
-			ready = ready.sort((a, b) => a.priority !== b.priority ? a.priority - b.priority : a.duration - b.duration);
-			break;
-		default:
-			return { sch: { schedule: [], makespan: 0 }, err: [true, `Unknown scheduling scheme provided: ${scheme}`] };
-	}
+	ready = sortTasks(ready, scheme)
 
 	let currTime = 0
 	while (ready.length > 0 || completed.length !== taskLength || notReady.length > 0) {
@@ -222,6 +229,7 @@ function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT') {
 					notReady.splice(remIdx, 1);
 
 				}
+				ready = sortTasks(ready, scheme)
 			}
 		}
 	}
