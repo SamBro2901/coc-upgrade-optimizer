@@ -8,7 +8,7 @@ import mapping from './data/mapping.json' with { type: "json" };
 
 import priority from './data/priority.json' with { type: "json" }
 
-// import playerData from './data/coc_data.json' with { type: "json" };
+import playerData from './data/coc_data.json' with { type: "json" };
 
 function arrayToObject(arr) {
 	return arr.reduce((acc, item) => {
@@ -84,7 +84,7 @@ function constructTasks(inputData) {
 				c.lvl += 1;
 			}
 
-			let currTask = itemData[b]?.filter(item => item.TH === currTH)?.sort((a, b) => b.id - a.id).map(item => ({ id: b, level: item.id, duration: item.duration }))[0];
+			let currTask = itemData[b]?.filter(item => item.TH <= currTH)?.sort((a, b) => b.id - a.id).map(item => ({ id: b, level: item.id, duration: item.duration }))[0];
 			let missingLvls = currTask?.level - c.lvl || 0;
 			if (missingLvls > 0) {
 				let missingTask = itemData[b].filter(item => Number(item.id) > c.lvl && Number(item.id) <= currTask.level && item.TH <= currTH);
@@ -322,4 +322,4 @@ export function generateSchedule(dataJSON, scheme = 'LPT') {
 
 }
 
-// generateSchedule(playerData);
+generateSchedule(playerData);
