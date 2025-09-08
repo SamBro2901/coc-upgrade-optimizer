@@ -54,7 +54,8 @@ export function TimelineCards({ tasks = [], colorForId, doneKeys, onToggle, task
             aria-pressed={isDone}
             title={isDone ? "Click to unmark" : "Click to mark as done"}
             style={{
-              background: colorForId(t.id)
+              background: colorForId(t.id),
+              borderRadius: 10
             }}
           >
           {/* <div

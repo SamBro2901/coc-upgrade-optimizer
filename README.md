@@ -1,74 +1,29 @@
 # Clash of Clans Upgrade Optimizer
 
-This project was started to develop a schedule optimizer to make the most efficient schedule of upgrades when moving from one townhall to the next. The project uses two simple scheduling methods - Shortest Possible Task and Longest Possible Task.
+This tool provides an efficient way to plan your Clash of Clans village upgrades, helping you find the most optimal path to a maxed-out base. It takes your village data and generates two detailed upgrade schedules: one prioritizing the **shortest possible time** and another for the **longest possible time**, giving you flexibility in your strategy.
 
-The project will explore more optimizing functions with time.
+---
 
-Please feel free to experiment and play around with the tool and most importantly, have fun!
+## How to Use 🚀
 
-## Available Scripts
+Using the website is a straightforward process:
 
-In the project directory, you can run:
+1.  **Extract your JSON data**: Go to your in-game settings and tap on the **"More Settings"** button. On this page, scroll down until you find the **"Data Export"** section and click on the **"Copy"** button.
+2.  **Paste the data**: Once you have the JSON copied to your clipboard, paste the data in the text box below. You can see if the data you pasted is valid by reading the feedback under the text box.
+3.  **Generate the schedule**: Click on either the **"Generate SPT"** or **"Generate LPT"** button to generate the respective upgrade schedule.
+4.  **Timeline Cards & Chart**: Both timeline cards and timeline chart are generated. The cards make the upgrades more readable since smaller upgrades can appear very small in the chart. You can freely click on each card to mark them as completed for your own tracking purposes.
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Key Features ✨
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **Dual Schedule Generation**: The website creates two distinct schedules—one focused on the fastest completion and one for a longer, more spread-out timeline.
+- **Interactive Timeline Cards**: Each upgrade is represented as a timeline card. You can click on a card to mark it as "done," which will visually grey it out.
+- **Dynamic Gantt Chart**: The generated Gantt chart provides a clear, visual representation of your upgrade timeline. When you mark a task as "done" on a timeline card, the corresponding bar on the Gantt chart also gets greyed out, ensuring seamless interoperability.
+- **Zoomable View**: The Gantt chart includes a **zoom slider** that allows you to easily zoom in or out, providing a more detailed or high-level view of your schedule.
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Contributions Welcome! 🤝
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This project is open-source and currently a **work in progress**. We welcome any contributions, suggestions, or bug reports. If you have an idea for an improvement or find an issue, please feel free to open a new issue on our GitHub repository. Your feedback helps make this tool better for everyone!

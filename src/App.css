@@ -1,7 +1,7 @@
 :root{
   --bg: #f6f7fb;
   --panel: #ffffff;
-  --border: #e5e7eb;
+  --border: #d4d6d8;
   --muted: #64748b;
   --text: #0f172a;
   --primary: #2563eb;
@@ -27,12 +27,38 @@ body {
   padding: 0 16px;
 }
 
+h2, h3, b{
+  color: var(--primary);
+}
+
+a, a:hover, a:visited, a:active {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.divider{
+  flex-shrink: 0;
+  border: none;
+  border-top: 1px solid var(--primary);
+  padding-left: 50px;
+  margin: 15px 0;
+  width: 100%;
+  height: 1px;
+}
+
 .card {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 14px;
-  box-shadow: var(--shadow);
+  box-shadow: 0 6px 16px rgba(37,99,235,0.25);
   padding: 10px;
+}
+
+.timeline-header{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
 }
 
 /* Header */
@@ -43,7 +69,7 @@ body {
   margin-bottom: 12px;
 }
 .title { font-size: 22px; font-weight: 600; }
-.subtitle { color: var(--muted); font-size: 13px; }
+.subtitle { color: var(--muted); font-size: 15px; }
 
 /* Controls */
 .controls {
@@ -54,11 +80,13 @@ body {
   margin-bottom: 12px;
 }
 .field {
-  display: flex;
+  display: block;
   align-items: center;
   gap: 8px;
   background: #fff;
   border: 1px solid var(--border);
+  box-shadow: 0 6px 16px rgba(37,99,235,0.25);
+  margin-bottom: 15px;
   border-radius: 10px;
   padding: 8px 10px;
 }
@@ -101,7 +129,7 @@ body {
 .button.ghost{
   background: transparent;
   color: var(--black);
-  border: 1px dashed var(--border);
+  border: 1px solid var(--border);
 }
 
 /* Slider group */
@@ -167,10 +195,11 @@ body {
 .metrics .pill {
   background: #eef2ff;
   border: 1px solid #e0e7ff;
-  color: #3730a3;
+  color: #3e5fd5;
   padding: 6px 10px;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 15px;
+  /* font-size: 13px; */
 }
 
 /* --- Dark mode variables --- */
