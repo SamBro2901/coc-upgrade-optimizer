@@ -1,524 +1,524 @@
 {
 	"GoldMine": [
 		{
-			"id": "1",
+			"level": "1",
 			"duration": 5,
 			"TH": 1
 		},
 		{
-			"id": "2",
+			"level": "2",
 			"duration": 15,
 			"TH": 1
 		},
 		{
-			"id": "3",
+			"level": "3",
 			"duration": 120,
 			"TH": 2
 		},
 		{
-			"id": "4",
+			"level": "4",
 			"duration": 120,
 			"TH": 2
 		},
 		{
-			"id": "5",
+			"level": "5",
 			"duration": 300,
 			"TH": 3
 		},
 		{
-			"id": "6",
+			"level": "6",
 			"duration": 900,
 			"TH": 3
 		},
 		{
-			"id": "7",
+			"level": "7",
 			"duration": 1800,
 			"TH": 4
 		},
 		{
-			"id": "8",
+			"level": "8",
 			"duration": 3600,
 			"TH": 4
 		},
 		{
-			"id": "9",
+			"level": "9",
 			"duration": 7200,
 			"TH": 5
 		},
 		{
-			"id": "10",
+			"level": "10",
 			"duration": 10800,
 			"TH": 5
 		},
 		{
-			"id": "11",
+			"level": "11",
 			"duration": 14400,
 			"TH": 7
 		},
 		{
-			"id": "12",
+			"level": "12",
 			"duration": 21600,
 			"TH": 8
 		},
 		{
-			"id": "13",
+			"level": "13",
 			"duration": 28800,
 			"TH": 10
 		},
 		{
-			"id": "14",
+			"level": "14",
 			"duration": 43200,
 			"TH": 11
 		},
 		{
-			"id": "15",
+			"level": "15",
 			"duration": 86400,
 			"TH": 12
 		},
 		{
-			"id": "16",
+			"level": "16",
 			"duration": 172800,
 			"TH": 13
 		}
 	],
 	"ElixirCollector": [
 		{
-			"id": "1",
+			"level": "1",
 			"duration": 5,
 			"TH": 1
 		},
 		{
-			"id": "2",
+			"level": "2",
 			"duration": 15,
 			"TH": 1
 		},
 		{
-			"id": "3",
+			"level": "3",
 			"duration": 60,
 			"TH": 2
 		},
 		{
-			"id": "4",
+			"level": "4",
 			"duration": 120,
 			"TH": 2
 		},
 		{
-			"id": "5",
+			"level": "5",
 			"duration": 300,
 			"TH": 3
 		},
 		{
-			"id": "6",
+			"level": "6",
 			"duration": 900,
 			"TH": 3
 		},
 		{
-			"id": "7",
+			"level": "7",
 			"duration": 1800,
 			"TH": 4
 		},
 		{
-			"id": "8",
+			"level": "8",
 			"duration": 3600,
 			"TH": 4
 		},
 		{
-			"id": "9",
+			"level": "9",
 			"duration": 7200,
 			"TH": 5
 		},
 		{
-			"id": "10",
+			"level": "10",
 			"duration": 10800,
 			"TH": 5
 		},
 		{
-			"id": "11",
+			"level": "11",
 			"duration": 14400,
 			"TH": 7
 		},
 		{
-			"id": "12",
+			"level": "12",
 			"duration": 21600,
 			"TH": 8
 		},
 		{
-			"id": "13",
+			"level": "13",
 			"duration": 28800,
 			"TH": 10
 		},
 		{
-			"id": "14",
+			"level": "14",
 			"duration": 43200,
 			"TH": 11
 		},
 		{
-			"id": "15",
+			"level": "15",
 			"duration": 86400,
 			"TH": 12
 		},
 		{
-			"id": "16",
+			"level": "16",
 			"duration": 172800,
 			"TH": 13
 		}
 	],
 	"GoldStorage": [
 		{
-			"id": "1",
+			"level": "1",
 			"duration": 10,
 			"TH": 1
 		},
 		{
-			"id": "2",
+			"level": "2",
 			"duration": 120,
 			"TH": 2
 		},
 		{
-			"id": "3",
+			"level": "3",
 			"duration": 300,
 			"TH": 2
 		},
 		{
-			"id": "4",
+			"level": "4",
 			"duration": 900,
 			"TH": 3
 		},
 		{
-			"id": "5",
+			"level": "5",
 			"duration": 1800,
 			"TH": 3
 		},
 		{
-			"id": "6",
+			"level": "6",
 			"duration": 3600,
 			"TH": 3
 		},
 		{
-			"id": "7",
+			"level": "7",
 			"duration": 7200,
 			"TH": 4
 		},
 		{
-			"id": "8",
+			"level": "8",
 			"duration": 10800,
 			"TH": 4
 		},
 		{
-			"id": "9",
+			"level": "9",
 			"duration": 14400,
 			"TH": 5
 		},
 		{
-			"id": "10",
+			"level": "10",
 			"duration": 18000,
 			"TH": 6
 		},
 		{
-			"id": "11",
+			"level": "11",
 			"duration": 21600,
 			"TH": 7
 		},
 		{
-			"id": "12",
+			"level": "12",
 			"duration": 43200,
 			"TH": 11
 		},
 		{
-			"id": "13",
+			"level": "13",
 			"duration": 86400,
 			"TH": 12
 		},
 		{
-			"id": "14",
+			"level": "14",
 			"duration": 172800,
 			"TH": 13
 		},
 		{
-			"id": "15",
+			"level": "15",
 			"duration": 259200,
 			"TH": 14
 		},
 		{
-			"id": "16",
+			"level": "16",
 			"duration": 345600,
 			"TH": 15
 		},
 		{
-			"id": "17",
+			"level": "17",
 			"duration": 432000,
 			"TH": 16
 		},
 		{
-			"id": "18",
+			"level": "18",
 			"duration": 1080000,
 			"TH": 17
 		}
 	],
 	"ElixirStorage": [
 		{
-			"id": "1",
+			"level": "1",
 			"duration": 10,
 			"TH": 1
 		},
 		{
-			"id": "2",
+			"level": "2",
 			"duration": 120,
 			"TH": 2
 		},
 		{
-			"id": "3",
+			"level": "3",
 			"duration": 300,
 			"TH": 2
 		},
 		{
-			"id": "4",
+			"level": "4",
 			"duration": 900,
 			"TH": 3
 		},
 		{
-			"id": "5",
+			"level": "5",
 			"duration": 1800,
 			"TH": 3
 		},
 		{
-			"id": "6",
+			"level": "6",
 			"duration": 3600,
 			"TH": 3
 		},
 		{
-			"id": "7",
+			"level": "7",
 			"duration": 7200,
 			"TH": 4
 		},
 		{
-			"id": "8",
+			"level": "8",
 			"duration": 10800,
 			"TH": 4
 		},
 		{
-			"id": "9",
+			"level": "9",
 			"duration": 14400,
 			"TH": 5
 		},
 		{
-			"id": "10",
+			"level": "10",
 			"duration": 18000,
 			"TH": 6
 		},
 		{
-			"id": "11",
+			"level": "11",
 			"duration": 21600,
 			"TH": 7
 		},
 		{
-			"id": "12",
+			"level": "12",
 			"duration": 43200,
 			"TH": 11
 		},
 		{
-			"id": "13",
+			"level": "13",
 			"duration": 86400,
 			"TH": 12
 		},
 		{
-			"id": "14",
+			"level": "14",
 			"duration": 172800,
 			"TH": 13
 		},
 		{
-			"id": "15",
+			"level": "15",
 			"duration": 259200,
 			"TH": 14
 		},
 		{
-			"id": "16",
+			"level": "16",
 			"duration": 345600,
 			"TH": 15
 		},
 		{
-			"id": "17",
+			"level": "17",
 			"duration": 432000,
 			"TH": 16
 		},
 		{
-			"id": "18",
+			"level": "18",
 			"duration": 1080000,
 			"TH": 17
 		}
 	],
 	"DarkElixirDrill": [
 		{
-			"id": "1",
+			"level": "1",
 			"duration": 14400,
 			"TH": 7
 		},
 		{
-			"id": "2",
+			"level": "2",
 			"duration": 21600,
 			"TH": 7
 		},
 		{
-			"id": "3",
+			"level": "3",
 			"duration": 43200,
 			"TH": 7
 		},
 		{
-			"id": "4",
+			"level": "4",
 			"duration": 64800,
 			"TH": 9
 		},
 		{
-			"id": "5",
+			"level": "5",
 			"duration": 86400,
 			"TH": 9
 		},
 		{
-			"id": "6",
+			"level": "6",
 			"duration": 129600,
 			"TH": 9
 		},
 		{
-			"id": "7",
+			"level": "7",
 			"duration": 151200,
 			"TH": 10
 		},
 		{
-			"id": "8",
+			"level": "8",
 			"duration": 172800,
 			"TH": 11
 		},
 		{
-			"id": "9",
+			"level": "9",
 			"duration": 259200,
 			"TH": 12
 		},
 		{
-			"id": "10",
+			"level": "10",
 			"duration": 345600,
 			"TH": 14
 		}
 	],
 	"DarkElixirStorage": [
 		{
-			"id": "1",
+			"level": "1",
 			"duration": 28800,
 			"TH": 7
 		},
 		{
-			"id": "2",
+			"level": "2",
 			"duration": 57600,
 			"TH": 7
 		},
 		{
-			"id": "3",
+			"level": "3",
 			"duration": 86400,
 			"TH": 8
 		},
 		{
-			"id": "4",
+			"level": "4",
 			"duration": 129600,
 			"TH": 8
 		},
 		{
-			"id": "5",
+			"level": "5",
 			"duration": 144000,
 			"TH": 9
 		},
 		{
-			"id": "6",
+			"level": "6",
 			"duration": 172800,
 			"TH": 9
 		},
 		{
-			"id": "7",
+			"level": "7",
 			"duration": 259200,
 			"TH": 12
 		},
 		{
-			"id": "8",
+			"level": "8",
 			"duration": 388800,
 			"TH": 13
 		},
 		{
-			"id": "9",
+			"level": "9",
 			"duration": 432000,
 			"TH": 14
 		},
 		{
-			"id": "10",
+			"level": "10",
 			"duration": 475200,
 			"TH": 15
 		},
 		{
-			"id": "11",
+			"level": "11",
 			"duration": 518400,
 			"TH": 16
 		},
 		{
-			"id": "12",
+			"level": "12",
 			"duration": 1296000,
 			"TH": 17
 		}
 	],
 	"ClanCastle": [
 		{
-			"id": "1",
+			"level": "1",
 			"duration": 0,
 			"TH": 2
 		},
 		{
-			"id": "2",
+			"level": "2",
 			"duration": 7200,
 			"TH": 4
 		},
 		{
-			"id": "3",
+			"level": "3",
 			"duration": 43200,
 			"TH": 6
 		},
 		{
-			"id": "4",
+			"level": "4",
 			"duration": 129600,
 			"TH": 9
 		},
 		{
-			"id": "5",
+			"level": "5",
 			"duration": 172800,
 			"TH": 10
 		},
 		{
-			"id": "6",
+			"level": "6",
 			"duration": 259200,
 			"TH": 11
 		},
 		{
-			"id": "7",
+			"level": "7",
 			"duration": 345600,
 			"TH": 12
 		},
 		{
-			"id": "8",
+			"level": "8",
 			"duration": 518400,
 			"TH": 13
 		},
 		{
-			"id": "9",
+			"level": "9",
 			"duration": 604800,
 			"TH": 14
 		},
 		{
-			"id": "10",
+			"level": "10",
 			"duration": 691200,
 			"TH": 15
 		},
 		{
-			"id": "11",
+			"level": "11",
 			"duration": 777600,
 			"TH": 16
 		},
 		{
-			"id": "12",
+			"level": "12",
 			"duration": 1382400,
 			"TH": 17
 		}

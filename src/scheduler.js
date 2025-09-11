@@ -70,7 +70,7 @@ function constructTasks(inputData) {
 
 		// Missing Buildings
 		if (currCount < maxBuilds[b]) {
-			const task = itemData[b].filter(item => item.TH > 0 && item.TH <= currTH).map(item => ({ id: b, level: item.id, duration: item.duration, priority: 2 })); // Immediate priority to build
+			const task = itemData[b].filter(item => item.TH > 0 && item.TH <= currTH).map(item => ({ id: b, level: item.level, duration: item.duration, priority: 2 })); // Immediate priority to build
 			const resp = objToArray(task, maxBuilds[b] - currCount, char);
 			char = resp.char;
 			tasks.push(...resp.arr);
@@ -85,11 +85,11 @@ function constructTasks(inputData) {
 				c.lvl += 1;
 			}
 
-			let currTask = itemData[b]?.filter(item => item.TH <= currTH)?.sort((a, b) => b.id - a.id).map(item => ({ id: b, level: item.id, duration: item.duration }))[0];
+			let currTask = itemData[b]?.filter(item => item.TH <= currTH)?.sort((a, b) => b.level - a.level).map(item => ({ id: b, level: item.level, duration: item.duration }))[0];
 			let missingLvls = currTask?.level - c.lvl || 0;
 			if (missingLvls > 0) {
-				let missingTask = itemData[b].filter(item => Number(item.id) > c.lvl && Number(item.id) <= currTask.level && item.TH <= currTH);
-				missingTask = missingTask.map(item => ({ id: b, level: item.id, duration: item.duration, priority: priority[b] ? priority[b] : 100 }));
+				let missingTask = itemData[b].filter(item => item.level > c.lvl && item.level <= currTask.level && item.TH <= currTH);
+				missingTask = missingTask.map(item => ({ id: b, level: item.level, duration: item.duration, priority: priority[b] ? priority[b] : 100 }));
 				const resp1 = objToArray(missingTask, (c.timer ? 1 : c.cnt || c.gear_up || 1), char);
 				char = resp1.char;
 				tasks.push(...resp1.arr);
@@ -101,15 +101,15 @@ function constructTasks(inputData) {
 	}
 
 	for (let h of heroes) {
-		const maxHeroHall = itemData['HeroHall'].filter(i => i.TH <= currTH)?.sort((a, b) => b.id - a.id).map(item => ({ id: 'HeroHall', level: item.id, duration: item.duration }))[0] || 0;
+		const maxHeroHall = itemData['HeroHall'].filter(i => i.TH <= currTH)?.sort((a, b) => b.level - a.level).map(item => ({ id: 'HeroHall', level: item.level, duration: item.duration }))[0] || 0;
 		let currHero = heroData.find(he => he.name === h);
 
 		if (currHero.timer) {
 			currHero.lvl += 1;
 			tasks.push({ id: h, level: currHero.lvl, duration: currHero.timer, priority: 1, iter: 'A' })
 		}
-		let missingHLvls = heroConfig[h].filter(i => i.HH <= maxHeroHall.level && i.id > currHero.lvl);
-		missingHLvls = missingHLvls.map(he => ({ id: h, level: he.id, duration: he.duration, HH: he.HH, priority: priority[h] ? priority[h] : 100, iter: 'A' }));
+		let missingHLvls = heroConfig[h].filter(i => i.HH <= maxHeroHall.level && i.level > currHero.lvl);
+		missingHLvls = missingHLvls.map(he => ({ id: h, level: he.level, duration: he.duration, HH: he.HH, priority: priority[h] ? priority[h] : 100, iter: 'A' }));
 
 		tasks.push(...missingHLvls)
 	}
@@ -132,6 +132,7 @@ function sortTasks(arr, scheme) {
 }
 
 function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT') {
+	const heroes = ['BarbarianKing', 'ArcherQueen', 'MinionPrince', 'GrandWarden', 'RoyalChampion'];
 
 	tasks = tasks.map((t, idx) => ({ ...t, index: idx, worker: null, pred: null, key: `${t.id}_${t.iter}_${t.level}` }));
 	const taskLength = tasks.length;
@@ -143,7 +144,6 @@ function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT') {
 		if (pred) t.pred = pred.index;
 	}
 
-	const heroes = ['BarbarianKing', 'ArcherQueen', 'MinionPrince'];
 	const heroTasks = tasks.filter(t => heroes.includes(t.id));
 	const heroHall = playerData.buildings.find(b => b.data === 1000071); // Exisitng HH
 	const hhTask = tasks.filter(t => t.id === "HeroHall"); // To construct HH
@@ -156,7 +156,7 @@ function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT') {
 		for (const hero of heroTasks) {
 			if (hero.priority === 1) continue;
 			if (hero.HH > hhLvl) {
-				const reqTask = hhTask.find(t => Number(t.level) === hero.HH);
+				const reqTask = hhTask.find(t => t.level === hero.HH);
 				if (!reqTask) throw new Error("Missing Hero Hall Task");
 				const reqIdx = tasks.findIndex(t => t.key === reqTask.key);
 				// const heroIdx = tasks.findIndex(t => t.key === hero.key);
