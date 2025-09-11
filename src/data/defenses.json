@@ -1,913 +1,1262 @@
 {
 	"Cannon": [
 		{
-			"level": "1",
+			"level": 1,
+			"cost": 250,
+			"currency": "coins",
 			"duration": 5,
 			"TH": 1
 		},
 		{
-			"level": "2",
+			"level": 2,
+			"cost": 1000,
+			"currency": "coins",
 			"duration": 30,
 			"TH": 1
 		},
 		{
-			"level": "3",
+			"level": 3,
+			"cost": 4000,
+			"currency": "coins",
 			"duration": 120,
 			"TH": 2
 		},
 		{
-			"level": "4",
+			"level": 4,
+			"cost": 16000,
+			"currency": "coins",
 			"duration": 1200,
 			"TH": 3
 		},
 		{
-			"level": "5",
+			"level": 5,
+			"cost": 50000,
+			"currency": "coins",
 			"duration": 1800,
 			"TH": 4
 		},
 		{
-			"level": "6",
+			"level": 6,
+			"cost": 60000,
+			"currency": "coins",
 			"duration": 3600,
 			"TH": 5
 		},
 		{
-			"level": "7",
+			"level": 7,
+			"cost": 100000,
+			"currency": "coins",
 			"duration": 7200,
 			"TH": 6
 		},
 		{
-			"level": "8",
+			"level": 8,
+			"cost": 160000,
+			"currency": "coins",
 			"duration": 10800,
 			"TH": 7
 		},
 		{
-			"level": "9",
+			"level": 9,
+			"cost": 250000,
+			"currency": "coins",
 			"duration": 12600,
 			"TH": 8
 		},
 		{
-			"level": "10",
+			"level": 10,
+			"cost": 330000,
+			"currency": "coins",
 			"duration": 14400,
 			"TH": 8
 		},
 		{
-			"level": "11",
+			"level": 11,
+			"cost": 500000,
+			"currency": "coins",
 			"duration": 16200,
 			"TH": 9
 		},
 		{
-			"level": "12",
+			"level": 12,
+			"cost": 600000,
+			"currency": "coins",
 			"duration": 18000,
 			"TH": 10
 		},
 		{
-			"level": "13",
+			"level": 13,
+			"cost": 660000,
+			"currency": "coins",
 			"duration": 21600,
 			"TH": 10
 		},
 		{
-			"level": "14",
+			"level": 14,
+			"cost": 1000000,
+			"currency": "coins",
 			"duration": 28800,
 			"TH": 11
 		},
 		{
-			"level": "15",
+			"level": 15,
+			"cost": 1200000,
+			"currency": "coins",
 			"duration": 36000,
 			"TH": 11
 		},
 		{
-			"level": "16",
+			"level": 16,
+			"cost": 1300000,
+			"currency": "coins",
 			"duration": 39600,
 			"TH": 12
 		},
 		{
-			"level": "17",
+			"level": 17,
+			"cost": 1500000,
+			"currency": "coins",
 			"duration": 43200,
 			"TH": 12
 		},
 		{
-			"level": "18",
+			"level": 18,
+			"cost": 1800000,
+			"currency": "coins",
 			"duration": 72000,
 			"TH": 13
 		},
 		{
-			"level": "19",
+			"level": 19,
+			"cost": 2000000,
+			"currency": "coins",
 			"duration": 86400,
 			"TH": 13
 		},
 		{
-			"level": "20",
+			"level": 20,
+			"cost": 2600000,
+			"currency": "coins",
 			"duration": 129600,
 			"TH": 14
 		},
 		{
-			"level": "21",
+			"level": 21,
+			"cost": 3000000,
+			"currency": "coins",
 			"duration": 172800,
 			"TH": 15
 		}
 	],
 	"ArcherTower": [
 		{
-			"level": "1",
+			"level": 1,
+			"cost": 1000,
+			"currency": "coins",
 			"duration": 15,
 			"TH": 2
 		},
 		{
-			"level": "2",
+			"level": 2,
+			"cost": 2000,
+			"currency": "coins",
 			"duration": 120,
 			"TH": 2
 		},
 		{
-			"level": "3",
+			"level": 3,
+			"cost": 5000,
+			"currency": "coins",
 			"duration": 1200,
 			"TH": 3
 		},
 		{
-			"level": "4",
+			"level": 4,
+			"cost": 20000,
+			"currency": "coins",
 			"duration": 3600,
 			"TH": 4
 		},
 		{
-			"level": "5",
+			"level": 5,
+			"cost": 70000,
+			"currency": "coins",
 			"duration": 5400,
 			"TH": 5
 		},
 		{
-			"level": "6",
+			"level": 6,
+			"cost": 80000,
+			"currency": "coins",
 			"duration": 7200,
 			"TH": 5
 		},
 		{
-			"level": "7",
+			"level": 7,
+			"cost": 150000,
+			"currency": "coins",
 			"duration": 10800,
 			"TH": 6
 		},
 		{
-			"level": "8",
+			"level": 8,
+			"cost": 200000,
+			"currency": "coins",
 			"duration": 14400,
 			"TH": 7
 		},
 		{
-			"level": "9",
+			"level": 9,
+			"cost": 400000,
+			"currency": "coins",
 			"duration": 18000,
 			"TH": 8
 		},
 		{
-			"level": "10",
+			"level": 10,
+			"cost": 460000,
+			"currency": "coins",
 			"duration": 21600,
 			"TH": 8
 		},
 		{
-			"level": "11",
+			"level": 11,
+			"cost": 600000,
+			"currency": "coins",
 			"duration": 25200,
 			"TH": 9
 		},
 		{
-			"level": "12",
+			"level": 12,
+			"cost": 700000,
+			"currency": "coins",
 			"duration": 28800,
 			"TH": 10
 		},
 		{
-			"level": "13",
+			"level": 13,
+			"cost": 1000000,
+			"currency": "coins",
 			"duration": 36000,
 			"TH": 10
 		},
 		{
-			"level": "14",
+			"level": 14,
+			"cost": 1100000,
+			"currency": "coins",
 			"duration": 39600,
 			"TH": 11
 		},
 		{
-			"level": "15",
+			"level": 15,
+			"cost": 1300000,
+			"currency": "coins",
 			"duration": 43200,
 			"TH": 11
 		},
 		{
-			"level": "16",
+			"level": 16,
+			"cost": 1600000,
+			"currency": "coins",
 			"duration": 72000,
 			"TH": 12
 		},
 		{
-			"level": "17",
+			"level": 17,
+			"cost": 1800000,
+			"currency": "coins",
 			"duration": 86400,
 			"TH": 12
 		},
 		{
-			"level": "18",
+			"level": 18,
+			"cost": 2000000,
+			"currency": "coins",
 			"duration": 108000,
 			"TH": 13
 		},
 		{
-			"level": "19",
+			"level": 19,
+			"cost": 2200000,
+			"currency": "coins",
 			"duration": 129600,
 			"TH": 13
 		},
 		{
-			"level": "20",
+			"level": 20,
+			"cost": 3000000,
+			"currency": "coins",
 			"duration": 172800,
 			"TH": 14
 		},
 		{
-			"level": "21",
-			"duration": 259200,
-			"TH": 15
-		},
-		{
-			"level": "22",
-			"duration": 172800,
-			"TH": 14
-		},
-		{
-			"level": "23",
-			"duration": 259200,
-			"TH": 15
-		},
-		{
-			"level": "24",
+			"level": 21,
+			"cost": 4000000,
+			"currency": "coins",
 			"duration": 259200,
 			"TH": 15
 		}
 	],
 	"Mortar": [
 		{
-			"level": "1",
+			"level": 1,
+			"cost": 5000,
+			"currency": "coins",
 			"duration": 1800,
 			"TH": 3
 		},
 		{
-			"level": "2",
+			"level": 2,
+			"cost": 25000,
+			"currency": "coins",
 			"duration": 3600,
 			"TH": 4
 		},
 		{
-			"level": "3",
+			"level": 3,
+			"cost": 90000,
+			"currency": "coins",
 			"duration": 7200,
 			"TH": 5
 		},
 		{
-			"level": "4",
+			"level": 4,
+			"cost": 180000,
+			"currency": "coins",
 			"duration": 10800,
 			"TH": 6
 		},
 		{
-			"level": "5",
+			"level": 5,
+			"cost": 300000,
+			"currency": "coins",
 			"duration": 21600,
 			"TH": 7
 		},
 		{
-			"level": "6",
+			"level": 6,
+			"cost": 500000,
+			"currency": "coins",
 			"duration": 28800,
 			"TH": 8
 		},
 		{
-			"level": "7",
+			"level": 7,
+			"cost": 900000,
+			"currency": "coins",
 			"duration": 43200,
 			"TH": 9
 		},
 		{
-			"level": "8",
+			"level": 8,
+			"cost": 1200000,
+			"currency": "coins",
 			"duration": 64800,
 			"TH": 10
 		},
 		{
-			"level": "9",
+			"level": 9,
+			"cost": 1600000,
+			"currency": "coins",
 			"duration": 72000,
 			"TH": 11
 		},
 		{
-			"level": "10",
+			"level": 10,
+			"cost": 1800000,
+			"currency": "coins",
 			"duration": 86400,
 			"TH": 11
 		},
 		{
-			"level": "11",
+			"level": 11,
+			"cost": 2300000,
+			"currency": "coins",
 			"duration": 108000,
 			"TH": 12
 		},
 		{
-			"level": "12",
+			"level": 12,
+			"cost": 2400000,
+			"currency": "coins",
 			"duration": 129600,
 			"TH": 12
 		},
 		{
-			"level": "13",
+			"level": 13,
+			"cost": 2800000,
+			"currency": "coins",
 			"duration": 172800,
 			"TH": 13
 		},
 		{
-			"level": "14",
+			"level": 14,
+			"cost": 4300000,
+			"currency": "coins",
 			"duration": 216000,
 			"TH": 14
 		},
 		{
-			"level": "15",
+			"level": 15,
+			"cost": 5000000,
+			"currency": "coins",
 			"duration": 302400,
 			"TH": 15
 		},
 		{
-			"level": "16",
+			"level": 16,
+			"cost": 7000000,
+			"currency": "coins",
 			"duration": 432000,
 			"TH": 16
 		},
 		{
-			"level": "17",
+			"level": 17,
+			"cost": 19500000,
+			"currency": "coins",
 			"duration": 1252800,
 			"TH": 17
 		}
 	],
 	"AirDefense": [
 		{
-			"level": "1",
+			"level": 1,
+			"cost": 22000,
+			"currency": "coins",
 			"duration": 3600,
 			"TH": 4
 		},
 		{
-			"level": "2",
+			"level": 2,
+			"cost": 90000,
+			"currency": "coins",
 			"duration": 7200,
 			"TH": 4
 		},
 		{
-			"level": "3",
+			"level": 3,
+			"cost": 210000,
+			"currency": "coins",
 			"duration": 21600,
 			"TH": 5
 		},
 		{
-			"level": "4",
+			"level": 4,
+			"cost": 500000,
+			"currency": "coins",
 			"duration": 43200,
 			"TH": 6
 		},
 		{
-			"level": "5",
+			"level": 5,
+			"cost": 800000,
+			"currency": "coins",
 			"duration": 64800,
 			"TH": 7
 		},
 		{
-			"level": "6",
+			"level": 6,
+			"cost": 1000000,
+			"currency": "coins",
 			"duration": 86400,
 			"TH": 8
 		},
 		{
-			"level": "7",
+			"level": 7,
+			"cost": 1750000,
+			"currency": "coins",
 			"duration": 172800,
 			"TH": 9
 		},
 		{
-			"level": "8",
+			"level": 8,
+			"cost": 2300000,
+			"currency": "coins",
 			"duration": 216000,
 			"TH": 10
 		},
 		{
-			"level": "9",
+			"level": 9,
+			"cost": 3400000,
+			"currency": "coins",
 			"duration": 259200,
 			"TH": 11
 		},
 		{
-			"level": "10",
+			"level": 10,
+			"cost": 5000000,
+			"currency": "coins",
 			"duration": 345600,
 			"TH": 12
 		},
 		{
-			"level": "11",
+			"level": 11,
+			"cost": 5600000,
+			"currency": "coins",
 			"duration": 388800,
 			"TH": 13
 		},
 		{
-			"level": "12",
+			"level": 12,
+			"cost": 6500000,
+			"currency": "coins",
 			"duration": 432000,
 			"TH": 14
 		},
 		{
-			"level": "13",
+			"level": 13,
+			"cost": 8000000,
+			"currency": "coins",
 			"duration": 518400,
 			"TH": 15
 		},
 		{
-			"level": "14",
+			"level": 14,
+			"cost": 9000000,
+			"currency": "coins",
 			"duration": 604800,
 			"TH": 16
 		},
 		{
-			"level": "15",
+			"level": 15,
+			"cost": 21000000,
+			"currency": "coins",
 			"duration": 1317600,
 			"TH": 17
 		}
 	],
 	"WizardTower": [
 		{
-			"level": "1",
+			"level": 1,
+			"cost": 100000,
+			"currency": "coins",
 			"duration": 3600,
 			"TH": 5
 		},
 		{
-			"level": "2",
+			"level": 2,
+			"cost": 150000,
+			"currency": "coins",
 			"duration": 5400,
 			"TH": 5
 		},
 		{
-			"level": "3",
+			"level": 3,
+			"cost": 250000,
+			"currency": "coins",
 			"duration": 14400,
 			"TH": 6
 		},
 		{
-			"level": "4",
+			"level": 4,
+			"cost": 400000,
+			"currency": "coins",
 			"duration": 28800,
 			"TH": 7
 		},
 		{
-			"level": "5",
+			"level": 5,
+			"cost": 550000,
+			"currency": "coins",
 			"duration": 36000,
 			"TH": 8
 		},
 		{
-			"level": "6",
+			"level": 6,
+			"cost": 660000,
+			"currency": "coins",
 			"duration": 43200,
 			"TH": 8
 		},
 		{
-			"level": "7",
+			"level": 7,
+			"cost": 1000000,
+			"currency": "coins",
 			"duration": 64800,
 			"TH": 9
 		},
 		{
-			"level": "8",
+			"level": 8,
+			"cost": 1100000,
+			"currency": "coins",
 			"duration": 72000,
 			"TH": 10
 		},
 		{
-			"level": "9",
+			"level": 9,
+			"cost": 1300000,
+			"currency": "coins",
 			"duration": 86400,
 			"TH": 10
 		},
 		{
-			"level": "10",
+			"level": 10,
+			"cost": 2000000,
+			"currency": "coins",
 			"duration": 108000,
 			"TH": 11
 		},
 		{
-			"level": "11",
+			"level": 11,
+			"cost": 2500000,
+			"currency": "coins",
 			"duration": 129600,
 			"TH": 12
 		},
 		{
-			"level": "12",
+			"level": 12,
+			"cost": 2600000,
+			"currency": "coins",
 			"duration": 151200,
 			"TH": 13
 		},
 		{
-			"level": "13",
+			"level": 13,
+			"cost": 3000000,
+			"currency": "coins",
 			"duration": 172800,
 			"TH": 13
 		},
 		{
-			"level": "14",
+			"level": 14,
+			"cost": 4500000,
+			"currency": "coins",
 			"duration": 259200,
 			"TH": 14
 		},
 		{
-			"level": "15",
-			"duration": 432000,
+			"level": 15,
+			"cost": 5500000,
+			"currency": "coins",
+			"duration": 345600,
 			"TH": 15
 		},
 		{
-			"level": "16",
+			"level": 16,
+			"cost": 8000000,
+			"currency": "coins",
 			"duration": 475200,
 			"TH": 16
 		},
 		{
-			"level": "17",
+			"level": 17,
+			"cost": 20000000,
+			"currency": "coins",
 			"duration": 1274400,
 			"TH": 17
 		}
 	],
 	"AirSweeper": [
 		{
-			"level": "1",
+			"level": 1,
+			"cost": 200000,
+			"currency": "coins",
 			"duration": 14400,
 			"TH": 6
 		},
 		{
-			"level": "2",
+			"level": 2,
+			"cost": 300000,
+			"currency": "coins",
 			"duration": 21600,
 			"TH": 6
 		},
 		{
-			"level": "3",
+			"level": 3,
+			"cost": 450000,
+			"currency": "coins",
 			"duration": 28800,
 			"TH": 7
 		},
 		{
-			"level": "4",
+			"level": 4,
+			"cost": 800000,
+			"currency": "coins",
 			"duration": 43200,
 			"TH": 8
 		},
 		{
-			"level": "5",
+			"level": 5,
+			"cost": 1200000,
+			"currency": "coins",
 			"duration": 86400,
 			"TH": 9
 		},
 		{
-			"level": "6",
+			"level": 6,
+			"cost": 1900000,
+			"currency": "coins",
 			"duration": 172800,
 			"TH": 10
 		},
 		{
-			"level": "7",
+			"level": 7,
+			"cost": 3400000,
+			"currency": "coins",
 			"duration": 259200,
 			"TH": 11
 		}
 	],
 	"HiddenTesla": [
 		{
-			"level": "1",
+			"level": 1,
+			"cost": 250000,
+			"currency": "coins",
 			"duration": 7200,
 			"TH": 7
 		},
 		{
-			"level": "2",
+			"level": 2,
+			"cost": 350000,
+			"currency": "coins",
 			"duration": 10800,
 			"TH": 7
 		},
 		{
-			"level": "3",
+			"level": 3,
+			"cost": 500000,
+			"currency": "coins",
 			"duration": 14400,
 			"TH": 7
 		},
 		{
-			"level": "4",
+			"level": 4,
+			"cost": 600000,
+			"currency": "coins",
 			"duration": 21600,
 			"TH": 8
 		},
 		{
-			"level": "5",
+			"level": 5,
+			"cost": 800000,
+			"currency": "coins",
 			"duration": 43200,
 			"TH": 8
 		},
 		{
-			"level": "6",
+			"level": 6,
+			"cost": 1200000,
+			"currency": "coins",
 			"duration": 86400,
 			"TH": 8
 		},
 		{
-			"level": "7",
+			"level": 7,
+			"cost": 1400000,
+			"currency": "coins",
 			"duration": 108000,
 			"TH": 9
 		},
 		{
-			"level": "8",
+			"level": 8,
+			"cost": 1600000,
+			"currency": "coins",
 			"duration": 129600,
 			"TH": 10
 		},
 		{
-			"level": "9",
-			"duration": 172800,
+			"level": 9,
+			"cost": 2100000,
+			"currency": "coins",
+			"duration": 151200,
 			"TH": 11
 		},
 		{
-			"level": "10",
-			"duration": 216000,
+			"level": 10,
+			"cost": 3000000,
+			"currency": "coins",
+			"duration": 172800,
 			"TH": 12
 		},
 		{
-			"level": "11",
+			"level": 11,
+			"cost": 3100000,
+			"currency": "coins",
+			"duration": 216000,
+			"TH": 13
+		},
+		{
+			"level": 12,
+			"cost": 3700000,
+			"currency": "coins",
 			"duration": 259200,
 			"TH": 13
 		},
 		{
-			"level": "12",
+			"level": 13,
+			"cost": 5100000,
+			"currency": "coins",
 			"duration": 345600,
 			"TH": 14
 		},
 		{
-			"level": "13",
+			"level": 14,
+			"cost": 6500000,
+			"currency": "coins",
 			"duration": 432000,
 			"TH": 15
 		},
 		{
-			"level": "14",
+			"level": 15,
+			"cost": 8200000,
+			"currency": "coins",
 			"duration": 518400,
-			"TH": 15
-		},
-		{
-			"level": "15",
-			"duration": 604800,
 			"TH": 16
 		},
 		{
-			"level": "16",
+			"level": 16,
+			"cost": 20500000,
+			"currency": "coins",
 			"duration": 1296000,
 			"TH": 17
 		}
 	],
 	"BombTower": [
 		{
-			"level": "1",
+			"level": 1,
+			"cost": 700000,
+			"currency": "coins",
 			"duration": 43200,
 			"TH": 8
 		},
 		{
-			"level": "2",
+			"level": 2,
+			"cost": 1000000,
+			"currency": "coins",
 			"duration": 64800,
 			"TH": 8
 		},
 		{
-			"level": "3",
+			"level": 3,
+			"cost": 1300000,
+			"currency": "coins",
 			"duration": 86400,
 			"TH": 9
 		},
 		{
-			"level": "4",
+			"level": 4,
+			"cost": 1800000,
+			"currency": "coins",
 			"duration": 129600,
 			"TH": 10
 		},
 		{
-			"level": "5",
+			"level": 5,
+			"cost": 1900000,
+			"currency": "coins",
 			"duration": 151200,
 			"TH": 11
 		},
 		{
-			"level": "6",
+			"level": 6,
+			"cost": 2000000,
+			"currency": "coins",
 			"duration": 172800,
 			"TH": 11
 		},
 		{
-			"level": "7",
+			"level": 7,
+			"cost": 4000000,
+			"currency": "coins",
 			"duration": 259200,
 			"TH": 12
 		},
 		{
-			"level": "8",
+			"level": 8,
+			"cost": 5000000,
+			"currency": "coins",
 			"duration": 345600,
 			"TH": 13
 		},
 		{
-			"level": "9",
+			"level": 9,
+			"cost": 6000000,
+			"currency": "coins",
 			"duration": 388800,
 			"TH": 14
 		},
 		{
-			"level": "10",
+			"level": 10,
+			"cost": 7000000,
+			"currency": "coins",
 			"duration": 432000,
 			"TH": 15
 		},
 		{
-			"level": "11",
-			"duration": 518400,
-			"TH": 15
-		},
-		{
-			"level": "12",
-			"duration": 604800,
+			"level": 11,
+			"cost": 8500000,
+			"currency": "coins",
+			"duration": 561600,
 			"TH": 16
 		},
 		{
-			"level": "13",
+			"level": 12,
+			"cost": 20000000,
+			"currency": "coins",
 			"duration": 1296000,
 			"TH": 17
 		}
 	],
 	"XBow": [
 		{
-			"level": "1",
+			"level": 1,
+			"cost": 1000000,
+			"currency": "coins",
 			"duration": 43200,
 			"TH": 9
 		},
 		{
-			"level": "2",
+			"level": 2,
+			"cost": 1200000,
+			"currency": "coins",
 			"duration": 86400,
 			"TH": 9
 		},
 		{
-			"level": "3",
+			"level": 3,
+			"cost": 2400000,
+			"currency": "coins",
 			"duration": 172800,
 			"TH": 9
 		},
 		{
-			"level": "4",
-			"duration": 216000,
+			"level": 4,
+			"cost": 2500000,
+			"currency": "coins",
+			"duration": 259200,
 			"TH": 10
 		},
 		{
-			"level": "5",
+			"level": 5,
+			"cost": 3900000,
+			"currency": "coins",
 			"duration": 302400,
 			"TH": 11
 		},
 		{
-			"level": "6",
-			"duration": 432000,
+			"level": 6,
+			"cost": 5000000,
+			"currency": "coins",
+			"duration": 345600,
 			"TH": 12
 		},
 		{
-			"level": "7",
+			"level": 7,
+			"cost": 6000000,
+			"currency": "coins",
 			"duration": 388800,
 			"TH": 13
 		},
 		{
-			"level": "8",
+			"level": 8,
+			"cost": 7000000,
+			"currency": "coins",
 			"duration": 432000,
 			"TH": 13
 		},
 		{
-			"level": "9",
+			"level": 9,
+			"cost": 9000000,
+			"currency": "coins",
 			"duration": 604800,
 			"TH": 14
 		},
 		{
-			"level": "10",
+			"level": 10,
+			"cost": 9500000,
+			"currency": "coins",
 			"duration": 626400,
 			"TH": 15
 		},
 		{
-			"level": "11",
-			"duration": 691200,
+			"level": 11,
+			"cost": 10000000,
+			"currency": "coins",
+			"duration": 648000,
 			"TH": 16
 		},
 		{
-			"level": "12",
+			"level": 12,
+			"cost": 21500000,
+			"currency": "coins",
 			"duration": 1339200,
 			"TH": 17
 		}
 	],
 	"InfernoTower": [
 		{
-			"level": "1",
+			"level": 1,
+			"cost": 1000000,
+			"currency": "coins",
 			"duration": 43200,
 			"TH": 10
 		},
 		{
-			"level": "2",
+			"level": 2,
+			"cost": 1200000,
+			"currency": "coins",
 			"duration": 86400,
 			"TH": 10
 		},
 		{
-			"level": "3",
+			"level": 3,
+			"cost": 2400000,
+			"currency": "coins",
 			"duration": 172800,
 			"TH": 10
 		},
 		{
-			"level": "4",
+			"level": 4,
+			"cost": 3400000,
+			"currency": "coins",
 			"duration": 216000,
 			"TH": 11
 		},
 		{
-			"level": "5",
+			"level": 5,
+			"cost": 4200000,
+			"currency": "coins",
 			"duration": 259200,
 			"TH": 11
 		},
 		{
-			"level": "6",
+			"level": 6,
+			"cost": 6000000,
+			"currency": "coins",
 			"duration": 432000,
 			"TH": 12
 		},
 		{
-			"level": "7",
+			"level": 7,
+			"cost": 8000000,
+			"currency": "coins",
 			"duration": 604800,
 			"TH": 13
 		},
 		{
-			"level": "8",
+			"level": 8,
+			"cost": 9500000,
+			"currency": "coins",
 			"duration": 648000,
 			"TH": 14
 		},
 		{
-			"level": "9",
+			"level": 9,
+			"cost": 10000000,
+			"currency": "coins",
 			"duration": 669600,
 			"TH": 15
 		},
 		{
-			"level": "10",
+			"level": 10,
+			"cost": 11000000,
+			"currency": "coins",
 			"duration": 691200,
-			"TH": 15
+			"TH": 16
 		},
 		{
-			"level": "11",
+			"level": 11,
+			"cost": 22000000,
+			"currency": "coins",
 			"duration": 1339200,
 			"TH": 17
 		}
 	],
 	"EagleArtillery": [
 		{
-			"level": "1",
+			"level": 1,
+			"cost": 5000000,
+			"currency": "coins",
 			"duration": 345600,
 			"TH": 11
 		},
 		{
-			"level": "2",
+			"level": 2,
+			"cost": 6000000,
+			"currency": "coins",
 			"duration": 432000,
 			"TH": 11
 		},
 		{
-			"level": "3",
+			"level": 3,
+			"cost": 9000000,
+			"currency": "coins",
 			"duration": 604800,
 			"TH": 12
 		},
 		{
-			"level": "4",
+			"level": 4,
+			"cost": 10000000,
+			"currency": "coins",
 			"duration": 691200,
 			"TH": 13
 		},
 		{
-			"level": "5",
+			"level": 5,
+			"cost": 12000000,
+			"currency": "coins",
 			"duration": 777600,
 			"TH": 14
 		},
 		{
-			"level": "6",
+			"level": 6,
+			"cost": 13000000,
+			"currency": "coins",
 			"duration": 820800,
 			"TH": 15
 		},
 		{
-			"level": "7",
+			"level": 7,
+			"cost": 14000000,
+			"currency": "coins",
 			"duration": 864000,
 			"TH": 16
 		}
 	],
 	"Scattershot": [
 		{
-			"level": "1",
+			"level": 1,
+			"cost": 8000000,
+			"currency": "coins",
 			"duration": 604800,
 			"TH": 13
 		},
 		{
-			"level": "2",
+			"level": 2,
+			"cost": 9000000,
+			"currency": "coins",
 			"duration": 691200,
 			"TH": 13
 		},
 		{
-			"level": "3",
+			"level": 3,
+			"cost": 11000000,
+			"currency": "coins",
 			"duration": 734400,
 			"TH": 14
 		},
 		{
-			"level": "4",
+			"level": 4,
+			"cost": 11500000,
+			"currency": "coins",
 			"duration": 756000,
 			"TH": 15
 		},
 		{
-			"level": "5",
+			"level": 5,
+			"cost": 12000000,
+			"currency": "coins",
 			"duration": 777600,
 			"TH": 16
 		},
 		{
-			"level": "6",
+			"level": 6,
+			"cost": 22500000,
+			"currency": "coins",
 			"duration": 1360800,
 			"TH": 17
 		}
 	],
-	"HelperHut": [
+	"BuildersHut": [
 		{
-			"level": "1",
+			"level": 1,
+			"cost": 0,
+			"currency": "coins",
 			"duration": 0,
 			"TH": 1
 		},
 		{
-			"level": "2",
+			"level": 2,
+			"cost": 4000000,
+			"currency": "coins",
 			"duration": 259200,
 			"TH": 14
 		},
 		{
-			"level": "3",
+			"level": 3,
+			"cost": 5000000,
+			"currency": "coins",
 			"duration": 345600,
 			"TH": 14
 		},
 		{
-			"level": "4",
+			"level": 4,
+			"cost": 7000000,
+			"currency": "coins",
 			"duration": 432000,
 			"TH": 14
 		},
 		{
-			"level": "5",
+			"level": 5,
+			"cost": 8000000,
+			"currency": "coins",
 			"duration": 518400,
 			"TH": 15
 		},
 		{
-			"level": "6",
+			"level": 6,
+			"cost": 9000000,
+			"currency": "coins",
 			"duration": 604800,
 			"TH": 16
 		},
 		{
-			"level": "7",
+			"level": 7,
+			"cost": 21000000,
+			"currency": "coins",
 			"duration": 1317600,
 			"TH": 17
 		}
 	],
-	"Monolith": [
+	"SpellTower": [
 		{
-			"level": "1",
+			"level": 1,
+			"cost": 9000000,
+			"currency": "coins",
 			"duration": 604800,
 			"TH": 15
 		},
 		{
-			"level": "2",
+			"level": 2,
+			"cost": 11000000,
+			"currency": "coins",
 			"duration": 691200,
 			"TH": 15
 		},
 		{
-			"level": "3",
+			"level": 3,
+			"cost": 12000000,
+			"currency": "coins",
+			"duration": 777600,
+			"TH": 15
+		}
+	],
+	"Monolith": [
+		{
+			"level": 1,
+			"cost": 200000,
+			"currency": "coins",
+			"duration": 604800,
+			"TH": 15
+		},
+		{
+			"level": 2,
+			"cost": 250000,
+			"currency": "coins",
+			"duration": 691200,
+			"TH": 15
+		},
+		{
+			"level": 3,
+			"cost": 260000,
+			"currency": "coins",
 			"duration": 777600,
 			"TH": 16
 		},
 		{
-			"level": "4",
+			"level": 4,
+			"cost": 300000,
+			"currency": "coins",
 			"duration": 1360800,
 			"TH": 17
 		}

@@ -8,7 +8,7 @@ import mapping from './data/mapping.json' with { type: "json" };
 
 import priority from './data/priority.json' with { type: "json" }
 
-// import playerData from './data/coc_data.json' with { type: "json" };
+import playerData from './data/coc_data.json' with { type: "json" };
 
 function arrayToObject(arr) {
 	return arr.reduce((acc, item) => {
@@ -56,7 +56,7 @@ function constructTasks(inputData) {
 	}
 
 	const currTH = buildData.find(b => b.name === 'TownHall').lvl;
-	const numWorkers = buildData.filter(b => b.name === 'BuilderHut').reduce((sum, v) => sum + (v.timer ? 1 : v.cnt || v.gear_up), 0);
+	const numWorkers = buildData.filter(b => b.name === 'BuildersHut').reduce((sum, v) => sum + (v.timer ? 1 : v.cnt || v.gear_up), 0);
 	buildData = buildData.filter(b => b.name !== 'TownHall');
 	const maxBuilds = arrayToObject(thConfig[currTH])
 
@@ -80,7 +80,7 @@ function constructTasks(inputData) {
 		for (let c of currBuild) {
 			// Currently upgrading buildings - Priority 1
 			if (c.timer) {
-				let task = { id: b, level: String(c.lvl + 1), duration: c.timer, priority: 1, iter: String.fromCharCode(char) };
+				let task = { id: b, level: c.lvl + 1, duration: c.timer, priority: 1, iter: String.fromCharCode(char) };
 				tasks.push(task);
 				c.lvl += 1;
 			}
@@ -352,4 +352,4 @@ export function generateSchedule(dataJSON, scheme = 'LPT') {
 
 }
 
-// generateSchedule(playerData, "LPT");
+generateSchedule(playerData, "LPT");

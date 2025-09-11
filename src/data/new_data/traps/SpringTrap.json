@@ -1,0 +1,37 @@
+[
+  {
+    "level":1,
+    "cost":2000,
+    "currency":"coins",
+    "duration":0,
+    "TH":4
+  },
+  {
+    "level":2,
+    "cost":130000,
+    "currency":"coins",
+    "duration":7200,
+    "TH":7
+  },
+  {
+    "level":3,
+    "cost":240000,
+    "currency":"coins",
+    "duration":14400,
+    "TH":8
+  },
+  {
+    "level":4,
+    "cost":350000,
+    "currency":"coins",
+    "duration":21600,
+    "TH":9
+  },
+  {
+    "level":5,
+    "cost":800000,
+    "currency":"coins",
+    "duration":43200,
+    "TH":10
+  }
+]
