@@ -22,7 +22,7 @@ function objToArray(task, qty = 1, char = 65) {
 	const arr = Array.from({ length: qty }, (_, i) => {
 		const mark = task.map(obj => ({
 			...obj,
-			iter: String.fromCharCode(char)
+			iter: char
 		}));
 		char++;
 		return mark;
@@ -32,7 +32,7 @@ function objToArray(task, qty = 1, char = 65) {
 }
 
 
-function constructTasks(inputData) {
+function constructTasks(inputData, builderBoost = 0) {
 	let itemData = { ...defenseConfig, ...trapConfig, ...resConfig, ...armyConfig };
 
 	let pData = [...inputData.buildings];
@@ -63,18 +63,18 @@ function constructTasks(inputData) {
 	for (let b of buildings) {
 		if (b === "Wall") continue;
 		let currBuild = buildData.filter(i => i.name === b);
-		let currCount = 0, char = 65;
+		let currCount = 0, char = 1;
 		if (currBuild.length !== 0) {
 			currCount = currBuild.reduce((sum, v) => sum + (v.timer ? 1 : v.cnt || v.gear_up || 1), 0);
 		}
 
 		// Missing Buildings
 		if (currCount < maxBuilds[b]) {
-			let task = itemData[b].filter(item => item.TH > 0 && item.TH <= currTH).map(item => ({ id: b, level: item.level, duration: item.duration, priority: priority[b] ? priority[b] : 100 })); // Immediate priority to build
+			let task = itemData[b].filter(item => item.TH > 0 && item.TH <= currTH).map(item => ({ id: b, level: item.level, duration: Math.round(item.duration * (1 - builderBoost)), priority: priority[b] ? priority[b] : 100 })); // Immediate priority to build
 			if (task.length > 1) { // Splice first task only
 				let popTask = task.splice(0, 1)[0];
 				popTask.priority = 2;
-				popTask.iter = String.fromCharCode(char)
+				popTask.iter = char
 				tasks.push(popTask)
 			}
 			const resp = objToArray(task, maxBuilds[b] - currCount, char);
@@ -86,16 +86,16 @@ function constructTasks(inputData) {
 		for (let c of currBuild) {
 			// Currently upgrading buildings - Priority 1
 			if (c.timer) {
-				let task = { id: b, level: c.lvl + 1, duration: c.timer, priority: 1, iter: String.fromCharCode(char) };
+				let task = { id: b, level: c.lvl + 1, duration: c.timer, priority: 1, iter: char };
 				tasks.push(task);
 				c.lvl += 1;
 			}
 
-			let currTask = itemData[b]?.filter(item => item.TH <= currTH)?.sort((a, b) => b.level - a.level).map(item => ({ id: b, level: item.level, duration: item.duration }))[0];
+			let currTask = itemData[b]?.filter(item => item.TH <= currTH)?.sort((a, b) => b.level - a.level).map(item => ({ id: b, level: item.level, duration: Math.round(item.duration * (1 - builderBoost)) }))[0];
 			let missingLvls = currTask?.level - c.lvl || 0;
 			if (missingLvls > 0) {
 				let missingTask = itemData[b].filter(item => item.level > c.lvl && item.level <= currTask.level && item.TH <= currTH);
-				missingTask = missingTask.map(item => ({ id: b, level: item.level, duration: item.duration, priority: priority[b] ? priority[b] : 100 }));
+				missingTask = missingTask.map(item => ({ id: b, level: item.level, duration: Math.round(item.duration * (1 - builderBoost)), priority: priority[b] ? priority[b] : 100 }));
 				const resp1 = objToArray(missingTask, (c.timer ? 1 : c.cnt || c.gear_up || 1), char);
 				char = resp1.char;
 				tasks.push(...resp1.arr);
@@ -107,15 +107,15 @@ function constructTasks(inputData) {
 	}
 
 	for (let h of heroes) {
-		const maxHeroHall = itemData['HeroHall'].filter(i => i.TH <= currTH)?.sort((a, b) => b.level - a.level).map(item => ({ id: 'HeroHall', level: item.level, duration: item.duration }))[0] || 0;
+		const maxHeroHall = itemData['HeroHall'].filter(i => i.TH <= currTH)?.sort((a, b) => b.level - a.level).map(item => ({ id: 'HeroHall', level: item.level, duration: Math.round(item.duration * (1 - builderBoost)) }))[0] || 0;
 		let currHero = heroData.find(he => he.name === h);
 
 		if (currHero.timer) {
 			currHero.lvl += 1;
-			tasks.push({ id: h, level: currHero.lvl, duration: currHero.timer, priority: 1, iter: 'A' })
+			tasks.push({ id: h, level: currHero.lvl, duration: currHero.timer, priority: 1, iter: 1 })
 		}
 		let missingHLvls = heroConfig[h].filter(i => i.HH <= maxHeroHall.level && i.level > currHero.lvl);
-		missingHLvls = missingHLvls.map(he => ({ id: h, level: he.level, duration: he.duration, HH: he.HH, priority: priority[h] ? priority[h] : 100, iter: 'A' }));
+		missingHLvls = missingHLvls.map(he => ({ id: h, level: he.level, duration: Math.round(he.duration * (1 - builderBoost)), HH: he.HH, priority: priority[h] ? priority[h] : 100, iter: 1 }));
 
 		tasks.push(...missingHLvls)
 	}
@@ -282,7 +282,6 @@ function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT') {
 }
 
 function formatDuration(seconds) {
-
 	const days = Math.floor(seconds / (24 * 60 * 60));
 	seconds %= 24 * 60 * 60;
 
@@ -301,13 +300,6 @@ function formatDuration(seconds) {
 	return parts.length > 0 ? parts.join(" ") : "0s";
 }
 
-
-// function formatTime(val) {
-// 	if (val < 60) return `${val.toFixed(2)}s`;
-// 	if (val < 3600) return `${(val / 60).toFixed(2)}m`;
-// 	if (val < 3600 * 24)
-// 		return `${(val / 3600).toFixed(2)}h`;
-// }
 
 // function printSchedule(schedule, printbyWorker = false) {
 // 	if (!Array.isArray(schedule) || schedule.length === 0) {
@@ -362,7 +354,7 @@ export function generateSchedule(dataJSON, scheme = 'LPT', boost = 0) {
 		return { sch: resp, err: [true, "Failed to parse building data from JSON"] }
 	}
 
-	const { tasks, numWorkers } = constructTasks(dataJSON, 5);
+	const { tasks, numWorkers } = constructTasks(dataJSON, boost);
 
 	const schedule = myScheduler(dataJSON, tasks, numWorkers, scheme);
 

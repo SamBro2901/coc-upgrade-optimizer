@@ -84,7 +84,7 @@ export function TimelineCards({
 							{t.id} · L{t.level}
 						</div>
 						<div style={{ fontSize: 13, color: '#475569', marginTop: 2 }}>
-							Builder {Number(t.worker) + 1} · Class {t.iter}
+							Builder {Number(t.worker) + 1} · #{t.iter}
 						</div>
 
 						{(() => {

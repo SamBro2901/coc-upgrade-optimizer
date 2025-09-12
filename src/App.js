@@ -1,16 +1,28 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import clsx from "clsx";
 import { generateSchedule } from './scheduler.js';
 import "./App.css";
-
+import { BUILDING_COLORS } from "./colorMap";
 import { TimelineCards } from "./TimelineCards.jsx";
 
-function formatTime(val) {
-  if (val < 60) return `${Number(Math.round(val + 'e' + 2) + 'e-' + 2)}s`;
-  if (val < 3600) return `${Number(Math.round((val / 60) + 'e' + 2) + 'e-' + 2)}m`;
-  return `${Number(Math.round((val / 3600) + 'e' + 2) + 'e-' + 2)}h`;
-}
+function formatDuration(seconds) {
+  const days = Math.floor(seconds / (24 * 60 * 60));
+  seconds %= 24 * 60 * 60;
 
+  const hours = Math.floor(seconds / 3600);
+  seconds %= 3600;
+
+  const minutes = Math.floor(seconds / 60);
+  seconds %= 60;
+
+  const parts = [];
+  if (days > 0) parts.push(`${days}d`);
+  if (hours > 0) parts.push(`${hours}h`);
+  if (minutes > 0) parts.push(`${minutes}m`);
+  if (seconds > 0) parts.push(`${seconds}s`);
+
+  return parts.length > 0 ? parts.join(" ") : "0s";
+}
 
 function getNiceStep(pxPerSec) {
   const targetPx = 120;           // aim for ~120px between ticks
@@ -304,8 +316,8 @@ function GanttChart({ tasks, groupBy = "worker", pxPerSec = 0.03, toPxPerSec, cl
             const x = 120 + (t.start - minStart) * pxPerSec;
             const w = Math.max(2, (t.end - t.start) * pxPerSec);
             const isDone = doneKeys?.has(taskKeyFn(t));
-            const hrs = formatTime(t.duration); //Math.round(((t.end - t.start) / 3600) * 10) / 10
-            const label = `${t.id} L${t.level} ${t.iter} (${hrs})`;
+            const hrs = formatDuration(t.duration);
+            const label = `${t.id} L${t.level} #${t.iter} (${hrs})`;
             return (
               <g key={i}>
                 <rect x={x} y={y} width={w} height={rowHeight - 8} rx="6" ry="6" fill={fill} opacity="0.92" style={{
@@ -322,7 +334,7 @@ function GanttChart({ tasks, groupBy = "worker", pxPerSec = 0.03, toPxPerSec, cl
                 <text x={x + 10} y={y + (rowHeight - 8) * 0.62} fontSize="13" fontWeight={500} fill="#0f172a" clipPath={`url(#clip-${i})`}>
                   {label}
                 </text>
-                <title>{`${t.id} L${t.level}\n• Builder ${t.worker + 1}\n• Group: ${t.iter}\n• Start ${formatTime(t.start)} • End ${formatTime(t.end)}\n• Duration ${formatTime(t.duration)}`}</title>
+                <title>{`${t.id} L${t.level}\n• Builder ${t.worker + 1}\n• Group: ${t.iter}\n• Start ${formatDuration(t.start)} • End ${formatDuration(t.end)}\n• Duration ${formatDuration(t.duration)}`}</title>
               </g>
             );
           })}
@@ -505,32 +517,12 @@ const btnSecondary = { ...btnBase, background: "#fff", color: "#0f172a", borderC
 const btnGhost = { ...btnBase, background: "transparent", color: "#0f172a", borderColor: "#e5e7eb" };
 
 // 20-color palette (good contrast with black text)
-const PALETTE = [
-  "#A1C9F5", "#B3E0C9", "#89D9D9", "#C4E8D7", "#A4E5F5", "#F6C8E6", "#E0BBE4", "#F5C5C7",
-  "#D0B4F5", "#F5D6E1", "#FDFD96", "#FEE1C7", "#FAD2A6", "#FCE7A4", "#FFDDAA", "#C9D7F5",
-  "#BDECB6", "#FAD2D4", "#D4A5A5", "#A2CFFE", "#CEF6D3", "#D9B3E0", "#D2C4D2", "#FBC0B3",
-  "#FFB7B2", "#B8D8F4", "#B2EBF2", "#ECC9EE", "#DDA0DD", "#FAD4D4"
-];
-
-// tiny seeded RNG (mulberry32) so the shuffle is stable for a given seed
-function mulberry32(seed) {
-  return function () {
-    let t = (seed += 0x6D2B79F5);
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-// Fisher–Yates using provided rng()
-function shuffleWithRng(arr, rng) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+// const PALETTE = [
+//   "#A1C9F5", "#B3E0C9", "#89D9D9", "#C4E8D7", "#A4E5F5", "#F6C8E6", "#E0BBE4", "#F5C5C7",
+//   "#D0B4F5", "#F5D6E1", "#FDFD96", "#FEE1C7", "#FAD2A6", "#FCE7A4", "#FFDDAA", "#C9D7F5",
+//   "#BDECB6", "#FAD2D4", "#D4A5A5", "#A2CFFE", "#CEF6D3", "#D9B3E0", "#D2C4D2", "#FBC0B3",
+//   "#FFB7B2", "#B8D8F4", "#B2EBF2", "#ECC9EE", "#DDA0DD", "#FAD4D4"
+// ];
 
 const taskKey = (t) => `${t.id}|L${t.level}|w${t.worker}|${t.start}-${t.end}`;
 
@@ -565,16 +557,9 @@ export default function App() {
   const [zoom, setZoom] = useState(() => toZoom(DEFAULT_PX_PER_SEC));
   const pxPerSec = toPxPerSec(zoom);
 
-  const colorMapRef = React.useRef({});  // persistent mapping
-  const paletteRef = React.useRef([...PALETTE]); // simple copy
 
-  const colorForId = (id) => {
-    const m = colorMapRef.current;
-    if (!m[id]) {
-      const nextIdx = Object.keys(m).length % paletteRef.current.length;
-      m[id] = paletteRef.current[nextIdx];
-    }
-    return m[id];
+  const colorForId = (name) => {
+    return BUILDING_COLORS[name] || "#94a3b8"; // fallback gray
   };
 
   const toggleDone = (task) => {
@@ -600,17 +585,6 @@ export default function App() {
 
     sch.schedule.forEach(t => { colorForId(t.id); });
   };
-
-  useEffect(() => {
-    let seed = Date.now();
-    try {
-      const u32 = new Uint32Array(1);
-      crypto.getRandomValues(u32);
-      seed = u32[0] || seed;
-    } catch { }
-    const rng = mulberry32(seed);
-    paletteRef.current = shuffleWithRng(PALETTE, rng);
-  }, []);
 
 
   return (
@@ -666,12 +640,12 @@ export default function App() {
                 className="select-dropdown"
               >
                 <option value={0}>0%</option>
-                <option value={5}>5%</option>
-                <option value={10}>10%</option>
-                <option value={15}>15%</option>
-                <option value={20}>20%</option>
-                <option value={25}>25%</option>
-                <option value={30}>30%</option>
+                <option value={0.05}>5%</option>
+                <option value={0.10}>10%</option>
+                <option value={0.15}>15%</option>
+                <option value={0.20}>20%</option>
+                <option value={0.25}>25%</option>
+                <option value={0.30}>30%</option>
               </select>
             </div>
 
