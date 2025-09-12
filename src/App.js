@@ -11,17 +11,110 @@ function formatTime(val) {
   return `${Number(Math.round((val / 3600) + 'e' + 2) + 'e-' + 2)}h`;
 }
 
+function getNiceStep(pxPerSec) {
+  const targetPx = 120;           // aim for ~120px between ticks
+  const targetSec = targetPx / pxPerSec;
+  const candidates = [60, 300, 600, 1800, 3600, 7200, 14400, 21600, 43200, 86400];
+  return candidates.reduce((best, c) =>
+    Math.abs(c - targetSec) < Math.abs(best - targetSec) ? c : best
+  );
+}
+
 /** ---------- GanttChart component (SVG) ---------- */
-function GanttChart({
-  tasks,
-  groupBy = "worker",
-  pxPerSec = 0.03,
-  colorForId,
-  doneKeys, onToggle, taskKeyFn,
-  rowHeight = 34,
-  rowGap = 6,
-  axisHeight = 28,
-}) {
+function GanttChart({ tasks, groupBy = "worker", pxPerSec = 0.03, toPxPerSec, clampZoom, setZoom, colorForId, doneKeys, onToggle, taskKeyFn, rowHeight = 34, rowGap = 6, axisHeight = 28, }) {
+
+  const containerRef = React.useRef(null);
+  const lastPinch = React.useRef(null);
+
+  React.useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    // mouse wheel zoom
+    function onWheel(e) {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+
+        const rect = el.getBoundingClientRect();
+        const cursorX = e.clientX - rect.left;
+        const zoomPoint = el.scrollLeft + cursorX;
+
+        setZoom((oldZoom) => {
+          const delta = e.deltaY > 0 ? -0.05 : 0.05;
+          const newZoom = clampZoom(oldZoom + delta);
+
+          const oldPx = toPxPerSec(oldZoom);
+          const newPx = toPxPerSec(newZoom);
+          const scale = newPx / oldPx;
+
+          // Adjust scroll immediately so it feels fixed under cursor
+          el.scrollLeft = zoomPoint * scale - cursorX;
+
+          return newZoom;
+        });
+      }
+    }
+
+
+
+    // pinch zoom
+    function onTouchStart(e) {
+      if (e.touches.length === 2) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        lastPinch.current = Math.sqrt(dx * dx + dy * dy);
+      }
+    }
+    function onTouchMove(e) {
+      if (e.touches.length === 2 && lastPinch.current) {
+        e.preventDefault();
+
+        const rect = el.getBoundingClientRect();
+        const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
+        const zoomPoint = el.scrollLeft + midX;
+
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const factor = dist / lastPinch.current;
+
+        setZoom((oldZoom) => {
+          const newZoom = clampZoom(oldZoom * factor);
+
+          const oldPx = toPxPerSec(oldZoom);
+          const newPx = toPxPerSec(newZoom);
+          const scale = newPx / oldPx;
+
+          el.scrollLeft = zoomPoint * scale - midX;
+
+          return newZoom;
+        });
+
+        lastPinch.current = dist;
+      }
+    }
+
+    function onTouchEnd() {
+      lastPinch.current = null;
+    }
+
+    el.addEventListener("wheel", onWheel, { passive: false });
+    el.addEventListener("touchstart", onTouchStart, { passive: false });
+    el.addEventListener("touchmove", onTouchMove, { passive: false });
+    el.addEventListener("touchend", onTouchEnd);
+    el.addEventListener("touchcancel", onTouchEnd);
+
+    return () => {
+      el.removeEventListener("wheel", onWheel);
+      el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchmove", onTouchMove);
+      el.removeEventListener("touchend", onTouchEnd);
+      el.removeEventListener("touchcancel", onTouchEnd);
+    };
+    // eslint-disable-next-line
+  }, [setZoom]);
+
+
   const meta = useMemo(() => {
     if (!tasks?.length) {
       return {
@@ -47,46 +140,36 @@ function GanttChart({
     () => [...new Set(tasks.map(t => String(t.id)))],
     [tasks]
   );
-  const hoursTotal = (maxEnd - minStart) / 3600;
-  const tickEveryHours = hoursTotal > 24 ? 4 : hoursTotal > 8 ? 2 : 1;
+  // const hoursTotal = (maxEnd - minStart) / 3600;
+  // const tickEveryHours = hoursTotal > 24 ? 4 : hoursTotal > 8 ? 2 : 1;
 
-  // const colorMap = React.useMemo(() => {
-  //   const palette = [
-  //     "#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF",
-  //     "#E3BAFF", "#FFD6E0", "#C7FFD8", "#FFF5BA", "#BAFFD6",
-  //     "#FFD1BA", "#D6FFBA", "#FFBABA", "#BAE7FF", "#E0BAFF",
-  //     "#FFE0BA", "#BAFFD4", "#FFBAF2", "#E0FFBA", "#BAC2FF",
-  //     "#FFC2BA", "#C2FFBA", "#BAFFC2", "#C2BAFF", "#FFBAC2",
-  //     "#BAFFF2", "#FFDABA", "#F2FFBA", "#BACFFF", "#FFBAE1"
-  //   ];
-  //   const map = {};
-  //   uniqueIds.forEach((id, i) => { map[id] = palette[i % palette.length]; });
-  //   return map;
-  // }, [uniqueIds]);
+  const tickStep = getNiceStep(pxPerSec);
+
 
   return (
     <div>
-      <div style={{
-        overflow: "auto",
-        border: "1px solid #e5e7eb",
-        borderRadius: 14,
-        background: "#fff",
-        boxShadow: "0 2px 12px #e0e7ff"
-      }}>
+      <div
+        ref={containerRef}
+        style={{
+          overflow: "auto",
+          border: "1px solid #e5e7eb",
+          borderRadius: 14,
+          background: "#fff",
+          boxShadow: "0 2px 12px #e0e7ff"
+        }}>
         <svg width={width} height={height} style={{ display: "block" }}>
           <rect x="0" y="0" width={width} height={height} fill="#fff" />
           <rect x="120" y="0" width={width - 120} height={axisHeight} fill="#f8fafc" />
           <rect x="0" y="0" width="120" height={height} fill="#f9fafb" />
 
           {/* Axis */}
-          {Array.from({ length: Math.floor(hoursTotal / tickEveryHours) + 1 }).map((_, i) => {
-            const hour = i * tickEveryHours;
-            const sec = minStart + hour * 3600;
+          {Array.from({ length: Math.floor((maxEnd - minStart) / tickStep) + 1 }).map((_, i) => {
+            const sec = minStart + i * tickStep;
             const x = 120 + (sec - minStart) * pxPerSec;
             return (
               <g key={i}>
                 <line x1={x} x2={x} y1={0} y2={height} stroke="#e5e7eb" />
-                <text x={x + 4} y={18} fontSize="12" fontWeight={500} fill="#475569">{`${hour}h`}</text>
+                <text x={x + 4} y={18} fontSize="12" fontWeight={500} fill="#475569">{formatTime(sec - minStart)}</text>
               </g>
             );
           })}
@@ -331,36 +414,10 @@ const btnGhost = { ...btnBase, background: "transparent", color: "#0f172a", bord
 
 // 20-color palette (good contrast with black text)
 const PALETTE = [
-  "#A1C9F5",
-  "#B3E0C9",
-  "#89D9D9",
-  "#C4E8D7",
-  "#A4E5F5",
-  "#F6C8E6",
-  "#E0BBE4",
-  "#F5C5C7",
-  "#D0B4F5",
-  "#F5D6E1",
-  "#FDFD96",
-  "#FEE1C7",
-  "#FAD2A6",
-  "#FCE7A4",
-  "#FFDDAA",
-  "#C9D7F5",
-  "#BDECB6",
-  "#FAD2D4",
-  "#D4A5A5",
-  "#A2CFFE",
-  "#CEF6D3",
-  "#D9B3E0",
-  "#D2C4D2",
-  "#FBC0B3",
-  "#FFB7B2",
-  "#B8D8F4",
-  "#B2EBF2",
-  "#ECC9EE",
-  "#DDA0DD",
-  "#FAD4D4"
+  "#A1C9F5", "#B3E0C9", "#89D9D9", "#C4E8D7", "#A4E5F5", "#F6C8E6", "#E0BBE4", "#F5C5C7",
+  "#D0B4F5", "#F5D6E1", "#FDFD96", "#FEE1C7", "#FAD2A6", "#FCE7A4", "#FFDDAA", "#C9D7F5",
+  "#BDECB6", "#FAD2D4", "#D4A5A5", "#A2CFFE", "#CEF6D3", "#D9B3E0", "#D2C4D2", "#FBC0B3",
+  "#FFB7B2", "#B8D8F4", "#B2EBF2", "#ECC9EE", "#DDA0DD", "#FAD4D4"
 ];
 
 // tiny seeded RNG (mulberry32) so the shuffle is stable for a given seed
@@ -385,6 +442,19 @@ function shuffleWithRng(arr, rng) {
 
 const taskKey = (t) => `${t.id}|L${t.level}|w${t.worker}|${t.start}-${t.end}`;
 
+// ---- zoom constants + helpers ----
+const MIN = 0.005;
+const MAX = 7;
+
+export const toPxPerSec = (z) => MIN * Math.pow(MAX / MIN, z);
+export const toZoom = (p) => Math.log(p / MIN) / Math.log(MAX / MIN);
+
+// clamp normalized zoom to [ZOOM_MIN, ZOOM_MAX]
+const ZOOM_MIN = 0.1;
+const ZOOM_MAX = 0.9;
+export const clampZoom = (z) => Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, z));
+
+
 /** ---------- App with exponential zoom ---------- */
 export default function App() {
   // const [builders, setBuilders] = useState(5);
@@ -398,12 +468,21 @@ export default function App() {
   const [scheduleType, setScheduleType] = useState("Longest Processing Time (LPT)");
 
   // Zoom mapping (exponential)
-  const MIN = 0.005;
-  const MAX = 7;
-  const DEFAULT_PX_PER_SEC = 0.03;
+  // const MIN = 0.005;
+  // const MAX = 7;
+  // const DEFAULT_PX_PER_SEC = 0.03;
 
-  const toPxPerSec = (z) => MIN * Math.pow(MAX / MIN, z);
-  const toZoom = (p) => Math.log(p / MIN) / Math.log(MAX / MIN);
+  // const ZOOM_MIN = 0.1; // 10% = not so far out
+  // const ZOOM_MAX = 0.9; // 90% = not maximum in
+
+  // const clampZoom = (z) => Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, z));
+
+  // const toPxPerSec = (z) => MIN * Math.pow(MAX / MIN, z);
+  // const toZoom = (p) => Math.log(p / MIN) / Math.log(MAX / MIN);
+
+  const DEFAULT_PX_PER_SEC = 0.03;
+  const [zoom, setZoom] = useState(() => toZoom(DEFAULT_PX_PER_SEC));
+  const pxPerSec = toPxPerSec(zoom);
 
   const colorMapRef = React.useRef({});  // persistent mapping
   const paletteRef = React.useRef([...PALETTE]); // simple copy
@@ -417,9 +496,6 @@ export default function App() {
     return m[id];
   };
 
-  const [zoom, setZoom] = useState(() => toZoom(DEFAULT_PX_PER_SEC));
-  const pxPerSec = toPxPerSec(zoom);
-
   const toggleDone = (task) => {
     const k = taskKey(task);
     setDoneKeys(prev => {
@@ -428,13 +504,6 @@ export default function App() {
       return next;
     });
   };
-
-  // UI helpers
-  const pxPerHour = Math.round(pxPerSec * 3600);
-  const clamp01 = (v) => Math.min(1, Math.max(0, v));
-  const zoomIn = () => setZoom((z) => clamp01(z + 0.08));
-  const zoomOut = () => setZoom((z) => clamp01(z - 0.08));
-  const reset = () => setZoom(toZoom(DEFAULT_PX_PER_SEC));
 
   const runSchedule = (jD, strategy) => {
     if (!jD) {
@@ -448,30 +517,10 @@ export default function App() {
     setMakespan(sch.makespan);
     setScheduleType(strategy === "SPT" ? "Shortest Processing Time (SPT)" : "Longest Processing Time (LPT)");
 
-    // 🔑 ensure all ids get mapped now
     sch.schedule.forEach(t => { colorForId(t.id); });
   };
 
-  // const handleGenerateSPT = () => {
-  //   if (!jsonData) { setErr(true); return; }
-  //   const { sch, err } = generateSchedule(jsonData, "SPT");
-  //   setErr(err);
-  //   setTasks(sch.schedule);
-  //   setMakespan(sch.makespan);
-  //   setScheduleType("Shortest Processing Time (SPT)");
-  // };
-
-  // const handleGenerateLPT = () => {
-  //   if (!jsonData) { setErr(true); return; }
-  //   const { sch, err } = generateSchedule(jsonData, "LPT");
-  //   setErr(err);
-  //   setTasks(sch.schedule);
-  //   setMakespan(sch.makespan);
-  //   setScheduleType("Longest Processing Time (LPT)");
-  // };
-
   useEffect(() => {
-    // Seed from crypto (falls back to Date.now if unavailable)
     let seed = Date.now();
     try {
       const u32 = new Uint32Array(1);
@@ -481,18 +530,6 @@ export default function App() {
     const rng = mulberry32(seed);
     paletteRef.current = shuffleWithRng(PALETTE, rng);
   }, []);
-
-  // Call this to get a color for any id (assigns once, then reuses)
-  // const colorForId = (id) => {
-  //   const key = String(id);
-  //   const m = colorMapRef.current;
-  //   if (!m[key]) {
-  //     const nextIdx = Object.keys(m).length % (paletteRef.current.length || PALETTE.length);
-  //     const palette = paletteRef.current.length ? paletteRef.current : PALETTE;
-  //     m[key] = palette[nextIdx];
-  //   }
-  //   return m[key];
-  // };
 
 
   return (
@@ -592,26 +629,8 @@ export default function App() {
                   </div>
                 </span>
               </div>
-
-              <div className="slider-group" title="Zoom timeline" style={{ minWidth: 320, maxWidth: 506, marginBottom: 12 }}>
-                <button className="button secondary" style={{ fontSize: 16 }} onClick={zoomOut} aria-label="Zoom out">–</button>
-                <input
-                  className="range"
-                  type="range"
-                  min={0}
-                  max={1}
-                  step={0.01}
-                  value={zoom}
-                  onChange={(e) => setZoom(Number(e.target.value))}
-                />
-                <button className="button secondary" style={{ fontSize: 16 }} onClick={zoomIn} aria-label="Zoom in">+</button>
-                <button className="button ghost" style={{ fontSize: 14 }} onClick={reset}>Reset</button>
-                <span style={{ fontSize: 13, color: "var(--muted)" }}>
-                  {pxPerHour} px/hr · {(zoom * 100).toFixed(0)}%
-                </span>
-              </div>
               <div className="chart-shell" style={{ background: "#fff", borderRadius: 16, boxShadow: "0 2px 12px #e0e7ff" }}>
-                <GanttChart tasks={tasks} groupBy="worker" pxPerSec={pxPerSec} colorForId={colorForId} doneKeys={doneKeys} onToggle={toggleDone} taskKeyFn={taskKey} />
+                <GanttChart tasks={tasks} groupBy="worker" pxPerSec={pxPerSec} toPxPerSec={toPxPerSec} clampZoom={clampZoom} setZoom={setZoom} colorForId={colorForId} doneKeys={doneKeys} onToggle={toggleDone} taskKeyFn={taskKey} />
               </div>
             </div>
           </div>
