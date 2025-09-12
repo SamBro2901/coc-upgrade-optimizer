@@ -45,7 +45,7 @@
 
 	"28000000": "BarbarianKing",
 	"28000001": "ArcherQueen",
-	"28000002": "MinionPrince",
-	"28000003": "GrandWarden",
-	"28000004": "RoyalChampion"
+	"28000002": "GrandWarden",
+	"28000004": "RoyalChampion",
+	"28000006": "MinionPrince"
 }

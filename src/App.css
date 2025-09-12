@@ -171,6 +171,10 @@ a, a:hover, a:visited, a:active {
   background: #fff;
 }
 
+.chart-shell svg {
+  transition: transform 0.15s ease-out;
+}
+
 /* Legend */
 .legend {
   margin-top: 10px;

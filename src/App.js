@@ -11,6 +11,24 @@ function formatTime(val) {
   return `${Number(Math.round((val / 3600) + 'e' + 2) + 'e-' + 2)}h`;
 }
 
+function formatClockLabel(epochSec) {
+  const d = new Date(epochSec * 1000);
+  const hh = d.getHours();
+  const mm = d.getMinutes();
+
+  // Show DD/MM only if tick is exactly midnight (00:00), not every tick in 00:xx
+  if (hh === 0 && mm === 0) {
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    return `${day}/${month}`;
+  }
+
+  return `${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
+}
+
+
+
+
 function getNiceStep(pxPerSec) {
   const targetPx = 120;           // aim for ~120px between ticks
   const targetSec = targetPx / pxPerSec;
@@ -26,9 +44,71 @@ function GanttChart({ tasks, groupBy = "worker", pxPerSec = 0.03, toPxPerSec, cl
   const containerRef = React.useRef(null);
   const lastPinch = React.useRef(null);
 
+
+  const isDragging = React.useRef(false);
+  const dragStartX = React.useRef(0);
+  const scrollStartX = React.useRef(0);
+
+  const velocity = React.useRef(0);
+  const lastX = React.useRef(0);
+  const lastTime = React.useRef(0);
+  const momentumId = React.useRef(null);
+
+
   React.useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
+
+    // Mouse Pan
+    function onMouseDown(e) {
+      if (e.button !== 0) return;
+      isDragging.current = true;
+      dragStartX.current = e.clientX;
+      scrollStartX.current = el.scrollLeft;
+      lastX.current = e.clientX;
+      lastTime.current = performance.now();
+      if (momentumId.current) {
+        cancelAnimationFrame(momentumId.current);
+        momentumId.current = null;
+      }
+      el.style.cursor = "grabbing";
+      e.preventDefault();
+    }
+
+    function onMouseMove(e) {
+      if (!isDragging.current) return;
+      const dx = e.clientX - dragStartX.current;
+      el.scrollLeft = scrollStartX.current - dx;
+
+      // calculate velocity
+      const now = performance.now();
+      const dt = now - lastTime.current;
+      if (dt > 0) {
+        velocity.current = (lastX.current - e.clientX) / dt; // px/ms
+        lastX.current = e.clientX;
+        lastTime.current = now;
+      }
+    }
+
+    function onMouseUp() {
+      if (!isDragging.current) return;
+      isDragging.current = false;
+      el.style.cursor = "grab";
+
+      // start momentum animation
+      const decay = 0.95; // friction factor (closer to 1 = slower stop)
+      const step = () => {
+        el.scrollLeft += velocity.current * 16; // 16ms/frame approx
+        velocity.current *= decay;
+        if (Math.abs(velocity.current) > 0.01) {
+          momentumId.current = requestAnimationFrame(step);
+        } else {
+          momentumId.current = null;
+        }
+      };
+      momentumId.current = requestAnimationFrame(step);
+    }
+
 
     // mouse wheel zoom
     function onWheel(e) {
@@ -36,8 +116,8 @@ function GanttChart({ tasks, groupBy = "worker", pxPerSec = 0.03, toPxPerSec, cl
         e.preventDefault();
 
         const rect = el.getBoundingClientRect();
-        const cursorX = e.clientX - rect.left;
-        const zoomPoint = el.scrollLeft + cursorX;
+        const midX = rect.width / 2;
+        const zoomPoint = el.scrollLeft + midX;
 
         setZoom((oldZoom) => {
           const delta = e.deltaY > 0 ? -0.05 : 0.05;
@@ -48,7 +128,7 @@ function GanttChart({ tasks, groupBy = "worker", pxPerSec = 0.03, toPxPerSec, cl
           const scale = newPx / oldPx;
 
           // Adjust scroll immediately so it feels fixed under cursor
-          el.scrollLeft = zoomPoint * scale - cursorX;
+          el.scrollLeft = zoomPoint * scale - midX;
 
           return newZoom;
         });
@@ -70,7 +150,7 @@ function GanttChart({ tasks, groupBy = "worker", pxPerSec = 0.03, toPxPerSec, cl
         e.preventDefault();
 
         const rect = el.getBoundingClientRect();
-        const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
+        const midX = rect.width / 2;
         const zoomPoint = el.scrollLeft + midX;
 
         const dx = e.touches[0].clientX - e.touches[1].clientX;
@@ -104,12 +184,23 @@ function GanttChart({ tasks, groupBy = "worker", pxPerSec = 0.03, toPxPerSec, cl
     el.addEventListener("touchend", onTouchEnd);
     el.addEventListener("touchcancel", onTouchEnd);
 
+    //Mouse Pan
+    el.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+
     return () => {
       el.removeEventListener("wheel", onWheel);
       el.removeEventListener("touchstart", onTouchStart);
       el.removeEventListener("touchmove", onTouchMove);
       el.removeEventListener("touchend", onTouchEnd);
       el.removeEventListener("touchcancel", onTouchEnd);
+      el.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+      if (momentumId.current) {
+        cancelAnimationFrame(momentumId.current);
+      }
     };
     // eslint-disable-next-line
   }, [setZoom]);
@@ -144,6 +235,12 @@ function GanttChart({ tasks, groupBy = "worker", pxPerSec = 0.03, toPxPerSec, cl
   // const tickEveryHours = hoursTotal > 24 ? 4 : hoursTotal > 8 ? 2 : 1;
 
   const tickStep = getNiceStep(pxPerSec);
+  const epochNow = Math.floor(Date.now() / 1000);
+
+  // Align the first tick to the nearest tickStep boundary in real time
+  const firstTick = epochNow - (epochNow % tickStep);
+
+  const numTicks = Math.floor((maxEnd - minStart) / tickStep) + 5; // +5 safety buffer
 
 
   return (
@@ -152,6 +249,7 @@ function GanttChart({ tasks, groupBy = "worker", pxPerSec = 0.03, toPxPerSec, cl
         ref={containerRef}
         style={{
           overflow: "auto",
+          cursor: "grab",
           border: "1px solid #e5e7eb",
           borderRadius: 14,
           background: "#fff",
@@ -162,14 +260,38 @@ function GanttChart({ tasks, groupBy = "worker", pxPerSec = 0.03, toPxPerSec, cl
           <rect x="120" y="0" width={width - 120} height={axisHeight} fill="#f8fafc" />
           <rect x="0" y="0" width="120" height={height} fill="#f9fafb" />
 
+
           {/* Axis */}
-          {Array.from({ length: Math.floor((maxEnd - minStart) / tickStep) + 1 }).map((_, i) => {
+          {Array.from({ length: numTicks }).map((_, i) => {
             const sec = minStart + i * tickStep;
             const x = 120 + (sec - minStart) * pxPerSec;
+
+            // Compute epoch time for this tick
+            const tickEpoch = Math.floor(Date.now() / 1000) + (sec - minStart);
+            const tickDate = new Date(tickEpoch * 1000);
+
+            // Compare with previous tick
+            let showDate = false;
+            if (i > 0) {
+              const prevSec = minStart + (i - 1) * tickStep;
+              const prevEpoch = Math.floor(Date.now() / 1000) + (prevSec - minStart);
+              const prevDate = new Date(prevEpoch * 1000);
+
+              if (tickDate.getDate() !== prevDate.getDate() ||
+                tickDate.getMonth() !== prevDate.getMonth() ||
+                tickDate.getFullYear() !== prevDate.getFullYear()) {
+                showDate = true;
+              }
+            }
+
             return (
               <g key={i}>
                 <line x1={x} x2={x} y1={0} y2={height} stroke="#e5e7eb" />
-                <text x={x + 4} y={18} fontSize="12" fontWeight={500} fill="#475569">{formatTime(sec - minStart)}</text>
+                <text x={x + 4} y={18} fontSize="12" fontWeight={showDate ? 700 : 500} fill="#475569">
+                  {showDate
+                    ? `${String(tickDate.getDate()).padStart(2, "0")}/${String(tickDate.getMonth() + 1).padStart(2, "0")}`
+                    : `${String(tickDate.getHours()).padStart(2, "0")}:${String(tickDate.getMinutes()).padStart(2, "0")}`}
+                </text>
               </g>
             );
           })}
@@ -450,7 +572,7 @@ export const toPxPerSec = (z) => MIN * Math.pow(MAX / MIN, z);
 export const toZoom = (p) => Math.log(p / MIN) / Math.log(MAX / MIN);
 
 // clamp normalized zoom to [ZOOM_MIN, ZOOM_MAX]
-const ZOOM_MIN = 0.1;
+const ZOOM_MIN = 0.01;
 const ZOOM_MAX = 0.9;
 export const clampZoom = (z) => Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, z));
 
@@ -629,6 +751,7 @@ export default function App() {
                   </div>
                 </span>
               </div>
+              <span>Tip: Pinch or Ctrl + Mouse Wheel to zoom in and out</span>
               <div className="chart-shell" style={{ background: "#fff", borderRadius: 16, boxShadow: "0 2px 12px #e0e7ff" }}>
                 <GanttChart tasks={tasks} groupBy="worker" pxPerSec={pxPerSec} toPxPerSec={toPxPerSec} clampZoom={clampZoom} setZoom={setZoom} colorForId={colorForId} doneKeys={doneKeys} onToggle={toggleDone} taskKeyFn={taskKey} />
               </div>
