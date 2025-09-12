@@ -11,23 +11,6 @@ function formatTime(val) {
   return `${Number(Math.round((val / 3600) + 'e' + 2) + 'e-' + 2)}h`;
 }
 
-function formatClockLabel(epochSec) {
-  const d = new Date(epochSec * 1000);
-  const hh = d.getHours();
-  const mm = d.getMinutes();
-
-  // Show DD/MM only if tick is exactly midnight (00:00), not every tick in 00:xx
-  if (hh === 0 && mm === 0) {
-    const day = String(d.getDate()).padStart(2, "0");
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    return `${day}/${month}`;
-  }
-
-  return `${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
-}
-
-
-
 
 function getNiceStep(pxPerSec) {
   const targetPx = 120;           // aim for ~120px between ticks
@@ -235,11 +218,6 @@ function GanttChart({ tasks, groupBy = "worker", pxPerSec = 0.03, toPxPerSec, cl
   // const tickEveryHours = hoursTotal > 24 ? 4 : hoursTotal > 8 ? 2 : 1;
 
   const tickStep = getNiceStep(pxPerSec);
-  const epochNow = Math.floor(Date.now() / 1000);
-
-  // Align the first tick to the nearest tickStep boundary in real time
-  const firstTick = epochNow - (epochNow % tickStep);
-
   const numTicks = Math.floor((maxEnd - minStart) / tickStep) + 5; // +5 safety buffer
 
 
@@ -396,14 +374,6 @@ function Legend({ items }) {
   );
 }
 
-/**
- * JsonInput (resizable both axes + size persistence)
- * Props:
- *  - label?: string
- *  - initial?: object | string
- *  - onValid?: (obj:any)=>void
- *  - storageKey?: string   // optional key to persist size
- */
 export function JsonInput({ label = "JSON Input", initial = "", onValid, onValidityChange, storageKey = "JSON" }) {
   // const [text, setText] = React.useState(initial);
   const [text, setText] = React.useState(
@@ -589,18 +559,7 @@ export default function App() {
   const [err, setErr] = useState(false);
   const [scheduleType, setScheduleType] = useState("Longest Processing Time (LPT)");
 
-  // Zoom mapping (exponential)
-  // const MIN = 0.005;
-  // const MAX = 7;
-  // const DEFAULT_PX_PER_SEC = 0.03;
-
-  // const ZOOM_MIN = 0.1; // 10% = not so far out
-  // const ZOOM_MAX = 0.9; // 90% = not maximum in
-
-  // const clampZoom = (z) => Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, z));
-
-  // const toPxPerSec = (z) => MIN * Math.pow(MAX / MIN, z);
-  // const toZoom = (p) => Math.log(p / MIN) / Math.log(MAX / MIN);
+  const [selectedPct, setSelectedPct] = useState(0); // default 0%
 
   const DEFAULT_PX_PER_SEC = 0.03;
   const [zoom, setZoom] = useState(() => toZoom(DEFAULT_PX_PER_SEC));
@@ -633,7 +592,7 @@ export default function App() {
       setErr(true);
       return;
     }
-    const { sch, err } = generateSchedule(jsonData, strategy);
+    const { sch, err } = generateSchedule(jsonData, strategy, selectedPct);
     setErr(err);
     setTasks(sch.schedule);
     setMakespan(sch.makespan);
@@ -699,6 +658,23 @@ export default function App() {
             onValidityChange={setJsonValid}
           />
           <div className="controls">
+            <div className="builder-bonus-container">
+              <span className="builder-bonus-label">Builder Bonus:</span>
+              <select
+                value={selectedPct}
+                onChange={(e) => setSelectedPct(Number(e.target.value))}
+                className="select-dropdown"
+              >
+                <option value={0}>0%</option>
+                <option value={5}>5%</option>
+                <option value={10}>10%</option>
+                <option value={15}>15%</option>
+                <option value={20}>20%</option>
+                <option value={25}>25%</option>
+                <option value={30}>30%</option>
+              </select>
+            </div>
+
             <button disabled={!jsonValid} className="button" style={{ fontSize: 16, padding: "12px 22px", borderRadius: 12 }} onClick={() => runSchedule(jsonData, "SPT")}>Generate SPT</button>
             <button disabled={!jsonValid} className="button" style={{ fontSize: 16, padding: "12px 22px", borderRadius: 12 }} onClick={() => runSchedule(jsonData, "LPT")}>Generate LPT</button>
           </div>

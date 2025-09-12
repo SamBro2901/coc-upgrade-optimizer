@@ -16,7 +16,7 @@ function formatClockOrDate(epochSec, prevEpochSec = null) {
 	const mm = String(d.getMinutes()).padStart(2, '0');
 	const timeStr = `${hh}:${mm}`;
 
-	// If we have a previous timestamp, check if day changed
+	// If day changed since previous tick
 	if (prevEpochSec != null) {
 		const prev = new Date(prevEpochSec * 1000);
 		const dayChanged =
@@ -27,15 +27,13 @@ function formatClockOrDate(epochSec, prevEpochSec = null) {
 		if (dayChanged) {
 			const dd = String(d.getDate()).padStart(2, '0');
 			const mon = String(d.getMonth() + 1).padStart(2, '0');
-			return { label: `${dd}/${mon} ${timeStr}`, isDate: true };
+			return { date: `${dd}/${mon}`, time: timeStr, isDate: true };
 		}
 	}
 
 	// Default → only time
-	return { label: timeStr, isDate: false };
+	return { date: null, time: timeStr, isDate: false };
 }
-
-// const taskKey = (t) => `${t.id}|L${t.level}|w${t.worker}|${t.start}-${t.end}`;
 
 export function TimelineCards({
 	tasks = [],
@@ -44,8 +42,6 @@ export function TimelineCards({
 	onToggle,
 	taskKeyFn,
 }) {
-	// const [done, setDone] = React.useState(() => new Set());
-
 	if (!tasks.length) return null;
 
 	// Chronological order
@@ -60,14 +56,6 @@ export function TimelineCards({
 			.reduce((sum, t) => sum + t.duration, 0);
 		makespan[w] = currMake;
 	}
-
-	// const toggleDone = (k) => {
-	//   setDone(prev => {
-	//     const next = new Set(prev);
-	//     if (next.has(k)) next.delete(k); else next.add(k);
-	//     return next;
-	//   });
-	// };
 
 	return (
 		<div style={{ display: 'grid', gap: 10 }}>
@@ -92,19 +80,6 @@ export function TimelineCards({
 							borderRadius: 10,
 						}}
 					>
-						{/* <div
-						key={i}
-						style={{
-							border: "1px solid #b7b8bbff",
-							borderRadius: 12,
-							background: colorForId(t.id),
-							padding: 12,
-							marginRight: 1,
-							marginTop: 4,
-							marginLeft: 4,
-							boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
-						}}
-					> */}
 						<div style={{ fontWeight: 600, fontSize: 15 }}>
 							{t.id} · L{t.level}
 						</div>
@@ -122,12 +97,18 @@ export function TimelineCards({
 
 							return (
 								<div style={{ fontSize: 13, color: '#475569', marginTop: 6 }}>
-									<span style={{ fontWeight: startLabel.isDate ? 700 : 500 }}>
-										{startLabel.label}
+									<span>
+										{startLabel.date && (
+											<span style={{ fontWeight: 700 }}>{startLabel.date}</span>
+										)}
+										{startLabel.date ? ` ${startLabel.time}` : startLabel.time}
 									</span>
 									{' → '}
-									<span style={{ fontWeight: endLabel.isDate ? 700 : 500 }}>
-										{endLabel.label}
+									<span>
+										{endLabel.date && (
+											<span style={{ fontWeight: 700 }}>{endLabel.date}</span>
+										)}
+										{endLabel.date ? ` ${endLabel.time}` : endLabel.time}
 									</span>
 								</div>
 							);

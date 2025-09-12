@@ -276,18 +276,38 @@ function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT') {
 
 	completed.sort((a, b) => (a.start - b.start) || (a.worker - b.worker));
 	let makespan = completed.reduce((m, r) => Math.max(m, r.end), 0);
-	makespan = formatTime(makespan);
+	makespan = formatDuration(makespan);
 
 	return { schedule: completed, makespan };
 }
 
+function formatDuration(seconds) {
 
+	const days = Math.floor(seconds / (24 * 60 * 60));
+	seconds %= 24 * 60 * 60;
 
-function formatTime(val) {
-	if (val < 60) return `${val.toFixed(2)}s`;
-	if (val < 3600) return `${(val / 60).toFixed(2)}m`;
-	return `${(val / 3600).toFixed(2)}h`;
+	const hours = Math.floor(seconds / 3600);
+	seconds %= 3600;
+
+	const minutes = Math.floor(seconds / 60);
+	seconds %= 60;
+
+	const parts = [];
+	if (days > 0) parts.push(`${days}d`);
+	if (hours > 0) parts.push(`${hours}h`);
+	if (minutes > 0) parts.push(`${minutes}m`);
+	if (seconds > 0) parts.push(`${seconds}s`);
+
+	return parts.length > 0 ? parts.join(" ") : "0s";
 }
+
+
+// function formatTime(val) {
+// 	if (val < 60) return `${val.toFixed(2)}s`;
+// 	if (val < 3600) return `${(val / 60).toFixed(2)}m`;
+// 	if (val < 3600 * 24)
+// 		return `${(val / 3600).toFixed(2)}h`;
+// }
 
 // function printSchedule(schedule, printbyWorker = false) {
 // 	if (!Array.isArray(schedule) || schedule.length === 0) {
@@ -335,7 +355,7 @@ function toISOString(seconds) {
 }
 
 
-export function generateSchedule(dataJSON, scheme = 'LPT') {
+export function generateSchedule(dataJSON, scheme = 'LPT', boost = 0) {
 
 	if (!dataJSON || !dataJSON.buildings || dataJSON.buildings?.length === 0) {
 		let resp = { schedule: [], makespan: 0 };
