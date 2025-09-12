@@ -70,7 +70,13 @@ function constructTasks(inputData) {
 
 		// Missing Buildings
 		if (currCount < maxBuilds[b]) {
-			const task = itemData[b].filter(item => item.TH > 0 && item.TH <= currTH).map(item => ({ id: b, level: item.level, duration: item.duration, priority: 2 })); // Immediate priority to build
+			let task = itemData[b].filter(item => item.TH > 0 && item.TH <= currTH).map(item => ({ id: b, level: item.level, duration: item.duration, priority: priority[b] ? priority[b] : 100 })); // Immediate priority to build
+			if (task.length > 1) { // Splice first task only
+				let popTask = task.splice(0, 1)[0];
+				popTask.priority = 2;
+				popTask.iter = String.fromCharCode(char)
+				tasks.push(popTask)
+			}
 			const resp = objToArray(task, maxBuilds[b] - currCount, char);
 			char = resp.char;
 			tasks.push(...resp.arr);
