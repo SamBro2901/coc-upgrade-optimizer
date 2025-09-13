@@ -1,8 +1,8 @@
 {
 	"Laboratory": 3,
-	"HeroHall": 3,
+	"Hero_Hall": 3,
 	"Barracks": 4,
-	"DarkBarracks": 4,
-	"SpellFactory": 4,
-	"DarkSpellFactory": 4
+	"Dark_Barracks": 4,
+	"Spell_Factory": 4,
+	"Dark_Spell_Factory": 4
 }

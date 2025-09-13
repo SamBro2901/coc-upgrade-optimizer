@@ -31,6 +31,29 @@ function objToArray(task, qty = 1, char = 65) {
 	return { arr, char };
 }
 
+function applyBoost(durationSeconds, boost) {
+	let reducedTime = durationSeconds * (1 - boost);
+
+	const thirtyMinutes = 30 * 60;
+	const oneDay = 24 * 60 * 60;
+
+	let finalSeconds;
+
+	if (durationSeconds < thirtyMinutes) {
+		// Case 1: Less than 30 minutes
+		finalSeconds = Math.ceil(reducedTime); // round up fractional seconds
+	} else if (durationSeconds <= oneDay) {
+		// Case 2: Between 30 minutes and 1 day
+		const tenMinutes = 10 * 60;
+		finalSeconds = Math.floor(reducedTime / tenMinutes) * tenMinutes;
+	} else {
+		// Case 3: More than 1 day
+		const oneHour = 60 * 60;
+		finalSeconds = Math.floor(reducedTime / oneHour) * oneHour;
+	}
+
+	return finalSeconds;
+}
 
 function constructTasks(inputData, builderBoost = 0) {
 	let itemData = { ...defenseConfig, ...trapConfig, ...resConfig, ...armyConfig };
@@ -55,9 +78,9 @@ function constructTasks(inputData, builderBoost = 0) {
 		}
 	}
 
-	const currTH = buildData.find(b => b.name === 'TownHall').lvl;
-	const numWorkers = buildData.filter(b => b.name === 'BuildersHut').reduce((sum, v) => sum + (v.timer ? 1 : v.cnt || v.gear_up), 0);
-	buildData = buildData.filter(b => b.name !== 'TownHall');
+	const currTH = buildData.find(b => b.name === 'Town_Hall').lvl;
+	const numWorkers = buildData.filter(b => b.name === 'Builders_Hut').reduce((sum, v) => sum + (v.timer ? 1 : v.cnt || v.gear_up), 0);
+	buildData = buildData.filter(b => b.name !== 'Town_Hall');
 	const maxBuilds = arrayToObject(thConfig[currTH])
 
 	for (let b of buildings) {
@@ -70,7 +93,7 @@ function constructTasks(inputData, builderBoost = 0) {
 
 		// Missing Buildings
 		if (currCount < maxBuilds[b]) {
-			let task = itemData[b].filter(item => item.TH > 0 && item.TH <= currTH).map(item => ({ id: b, level: item.level, duration: Math.round(item.duration * (1 - builderBoost)), priority: priority[b] ? priority[b] : 100 })); // Immediate priority to build
+			let task = itemData[b].filter(item => item.TH > 0 && item.TH <= currTH).map(item => ({ id: b, level: item.level, duration: applyBoost(item.duration, builderBoost), priority: priority[b] ? priority[b] : 100 })); // Immediate priority to build
 			if (task.length > 1) { // Splice first task only
 				let popTask = task.splice(0, 1)[0];
 				popTask.priority = 2;
@@ -91,11 +114,11 @@ function constructTasks(inputData, builderBoost = 0) {
 				c.lvl += 1;
 			}
 
-			let currTask = itemData[b]?.filter(item => item.TH <= currTH)?.sort((a, b) => b.level - a.level).map(item => ({ id: b, level: item.level, duration: Math.round(item.duration * (1 - builderBoost)) }))[0];
+			let currTask = itemData[b]?.filter(item => item.TH <= currTH)?.sort((a, b) => b.level - a.level).map(item => ({ id: b, level: item.level, duration: applyBoost(item.duration, builderBoost) }))[0];
 			let missingLvls = currTask?.level - c.lvl || 0;
 			if (missingLvls > 0) {
 				let missingTask = itemData[b].filter(item => item.level > c.lvl && item.level <= currTask.level && item.TH <= currTH);
-				missingTask = missingTask.map(item => ({ id: b, level: item.level, duration: Math.round(item.duration * (1 - builderBoost)), priority: priority[b] ? priority[b] : 100 }));
+				missingTask = missingTask.map(item => ({ id: b, level: item.level, duration: applyBoost(item.duration, builderBoost), priority: priority[b] ? priority[b] : 100 }));
 				const resp1 = objToArray(missingTask, (c.timer ? 1 : c.cnt || c.gear_up || 1), char);
 				char = resp1.char;
 				tasks.push(...resp1.arr);
@@ -107,7 +130,7 @@ function constructTasks(inputData, builderBoost = 0) {
 	}
 
 	for (let h of heroes) {
-		const maxHeroHall = itemData['HeroHall'].filter(i => i.TH <= currTH)?.sort((a, b) => b.level - a.level).map(item => ({ id: 'HeroHall', level: item.level, duration: Math.round(item.duration * (1 - builderBoost)) }))[0] || 0;
+		const maxHeroHall = itemData['Hero_Hall'].filter(i => i.TH <= currTH)?.sort((a, b) => b.level - a.level).map(item => ({ id: 'Hero_Hall', level: item.level, duration: applyBoost(item.duration, builderBoost) }))[0] || 0;
 		let currHero = heroData.find(he => he.name === h);
 
 		if (currHero.timer) {
@@ -115,7 +138,7 @@ function constructTasks(inputData, builderBoost = 0) {
 			tasks.push({ id: h, level: currHero.lvl, duration: currHero.timer, priority: 1, iter: 1 })
 		}
 		let missingHLvls = heroConfig[h].filter(i => i.HH <= maxHeroHall.level && i.level > currHero.lvl);
-		missingHLvls = missingHLvls.map(he => ({ id: h, level: he.level, duration: Math.round(he.duration * (1 - builderBoost)), HH: he.HH, priority: priority[h] ? priority[h] : 100, iter: 1 }));
+		missingHLvls = missingHLvls.map(he => ({ id: h, level: he.level, duration: applyBoost(he.duration, builderBoost), HH: he.HH, priority: priority[h] ? priority[h] : 100, iter: 1 }));
 
 		tasks.push(...missingHLvls)
 	}
@@ -138,7 +161,7 @@ function sortTasks(arr, scheme) {
 }
 
 function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT') {
-	const heroes = ['BarbarianKing', 'ArcherQueen', 'MinionPrince', 'GrandWarden', 'RoyalChampion'];
+	const heroes = ['Barbarian_King', 'Archer_Queen', 'Minion_Prince', 'Grand_Warden', 'Royal_Champion'];
 
 	tasks = tasks.map((t, idx) => ({ ...t, index: idx, worker: null, pred: null, key: `${t.id}_${t.iter}_${t.level}` }));
 	const taskLength = tasks.length;
@@ -152,7 +175,7 @@ function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT') {
 
 	const heroTasks = tasks.filter(t => heroes.includes(t.id));
 	const heroHall = playerData.buildings.find(b => b.data === 1000071); // Exisitng HH
-	const hhTask = tasks.filter(t => t.id === "HeroHall"); // To construct HH
+	const hhTask = tasks.filter(t => t.id === "Hero_Hall"); // To construct HH
 	// Lock to predecessor - Heroes
 	if (heroTasks.length > 0) {
 		let hhLvl = 0;
@@ -241,7 +264,7 @@ function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT') {
 			running = running.filter(t => t.index !== ft.index);
 
 			// Release hero tasks after HH upgrade
-			if (ft.id === "HeroHall") {
+			if (ft.id === "Hero_Hall") {
 				const nextHeroes = tasks.filter(t => t.pred === ft.index);
 				if (nextHeroes.length > 0) {
 					for (const nH of nextHeroes) {

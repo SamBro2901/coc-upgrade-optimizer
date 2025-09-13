@@ -1,5 +1,5 @@
 {
-	"BarbarianKing": [
+	"Barbarian_King": [
 		{ "level": 1, "cost": 0, "currency": "darkelixir", "duration": 0, "HH": 1 },
 		{
 			"level": 2,
@@ -695,7 +695,7 @@
 			"HH": 11
 		}
 	],
-	"ArcherQueen": [
+	"Archer_Queen": [
 		{ "level": 1, "cost": 0, "currency": "darkelixir", "duration": 0, "HH": 2 },
 		{
 			"level": 2,
@@ -1391,7 +1391,7 @@
 			"HH": 11
 		}
 	],
-	"MinionPrince": [
+	"Minion_Prince": [
 		{ "level": 1, "cost": 0, "currency": "darkelixir", "duration": 0, "HH": 3 },
 		{
 			"level": 2,
@@ -2017,7 +2017,7 @@
 			"HH": 11
 		}
 	],
-	"GrandWarden": [
+	"Grand_Warden": [
 		{
 			"level": 1,
 			"cost": 1000000,
@@ -2544,7 +2544,7 @@
 			"HH": 11
 		}
 	],
-	"RoyalChampion": [
+	"Royal_Champion": [
 		{ "level": 1, "cost": 0, "currency": "darkelixir", "duration": 0, "HH": 7 },
 		{
 			"level": 2,

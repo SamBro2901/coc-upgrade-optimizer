@@ -1,5 +1,5 @@
 {
-	"GoldMine": [
+	"Gold_Mine": [
 		{
 			"level": 1,
 			"cost": 150,
@@ -113,7 +113,7 @@
 			"TH": 14
 		}
 	],
-	"ElixirCollector": [
+	"Elixir_Collector": [
 		{
 			"level": 1,
 			"cost": 150,
@@ -227,7 +227,7 @@
 			"TH": 14
 		}
 	],
-	"GoldStorage": [
+	"Gold_Storage": [
 		{
 			"level": 1,
 			"cost": 300,
@@ -355,7 +355,7 @@
 			"TH": 17
 		}
 	],
-	"ElixirStorage": [
+	"Elixir_Storage": [
 		{
 			"level": 1,
 			"cost": 300,
@@ -483,7 +483,7 @@
 			"TH": 17
 		}
 	],
-	"DarkElixirDrill": [
+	"Dark_Elixir_Drill": [
 		{
 			"level": 1,
 			"cost": 180000,
@@ -555,7 +555,7 @@
 			"TH": 14
 		}
 	],
-	"DarkElixirStorage": [
+	"Dark_Elixir_Storage": [
 		{
 			"level": 1,
 			"cost": 250000,
@@ -641,7 +641,7 @@
 			"TH": 17
 		}
 	],
-	"ClanCastle": [
+	"Clan_Castle": [
 		{
 			"level": 1,
 			"cost": 10000,

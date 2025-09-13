@@ -1,5 +1,5 @@
 {
-	"ArmyCamp": [
+	"Army_Camp": [
 		{
 			"level": 1,
 			"cost": 200,
@@ -220,7 +220,7 @@
 			"TH": 16
 		}
 	],
-	"DarkBarracks": [
+	"Dark_Barracks": [
 		{
 			"level": 1,
 			"cost": 200000,
@@ -413,7 +413,7 @@
 			"TH": 17
 		}
 	],
-	"SpellFactory": [
+	"Spell_Factory": [
 		{
 			"level": 1,
 			"cost": 150000,
@@ -471,7 +471,7 @@
 			"TH": 15
 		}
 	],
-	"HeroHall": [
+	"Hero_Hall": [
 		{
 			"level": 1,
 			"cost": 800000,
@@ -550,7 +550,7 @@
 			"TH": 17
 		}
 	],
-	"DarkSpellFactory": [
+	"Dark_Spell_Factory": [
 		{
 			"level": 1,
 			"cost": 130000,
@@ -724,7 +724,7 @@
 			"TH": 16
 		}
 	],
-	"PetHouse": [
+	"Pet_House": [
 		{
 			"level": 1,
 			"cost": 3000000,

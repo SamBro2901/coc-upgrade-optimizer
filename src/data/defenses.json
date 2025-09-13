@@ -148,7 +148,7 @@
 			"TH": 15
 		}
 	],
-	"ArcherTower": [
+	"Archer_Tower": [
 		{
 			"level": 1,
 			"cost": 1000,
@@ -418,7 +418,7 @@
 			"TH": 17
 		}
 	],
-	"AirDefense": [
+	"Air_Defense": [
 		{
 			"level": 1,
 			"cost": 22000,
@@ -525,7 +525,7 @@
 			"TH": 17
 		}
 	],
-	"WizardTower": [
+	"Wizard_Tower": [
 		{
 			"level": 1,
 			"cost": 100000,
@@ -646,7 +646,7 @@
 			"TH": 17
 		}
 	],
-	"AirSweeper": [
+	"Air_Sweeper": [
 		{
 			"level": 1,
 			"cost": 200000,
@@ -697,7 +697,7 @@
 			"TH": 11
 		}
 	],
-	"HiddenTesla": [
+	"Hidden_Tesla": [
 		{
 			"level": 1,
 			"cost": 250000,
@@ -811,7 +811,7 @@
 			"TH": 17
 		}
 	],
-	"BombTower": [
+	"Bomb_Tower": [
 		{
 			"level": 1,
 			"cost": 700000,
@@ -983,7 +983,7 @@
 			"TH": 17
 		}
 	],
-	"InfernoTower": [
+	"Inferno_Tower": [
 		{
 			"level": 1,
 			"cost": 1000000,
@@ -1062,7 +1062,7 @@
 			"TH": 17
 		}
 	],
-	"EagleArtillery": [
+	"Eagle_Artillery": [
 		{
 			"level": 1,
 			"cost": 5000000,
@@ -1157,7 +1157,7 @@
 			"TH": 17
 		}
 	],
-	"BuildersHut": [
+	"Builders_Hut": [
 		{
 			"level": 1,
 			"cost": 0,
@@ -1208,7 +1208,7 @@
 			"TH": 17
 		}
 	],
-	"SpellTower": [
+	"Spell_Tower": [
 		{
 			"level": 1,
 			"cost": 9000000,

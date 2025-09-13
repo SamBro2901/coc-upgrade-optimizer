@@ -1,12 +1,22 @@
 import React from 'react';
 
-function formatHMS(seconds) {
-	const h = Math.floor(seconds / 3600);
-	const m = Math.floor((seconds % 3600) / 60);
-	const s = Math.floor(seconds % 60);
-	return [h ? `${h}h` : '', m ? `${m}m` : '', !h && !m ? `${s}s` : '']
-		.filter(Boolean)
-		.join(' ');
+function formatDuration(seconds) {
+	const days = Math.floor(seconds / (24 * 60 * 60));
+	seconds %= 24 * 60 * 60;
+
+	const hours = Math.floor(seconds / 3600);
+	seconds %= 3600;
+
+	const minutes = Math.floor(seconds / 60);
+	seconds %= 60;
+
+	const parts = [];
+	if (days > 0) parts.push(`${days}d`);
+	if (hours > 0) parts.push(`${hours}h`);
+	if (minutes > 0) parts.push(`${minutes}m`);
+	if (seconds > 0) parts.push(`${seconds}s`);
+
+	return parts.length > 0 ? parts.join(' ') : '0s';
 }
 
 function formatClockOrDate(epochSec, prevEpochSec = null) {
@@ -81,7 +91,7 @@ export function TimelineCards({
 						}}
 					>
 						<div style={{ fontWeight: 600, fontSize: 15 }}>
-							{t.id} · L{t.level}
+							{String(t.id).replace('_', ' ')} · L{t.level}
 						</div>
 						<div style={{ fontSize: 13, color: '#475569', marginTop: 2 }}>
 							Builder {Number(t.worker) + 1} · #{t.iter}
@@ -115,7 +125,7 @@ export function TimelineCards({
 						})()}
 
 						<div style={{ fontSize: 13, color: '#475569' }}>
-							Duration: {formatHMS(dur)}
+							Duration: {formatDuration(dur)}
 						</div>
 
 						{/* Track represents the whole schedule window; bar shows task position + length */}

@@ -317,7 +317,7 @@ function GanttChart({ tasks, groupBy = "worker", pxPerSec = 0.03, toPxPerSec, cl
             const w = Math.max(2, (t.end - t.start) * pxPerSec);
             const isDone = doneKeys?.has(taskKeyFn(t));
             const hrs = formatDuration(t.duration);
-            const label = `${t.id} L${t.level} #${t.iter} (${hrs})`;
+            const label = `${String(t.id).replace("_", " ")} #${t.iter} L${t.level} (${hrs})`;
             return (
               <g key={i}>
                 <rect x={x} y={y} width={w} height={rowHeight - 8} rx="6" ry="6" fill={fill} opacity="0.92" style={{

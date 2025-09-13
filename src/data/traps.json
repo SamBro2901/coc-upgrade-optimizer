@@ -92,7 +92,7 @@
 			"TH": 17
 		}
 	],
-	"SpringTrap": [
+	"Spring_Trap": [
 		{
 			"level": 1,
 			"cost": 2000,
@@ -129,7 +129,7 @@
 			"TH": 10
 		}
 	],
-	"GiantBomb": [
+	"Giant_Bomb": [
 		{
 			"level": 1,
 			"cost": 12500,
@@ -208,7 +208,7 @@
 			"TH": 17
 		}
 	],
-	"AirBomb": [
+	"Air_Bomb": [
 		{
 			"level": 1,
 			"cost": 4000,
@@ -294,7 +294,7 @@
 			"TH": 17
 		}
 	],
-	"SeekingAirMine": [
+	"Seeking_Air_Mine": [
 		{
 			"level": 1,
 			"cost": 12000,
@@ -345,7 +345,7 @@
 			"TH": 17
 		}
 	],
-	"SkeletonTrap": [
+	"Skeleton_Trap": [
 		{
 			"level": 1,
 			"cost": 6000,
@@ -375,7 +375,7 @@
 			"TH": 10
 		}
 	],
-	"TornadoTrap": [
+	"Tornado_Trap": [
 		{
 			"level": 1,
 			"cost": 1800000,
@@ -398,7 +398,7 @@
 			"TH": 12
 		}
 	],
-	"GigaBomb": [
+	"Giga_Bomb": [
 		{
 			"level": 1,
 			"cost": 5000000,
