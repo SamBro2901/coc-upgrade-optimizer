@@ -1,390 +1,11 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import clsx from "clsx";
 import { generateSchedule } from './scheduler.js';
 import "./App.css";
 import { BUILDING_COLORS } from "./colorMap";
 import { TimelineCards } from "./TimelineCards.jsx";
+import BuilderTimeline from "./BuilderTimeline.jsx";
 
-function formatDuration(seconds) {
-  const days = Math.floor(seconds / (24 * 60 * 60));
-  seconds %= 24 * 60 * 60;
-
-  const hours = Math.floor(seconds / 3600);
-  seconds %= 3600;
-
-  const minutes = Math.floor(seconds / 60);
-  seconds %= 60;
-
-  const parts = [];
-  if (days > 0) parts.push(`${days}d`);
-  if (hours > 0) parts.push(`${hours}h`);
-  if (minutes > 0) parts.push(`${minutes}m`);
-  if (seconds > 0) parts.push(`${seconds}s`);
-
-  return parts.length > 0 ? parts.join(" ") : "0s";
-}
-
-function getNiceStep(pxPerSec) {
-  const targetPx = 120;           // aim for ~120px between ticks
-  const targetSec = targetPx / pxPerSec;
-  const candidates = [60, 300, 600, 1800, 3600, 7200, 14400, 21600, 43200, 86400];
-  return candidates.reduce((best, c) =>
-    Math.abs(c - targetSec) < Math.abs(best - targetSec) ? c : best
-  );
-}
-
-/** ---------- GanttChart component (SVG) ---------- */
-function GanttChart({ tasks, groupBy = "worker", pxPerSec = 0.03, toPxPerSec, clampZoom, setZoom, colorForId, doneKeys, onToggle, taskKeyFn, rowHeight = 34, rowGap = 6, axisHeight = 28, }) {
-
-  const containerRef = React.useRef(null);
-  const lastPinch = React.useRef(null);
-
-
-  const isDragging = React.useRef(false);
-  const dragStartX = React.useRef(0);
-  const scrollStartX = React.useRef(0);
-
-  const velocity = React.useRef(0);
-  const lastX = React.useRef(0);
-  const lastTime = React.useRef(0);
-  const momentumId = React.useRef(null);
-
-
-  React.useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-
-    // Mouse Pan
-    function onMouseDown(e) {
-      if (e.button !== 0) return;
-      isDragging.current = true;
-      dragStartX.current = e.clientX;
-      scrollStartX.current = el.scrollLeft;
-      lastX.current = e.clientX;
-      lastTime.current = performance.now();
-      if (momentumId.current) {
-        cancelAnimationFrame(momentumId.current);
-        momentumId.current = null;
-      }
-      el.style.cursor = "grabbing";
-      e.preventDefault();
-    }
-
-    function onMouseMove(e) {
-      if (!isDragging.current) return;
-      const dx = e.clientX - dragStartX.current;
-      el.scrollLeft = scrollStartX.current - dx;
-
-      // calculate velocity
-      const now = performance.now();
-      const dt = now - lastTime.current;
-      if (dt > 0) {
-        velocity.current = (lastX.current - e.clientX) / dt; // px/ms
-        lastX.current = e.clientX;
-        lastTime.current = now;
-      }
-    }
-
-    function onMouseUp() {
-      if (!isDragging.current) return;
-      isDragging.current = false;
-      el.style.cursor = "grab";
-
-      // start momentum animation
-      const decay = 0.95; // friction factor (closer to 1 = slower stop)
-      const step = () => {
-        el.scrollLeft += velocity.current * 16; // 16ms/frame approx
-        velocity.current *= decay;
-        if (Math.abs(velocity.current) > 0.01) {
-          momentumId.current = requestAnimationFrame(step);
-        } else {
-          momentumId.current = null;
-        }
-      };
-      momentumId.current = requestAnimationFrame(step);
-    }
-
-
-    // mouse wheel zoom
-    function onWheel(e) {
-      if (e.ctrlKey || e.metaKey) {
-        e.preventDefault();
-
-        const rect = el.getBoundingClientRect();
-        const midX = rect.width / 2;
-        const zoomPoint = el.scrollLeft + midX;
-
-        setZoom((oldZoom) => {
-          const delta = e.deltaY > 0 ? -0.05 : 0.05;
-          const newZoom = clampZoom(oldZoom + delta);
-
-          const oldPx = toPxPerSec(oldZoom);
-          const newPx = toPxPerSec(newZoom);
-          const scale = newPx / oldPx;
-
-          // Adjust scroll immediately so it feels fixed under cursor
-          el.scrollLeft = zoomPoint * scale - midX;
-
-          return newZoom;
-        });
-      }
-    }
-
-
-
-    // pinch zoom
-    function onTouchStart(e) {
-      if (e.touches.length === 2) {
-        const dx = e.touches[0].clientX - e.touches[1].clientX;
-        const dy = e.touches[0].clientY - e.touches[1].clientY;
-        lastPinch.current = Math.sqrt(dx * dx + dy * dy);
-      }
-    }
-    function onTouchMove(e) {
-      if (e.touches.length === 2 && lastPinch.current) {
-        e.preventDefault();
-
-        const rect = el.getBoundingClientRect();
-        const midX = rect.width / 2;
-        const zoomPoint = el.scrollLeft + midX;
-
-        const dx = e.touches[0].clientX - e.touches[1].clientX;
-        const dy = e.touches[0].clientY - e.touches[1].clientY;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        const factor = dist / lastPinch.current;
-
-        setZoom((oldZoom) => {
-          const newZoom = clampZoom(oldZoom * factor);
-
-          const oldPx = toPxPerSec(oldZoom);
-          const newPx = toPxPerSec(newZoom);
-          const scale = newPx / oldPx;
-
-          el.scrollLeft = zoomPoint * scale - midX;
-
-          return newZoom;
-        });
-
-        lastPinch.current = dist;
-      }
-    }
-
-    function onTouchEnd() {
-      lastPinch.current = null;
-    }
-
-    el.addEventListener("wheel", onWheel, { passive: false });
-    el.addEventListener("touchstart", onTouchStart, { passive: false });
-    el.addEventListener("touchmove", onTouchMove, { passive: false });
-    el.addEventListener("touchend", onTouchEnd);
-    el.addEventListener("touchcancel", onTouchEnd);
-
-    //Mouse Pan
-    el.addEventListener("mousedown", onMouseDown);
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseup", onMouseUp);
-
-    return () => {
-      el.removeEventListener("wheel", onWheel);
-      el.removeEventListener("touchstart", onTouchStart);
-      el.removeEventListener("touchmove", onTouchMove);
-      el.removeEventListener("touchend", onTouchEnd);
-      el.removeEventListener("touchcancel", onTouchEnd);
-      el.removeEventListener("mousedown", onMouseDown);
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup", onMouseUp);
-      if (momentumId.current) {
-        cancelAnimationFrame(momentumId.current);
-      }
-    };
-    // eslint-disable-next-line
-  }, [setZoom]);
-
-
-  const meta = useMemo(() => {
-    if (!tasks?.length) {
-      return {
-        minStart: 0,
-        maxEnd: 0,
-        groups: [],
-        height: axisHeight + 20,
-        width: 400,
-      };
-    }
-    const minStart = Math.min(...tasks.map((t) => t.start));
-    const maxEnd = Math.max(...tasks.map((t) => t.end));
-    const groups = [...new Set(tasks.map((t) => String(t[groupBy])))]
-      .sort((a, b) => Number(a) - Number(b));
-    const rows = groups.length;
-    const height = axisHeight + rows * (rowHeight + rowGap) + 20;
-    const width = Math.max(600, (maxEnd - minStart) * pxPerSec + 160);
-    return { minStart, maxEnd, groups, height, width };
-  }, [tasks, groupBy, pxPerSec, rowHeight, rowGap, axisHeight]);
-
-  const { minStart, maxEnd, groups, height, width } = meta;
-  const uniqueIds = React.useMemo(
-    () => [...new Set(tasks.map(t => String(t.id)))],
-    [tasks]
-  );
-  // const hoursTotal = (maxEnd - minStart) / 3600;
-  // const tickEveryHours = hoursTotal > 24 ? 4 : hoursTotal > 8 ? 2 : 1;
-
-  const tickStep = getNiceStep(pxPerSec);
-  const numTicks = Math.floor((maxEnd - minStart) / tickStep) + 5; // +5 safety buffer
-
-
-  return (
-    <div>
-      <div
-        ref={containerRef}
-        style={{
-          overflow: "auto",
-          cursor: "grab",
-          border: "1px solid #e5e7eb",
-          borderRadius: 14,
-          background: "#fff",
-          boxShadow: "0 2px 12px #e0e7ff"
-        }}>
-        <svg width={width} height={height} style={{ display: "block" }}>
-          <rect x="0" y="0" width={width} height={height} fill="#fff" />
-          <rect x="120" y="0" width={width - 120} height={axisHeight} fill="#f8fafc" />
-          <rect x="0" y="0" width="120" height={height} fill="#f9fafb" />
-
-
-          {/* Axis */}
-          {Array.from({ length: numTicks }).map((_, i) => {
-            const sec = minStart + i * tickStep;
-            const x = 120 + (sec - minStart) * pxPerSec;
-
-            // Compute epoch time for this tick
-            const tickEpoch = Math.floor(Date.now() / 1000) + (sec - minStart);
-            const tickDate = new Date(tickEpoch * 1000);
-
-            // Compare with previous tick
-            let showDate = false;
-            if (i > 0) {
-              const prevSec = minStart + (i - 1) * tickStep;
-              const prevEpoch = Math.floor(Date.now() / 1000) + (prevSec - minStart);
-              const prevDate = new Date(prevEpoch * 1000);
-
-              if (tickDate.getDate() !== prevDate.getDate() ||
-                tickDate.getMonth() !== prevDate.getMonth() ||
-                tickDate.getFullYear() !== prevDate.getFullYear()) {
-                showDate = true;
-              }
-            }
-
-            return (
-              <g key={i}>
-                <line x1={x} x2={x} y1={0} y2={height} stroke="#e5e7eb" />
-                <text x={x + 4} y={18} fontSize="12" fontWeight={showDate ? 700 : 500} fill="#475569">
-                  {showDate
-                    ? `${String(tickDate.getDate()).padStart(2, "0")}/${String(tickDate.getMonth() + 1).padStart(2, "0")}`
-                    : `${String(tickDate.getHours()).padStart(2, "0")}:${String(tickDate.getMinutes()).padStart(2, "0")}`}
-                </text>
-              </g>
-            );
-          })}
-
-          {/* Rows */}
-          {groups.map((g, idx) => {
-            const y = axisHeight + idx * (rowHeight + rowGap);
-            const label = groupBy === "worker"
-              ? `Builder ${Number(g) + 1}`
-              : `${groupBy}: ${g}`;
-            return (
-              <g key={g}>
-                <text x={18} y={y + rowHeight * 0.65} fontSize="14" fontWeight={600} fill="#111827">
-                  {label}
-                </text>
-                <line
-                  x1={120}
-                  x2={width}
-                  y1={y + rowHeight + rowGap / 2}
-                  y2={y + rowHeight + rowGap / 2}
-                  stroke="#f1f5f9"
-                />
-              </g>
-            );
-          })}
-
-          {/* Bars with tooltip */}
-          {tasks.map((t, i) => {
-            const fill = colorForId(t.id)
-            const row = groups.indexOf(String(t[groupBy]));
-            const y = axisHeight + row * (rowHeight + rowGap) + 4;
-            const x = 120 + (t.start - minStart) * pxPerSec;
-            const w = Math.max(2, (t.end - t.start) * pxPerSec);
-            const isDone = doneKeys?.has(taskKeyFn(t));
-            const hrs = formatDuration(t.duration);
-            const label = `${String(t.id).replace("_", " ")} #${t.iter} L${t.level} (${hrs})`;
-            return (
-              <g key={i}>
-                <rect x={x} y={y} width={w} height={rowHeight - 8} rx="6" ry="6" fill={fill} opacity="0.92" style={{
-                  cursor: onToggle ? "pointer" : "default",
-                  opacity: isDone ? 0.45 : 0.9,
-                  filter: isDone ? "grayscale(100%) brightness(0.9)" : "none",
-                  transition: "opacity 300ms ease, filter 300ms ease"
-                }}
-                  onClick={() => onToggle?.(t)} />
-                <rect x={x} y={y} width={w} height={rowHeight - 8} rx="6" ry="6" fill="none" stroke="rgba(0,0,0,0.15)" />
-                <clipPath id={`clip-${i}`}>
-                  <rect x={x + 6} y={y} width={Math.max(0, w - 12)} height={rowHeight - 8} />
-                </clipPath>
-                <text x={x + 10} y={y + (rowHeight - 8) * 0.62} fontSize="13" fontWeight={500} fill="#0f172a" clipPath={`url(#clip-${i})`}>
-                  {label}
-                </text>
-                <title>{`${t.id} L${t.level}\n• Builder ${t.worker + 1}\n• Group: ${t.iter}\n• Start ${formatDuration(t.start)} • End ${formatDuration(t.end)}\n• Duration ${formatDuration(t.duration)}`}</title>
-              </g>
-            );
-          })}
-        </svg>
-      </div>
-
-      <Legend
-        items={uniqueIds.map(id => ({
-          label: id,
-          color: colorForId(id)
-        }))}
-      />
-    </div>
-  );
-}
-
-function Legend({ items }) {
-  if (!items?.length) return null;
-  return (
-    <div
-      style={{
-        marginTop: 10,
-        padding: "8px 10px",
-        border: "1px solid #e5e7eb",
-        borderRadius: 8,
-        background: "#fff",
-      }}
-    >
-      <div style={{ fontSize: 12, color: "#475569", marginBottom: 6 }}>Legend</div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
-        {items.map(({ label, color }) => (
-          <div key={label} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span
-              aria-hidden
-              style={{
-                width: 14,
-                height: 14,
-                borderRadius: 4,
-                background: color,
-                border: "1px solid rgba(0,0,0,0.2)",
-              }}
-              title={label}
-            />
-            <span style={{ fontSize: 12, color: "#0f172a" }}>{label}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 export function JsonInput({ label = "JSON Input", initial = "", onValid, onValidityChange, storageKey = "JSON" }) {
   // const [text, setText] = React.useState(initial);
@@ -550,12 +171,20 @@ export default function App() {
   const [makespan, setMakespan] = useState(0);
   const [err, setErr] = useState(false);
   const [scheduleType, setScheduleType] = useState("Longest Processing Time (LPT)");
+  const [dynamicHeight, setHeight] = useState(300);
 
-  const [selectedPct, setSelectedPct] = useState(0); // default 0%
+  const [selectedPct, setSelectedPct] = useState(() => {
+    const saved = localStorage.getItem("builderBonusPct");
+    return saved ? Number(saved) : 0; // default 0% if nothing saved
+  });
 
-  const DEFAULT_PX_PER_SEC = 0.03;
-  const [zoom, setZoom] = useState(() => toZoom(DEFAULT_PX_PER_SEC));
-  const pxPerSec = toPxPerSec(zoom);
+  React.useEffect(() => {
+    localStorage.setItem("builderBonusPct", selectedPct);
+  }, [selectedPct]);
+
+  // const DEFAULT_PX_PER_SEC = 0.03;
+  // const [zoom, setZoom] = useState(() => toZoom(DEFAULT_PX_PER_SEC));
+  // const pxPerSec = toPxPerSec(zoom);
 
 
   const colorForId = (name) => {
@@ -570,18 +199,21 @@ export default function App() {
       return next;
     });
   };
-
+  // let workers = 3, dynamicHeight = 300;
   const runSchedule = (jD, strategy) => {
     if (!jD) {
       console.error("No JSON data provided");
       setErr(true);
       return;
     }
-    const { sch, err } = generateSchedule(jsonData, strategy, selectedPct);
+    const { sch, numBuilders, err } = generateSchedule(jsonData, strategy, selectedPct);
     setErr(err);
     setTasks(sch.schedule);
     setMakespan(sch.makespan);
     setScheduleType(strategy === "SPT" ? "Shortest Processing Time (SPT)" : "Longest Processing Time (LPT)");
+    const rowHeight = 40;
+    const basePadding = 90; // space for axis/labels
+    setHeight(numBuilders * rowHeight + basePadding);
 
     sch.schedule.forEach(t => { colorForId(t.id); });
   };
@@ -703,8 +335,11 @@ export default function App() {
               </div>
               <span>Tip: Pinch or Ctrl + Mouse Wheel to zoom in and out</span>
               <div className="chart-shell" style={{ background: "#fff", borderRadius: 16, boxShadow: "0 2px 12px #e0e7ff" }}>
-                <GanttChart tasks={tasks} groupBy="worker" pxPerSec={pxPerSec} toPxPerSec={toPxPerSec} clampZoom={clampZoom} setZoom={setZoom} colorForId={colorForId} doneKeys={doneKeys} onToggle={toggleDone} taskKeyFn={taskKey} />
+                <BuilderTimeline tasks={tasks} height={dynamicHeight} />
               </div>
+              {/* <div className="chart-shell" style={{ background: "#fff", borderRadius: 16, boxShadow: "0 2px 12px #e0e7ff" }}>
+                <GanttChart tasks={tasks} groupBy="worker" pxPerSec={pxPerSec} toPxPerSec={toPxPerSec} clampZoom={clampZoom} setZoom={setZoom} colorForId={colorForId} doneKeys={doneKeys} onToggle={toggleDone} taskKeyFn={taskKey} />
+              </div> */}
             </div>
           </div>
         )}

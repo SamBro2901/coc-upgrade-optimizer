@@ -74,8 +74,13 @@ export function TimelineCards({
 				// % of total schedule for width and left offset
 				const k = taskKeyFn(t);
 				const isDone = doneKeys?.has(k);
-				const widthPct = Math.min(100, (t.duration / makespan[t.worker]) * 100);
-				const leftPct = Math.min(100, (t.start / makespan[t.worker]) * 100);
+				const workerTasks = sorted.filter((x) => x.worker === t.worker);
+				const workerStart = Math.min(...workerTasks.map((x) => x.start));
+				const workerEnd = Math.max(...workerTasks.map((x) => x.end));
+				const workerSpan = workerEnd - workerStart || 1; // avoid /0
+
+				const widthPct = (t.duration / workerSpan) * 100;
+				const leftPct = ((t.start - workerStart) / workerSpan) * 100;
 
 				return (
 					<div
@@ -91,7 +96,7 @@ export function TimelineCards({
 						}}
 					>
 						<div style={{ fontWeight: 600, fontSize: 15 }}>
-							{String(t.id).replace('_', ' ')} · L{t.level}
+							{String(t.id).replaceAll('_', ' ')} · L{t.level}
 						</div>
 						<div style={{ fontSize: 13, color: '#475569', marginTop: 2 }}>
 							Builder {Number(t.worker) + 1} · #{t.iter}

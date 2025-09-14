@@ -163,14 +163,14 @@ function sortTasks(arr, scheme) {
 function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT') {
 	const heroes = ['Barbarian_King', 'Archer_Queen', 'Minion_Prince', 'Grand_Warden', 'Royal_Champion'];
 
-	tasks = tasks.map((t, idx) => ({ ...t, index: idx, worker: null, pred: null, key: `${t.id}_${t.iter}_${t.level}` }));
+	tasks = tasks.map((t, idx) => ({ ...t, index: idx, worker: null, pred: [], key: `${t.id}_${t.iter}_${t.level}` }));
 	const taskLength = tasks.length;
 	let iterations = 0;
 
 	// Lock to predecessor - Buildings
 	for (const t of tasks) {
 		const pred = tasks.find(pt => pt.key === `${t.id}_${t.iter}_${t.level - 1}`);
-		if (pred) t.pred = pred.index;
+		if (pred) t.pred.push(pred.index);
 	}
 
 	const heroTasks = tasks.filter(t => heroes.includes(t.id));
@@ -189,30 +189,30 @@ function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT') {
 				if (!reqTask) throw new Error("Missing Hero Hall Task");
 				const reqIdx = tasks.findIndex(t => t.key === reqTask.key);
 				// const heroIdx = tasks.findIndex(t => t.key === hero.key);
-				tasks[hero.index].pred = tasks[reqIdx].index
+				tasks[hero.index].pred.push(tasks[reqIdx].index)
 			}
-			else {
-				const prevTask = heroTasks.find(ht => ht.level === hero.level - 1 && ht.id === hero.id);
-				if (prevTask) tasks[hero.index].pred = prevTask.index;
-			}
-
 		}
 	}
 
-	let ready = tasks.filter(t => t.pred === null);
-	let notReady = tasks.filter(t => t.pred !== null);
+	// console.log(tasks.filter(t => heroes.includes(t.id)));
+	// console.log(hhTask);
+	// return;
+
+	let ready = tasks.filter(t => t.pred.length === 0);
+	let notReady = tasks.filter(t => t.pred.length !== 0);
 	let running = [], completed = [];
 
 	let workers = Array.from({ length: numWorkers }, () => null); // null means idle
 
 	ready = sortTasks(ready, scheme)
 
-	let currTime = 0
+	let currTime = Math.floor(Date.now() / 1000);
+	const startTime = currTime;
 	while (ready.length > 0 || completed.length !== taskLength || notReady.length > 0) {
 		if (iterations > 100000) throw new Error("Loop overflow");
 		// console.log(`Total Tasks: ${taskLength}, Ready Tasks: ${ready.length}, Not Ready Tasks: ${notReady.length}, Running Tasks: ${running.length}, Completed Tasks: ${completed.length}`);
 		let idx = 0;
-		const runningTasks = ready.filter(t => t.priority === 1 && t.pred === null);
+		const runningTasks = ready.filter(t => t.priority === 1 && t.pred.length === 0);
 		let freeWorkers = workers.map((w, idx) => ({ index: idx, value: w })).filter(w => w.value === null);
 
 		while (freeWorkers.length > 0 && ready.length > 0) {
@@ -233,17 +233,9 @@ function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT') {
 				continue;
 			}
 
-			if (ready[idx].pred !== null) {
-				const pred = ready[idx].pred;
-				const predTask = completed.find(t => t.index === pred);
-				if (!predTask) idx++;
-				else {
-					if (workers[predTask.worker] === null) {
-						w = predTask.worker;
-					}
-				}
-			}
-
+			const currTask = ready[idx];
+			const predTask = completed.find(t => t.key === `${currTask.id}_${currTask.iter}_${currTask.level - 1}`);
+			if (predTask && workers[predTask.worker] === null) w = predTask.worker;
 			ready[idx].worker = w;
 			ready[idx].start = currTime;
 			ready[idx].end = currTime + ready[idx].duration;
@@ -263,27 +255,17 @@ function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT') {
 			workers[ft.worker] = null;
 			running = running.filter(t => t.index !== ft.index);
 
-			// Release hero tasks after HH upgrade
-			if (ft.id === "Hero_Hall") {
-				const nextHeroes = tasks.filter(t => t.pred === ft.index);
-				if (nextHeroes.length > 0) {
-					for (const nH of nextHeroes) {
-						const prevTask = tasks.find(ht => ht.level === nH.level - 1 && ht.id === nH.id);
-						if (prevTask) {
-							const heroIdx = notReady.findIndex(t => t.key === nH.key);
-							notReady[heroIdx].pred = prevTask.index;
-						}
-					}
-				}
-			}
-
 			// Release successor tasks
-			const succTask = notReady.filter(t => t.pred === ft.index);
+			let succTask = notReady.filter(t => t.pred.includes(ft.index));
 			if (succTask.length > 0) {
 				for (const s of succTask) {
-					ready.push(s);
-					const remIdx = notReady.findIndex(t => t.index === s.index);
-					notReady.splice(remIdx, 1);
+					const succIdx = notReady.findIndex(t => t.index === s.index);
+					const predIdx = notReady[succIdx].pred.indexOf(ft.index);
+					notReady[succIdx].pred.splice(predIdx, 1)
+					if (notReady[succIdx].pred.length === 0) {
+						ready.push(s);
+						notReady.splice(succIdx, 1);
+					}
 				}
 			}
 		}
@@ -299,7 +281,7 @@ function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT') {
 
 	completed.sort((a, b) => (a.start - b.start) || (a.worker - b.worker));
 	let makespan = completed.reduce((m, r) => Math.max(m, r.end), 0);
-	makespan = formatDuration(makespan);
+	makespan = formatDuration(makespan - startTime);
 
 	return { schedule: completed, makespan };
 }
@@ -345,7 +327,7 @@ function formatDuration(seconds) {
 // 		console.log(
 // 			`${t.worker.toString().padEnd(6)} | ${t.id.padEnd(12)} | ${t.level
 // 				.toString()
-// 				.padEnd(5)} | ${t.iter.padEnd(4)} | ${t.duration_iso.padEnd(8)} | ${t.start_iso.padEnd(7)} | ${t.end_iso}`
+// 				.padEnd(5)} | ${t.iter} | ${t.duration_iso.padEnd(8)} | ${t.start_iso.padEnd(7)} | ${t.end_iso}`
 // 		);
 // 	}
 // }
@@ -389,7 +371,7 @@ export function generateSchedule(dataJSON, scheme = 'LPT', boost = 0) {
 
 	// printSchedule(schedule.schedule)
 
-	return { sch: schedule, err: [false] }
+	return { sch: schedule, numBuilders: numWorkers, err: [false] }
 
 }
 
