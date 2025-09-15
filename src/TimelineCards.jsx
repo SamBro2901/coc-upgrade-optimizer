@@ -103,9 +103,8 @@ export function TimelineCards({
 						</div>
 
 						{(() => {
-							const nowEpoch = Math.floor(Date.now() / 1000);
-							const startEpoch = nowEpoch + t.start;
-							const endEpoch = nowEpoch + t.end;
+							const startEpoch = t.start;
+							const endEpoch = t.end;
 
 							const startLabel = formatClockOrDate(startEpoch);
 							const endLabel = formatClockOrDate(endEpoch, startEpoch);

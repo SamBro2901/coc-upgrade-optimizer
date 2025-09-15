@@ -35,16 +35,18 @@ export const BUILDING_COLORS = {
   "Blacksmith": "#9ED7D2",
   "Hero_Hall": "#BDA09D",
 
-  "Bomb": "#6b7280",
-  "Spring_Trap": "#9ca3af",
-  "Giant_Bomb": "#475569",
-  "Air_Bomb": "#0f172a",
-  "Seeking_Air_Mine": "#155e75",
-  "Skeleton_Trap": "#7c3aed",
+  "Bomb": "#6584B4",
+  "Spring_Trap": "#ddb9a1",
+  "Giant_Bomb": "#CF4A4F",
+  "Air_Bomb": "#ea617f",
+  "Seeking_Air_Mine": "#657279",
+  "Skeleton_Trap": "#C28157",
+  "Tornado_Trap": "#A4748A",
+  "Giga_Bomb": "#fd774f",
 
-  "Barbarian_King": "#ef4444",
-  "Archer_Queen": "#f97316",
-  "Grand_Warden": "#3b82f6",
-  "Royal_Champion": "#22c55e",
-  "Minion_Prince": "#eab308"
+  "Barbarian_King": "#e16c6a",
+  "Archer_Queen": "#957bd0",
+  "Grand_Warden": "#cb7ad1",
+  "Royal_Champion": "#698ce3",
+  "Minion_Prince": "#3bb5dd"
 };
