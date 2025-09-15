@@ -335,7 +335,7 @@ export default function App() {
               </div>
               <span>Tip: Pinch or Ctrl + Mouse Wheel to zoom in and out</span>
               <div className="chart-shell" style={{ background: "#fff", borderRadius: 16, boxShadow: "0 2px 12px #e0e7ff" }}>
-                <BuilderTimeline tasks={tasks} height={dynamicHeight} />
+                <BuilderTimeline tasks={tasks} height={dynamicHeight} doneKeys={doneKeys} onToggle={toggleDone} taskKeyFn={taskKey} />
               </div>
               {/* <div className="chart-shell" style={{ background: "#fff", borderRadius: 16, boxShadow: "0 2px 12px #e0e7ff" }}>
                 <GanttChart tasks={tasks} groupBy="worker" pxPerSec={pxPerSec} toPxPerSec={toPxPerSec} clampZoom={clampZoom} setZoom={setZoom} colorForId={colorForId} doneKeys={doneKeys} onToggle={toggleDone} taskKeyFn={taskKey} />

@@ -6,7 +6,7 @@ export const BUILDING_COLORS = {
   "Gold_Mine": "#FEEB80",
   "Gold_Storage": "#F3D697",
   "Barracks": "#B2C0CF",
-  "Laboratory": "#8b5cf6",
+  "Laboratory": "#ED97DB",
   "Cannon": "#D1C8C2",
   "Archer_Tower": "#9BC289",
   "Wall": "#d97706",
@@ -16,22 +16,24 @@ export const BUILDING_COLORS = {
   "Clan_Castle": "#B7B9B3",
   "Builders_Hut": "#9B9B99",
   "Hidden_Tesla": "#C7DBD9",
-  "Spell_Factory": "#06b6d4",
+  "Spell_Factory": "#FCF1C1",
   "XBow": "#DEB7E1",
   "Dark_Elixir_Drill": "#9B9391",
   "Dark_Elixir_Storage": "#9292A0",
-  "Dark_Barracks": "#fb923c",
+  "Dark_Barracks": "#EDA5A3",
   "Inferno_Tower": "#F1A086",
   "Air_Sweeper": "#FF9590",
-  "Dark_Spell_Factory": "#f87171",
+  "Dark_Spell_Factory": "#F0A7A7",
   "Bomb_Tower": "#B8BFD8",
   "Eagle_Artillery": "#F8E3DA", //
   "Scatter_Shot": "#A6CBDF", //
   "Spell_Tower": "#9B92AF", //
   "Monolith": "#ADA8C2", //
+  "Workshop": "#D78D74",//
+  "Pet_House": "#66B3A3",
 
-  "Blacksmith": "#fcd34d",
-  "Hero_Hall": "#1d4ed8",
+  "Blacksmith": "#9ED7D2",
+  "Hero_Hall": "#BDA09D",
 
   "Bomb": "#6b7280",
   "Spring_Trap": "#9ca3af",

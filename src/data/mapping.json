@@ -31,13 +31,16 @@
 	"1000029": "Dark_Spell_Factory",
 	"1000030": "",
 	"1000031": "Eagle_Artillery",
-	"1000032": "BombTower",
+	"1000032": "Bomb_Tower",
 	"1000059": "Workshop",
+
 	"1000067": "Scattershot",
 	"1000068": "Pet_House",
 
 	"1000070": "Blacksmith",
 	"1000071": "Hero_Hall",
+	"1000072": "Spell_Tower",
+	"1000077": "Monolith",
 
 	"12000000": "Bomb",
 	"12000001": "Spring_Trap",
@@ -45,6 +48,8 @@
 	"12000005": "Air_Bomb",
 	"12000006": "Seeking_Air_Mine",
 	"12000008": "Skeleton_Trap",
+	"12000016": "Tornado_Trap",
+	"12000020": "Giga_Bomb",
 
 	"28000000": "Barbarian_King",
 	"28000001": "Archer_Queen",

@@ -5,9 +5,11 @@ import 'vis-timeline/styles/vis-timeline-graph2d.css';
 import { BUILDING_COLORS } from './colorMap';
 
 function formatDuration(seconds) {
-	const h = Math.floor(seconds / 3600);
+	const d = Math.floor(seconds / 86400);
+	const h = Math.floor((seconds % 86400) / 3600);
 	const m = Math.floor((seconds % 3600) / 60);
 	const s = Math.floor(seconds % 60);
+	if (d) return `${d}d ${h}h ${m ? m + 'm' : ''}`.trim();
 	if (h) return `${h}h ${m ? m + 'm' : ''}`.trim();
 	if (m) return `${m}m ${s ? s + 's' : ''}`.trim();
 	return `${s}s`;
@@ -44,13 +46,6 @@ export default function BuilderTimeline({ tasks = [], height = 520 }) {
 				t.end != null ? Number(t.end) : (t.start || 0) + (t.duration || 0);
 			const end = new Date(Number(endEpoch) * 1000);
 
-			// const label = `${String(t.id).replaceAll('_', ' ')}${
-			// 	t.level ? ` L${t.level}` : ''
-			// } ${t.iter ? `#${t.iter}` : ''}`;
-			// const durLabel = formatDuration(
-			// 	Number(t.duration || endEpoch - (t.start || 0))
-			// );
-
 			const nameKey = t.id || t.text || t.name || '';
 			const color = BUILDING_COLORS[nameKey] || '#60a5fa'; // fallback blue
 
@@ -81,6 +76,9 @@ export default function BuilderTimeline({ tasks = [], height = 520 }) {
 			};
 		});
 
+		const minStart = Math.min(...tasks.map((t) => t.start)) * 1000; // ms
+		const maxEnd = Math.max(...tasks.map((t) => t.end)) * 1000; // ms
+		const scheduleSpan = maxEnd - minStart;
 		const container = ref.current;
 		const options = {
 			maxHeight: 600,
@@ -92,9 +90,10 @@ export default function BuilderTimeline({ tasks = [], height = 520 }) {
 			},
 			orientation: { item: 'top' },
 			horizontalScroll: true,
+			horizontalScrollInvert: true,
 			zoomKey: 'ctrlKey',
 			zoomable: true,
-			zoomMax: 2592000000,
+			zoomMax: scheduleSpan,
 			zoomMin: 3600000,
 			min: new Date(),
 			start: new Date(),
