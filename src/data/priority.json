@@ -1,8 +1,24 @@
 {
 	"Laboratory": 3,
-	"Hero_Hall": 3,
-	"Barracks": 4,
-	"Dark_Barracks": 4,
+	"Clan_Castle": 4,
 	"Spell_Factory": 4,
-	"Dark_Spell_Factory": 4
+	"Dark_Spell_Factory": 4,
+	"Hero_Hall": 5,
+	"Pet_House": 5,
+	"Army_Camp": 5,
+	"Barracks": 5,
+	"Dark_Barracks": 5,
+	"Barbarian_King": 6,
+	"Archer_Queen": 6,
+	"Minion_Prince": 6,
+	"Grand_Warden": 6,
+	"Royal_Champion": 6,
+	"Blacksmith": 6,
+	"Workshop": 6,
+	"Elixir_Collector": 7,
+	"Elixir_Storage": 7,
+	"Gold_Mine": 7,
+	"Gold_Storage": 7,
+	"Dark_Elixir_Drill": 7,
+	"Dark_Elixir_Storage": 7
 }
