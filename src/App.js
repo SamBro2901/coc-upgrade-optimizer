@@ -5,6 +5,7 @@ import "./App.css";
 import { BUILDING_COLORS } from "./colorMap";
 import { TimelineCards } from "./TimelineCards.jsx";
 import BuilderTimeline from "./BuilderTimeline.jsx";
+import ActiveTimeInput from "./ActiveTimeInput.jsx";
 
 
 export function JsonInput({ label = "JSON Input", initial = "", onValid, onValidityChange, storageKey = "JSON" }) {
@@ -182,9 +183,7 @@ export default function App() {
     localStorage.setItem("builderBonusPct", selectedPct);
   }, [selectedPct]);
 
-  // const DEFAULT_PX_PER_SEC = 0.03;
-  // const [zoom, setZoom] = useState(() => toZoom(DEFAULT_PX_PER_SEC));
-  // const pxPerSec = toPxPerSec(zoom);
+  const [activeTime, setActiveTime] = useState({ enabled: false, start: null, end: null });
 
 
   const colorForId = (name) => {
@@ -206,7 +205,9 @@ export default function App() {
       setErr(true);
       return;
     }
-    const { sch, numBuilders, err } = generateSchedule(jsonData, strategy, selectedPct);
+    let activeWindowStart = activeTime.enabled ? activeTime.start : "00:00";
+    let activewwindowEnd = activeTime.enabled ? activeTime.end : "23:59";
+    const { sch, numBuilders, err } = generateSchedule(jsonData, strategy, selectedPct, activeWindowStart, activewwindowEnd);
     setErr(err);
     setTasks(sch.schedule);
     setMakespan(sch.makespan);
@@ -214,6 +215,10 @@ export default function App() {
     const rowHeight = 40;
     const basePadding = 90; // space for axis/labels
     setHeight(numBuilders * rowHeight + basePadding);
+
+    if (activeTime.enabled) {
+      console.log("Active Time Range:", activeTime.start, "-", activeTime.end);
+    }
 
     sch.schedule.forEach(t => { colorForId(t.id); });
   };
@@ -264,6 +269,10 @@ export default function App() {
             onValidityChange={setJsonValid}
           />
           <div className="controls">
+            {/* Active Time Input */}
+            <div className="field" style={{ padding: 10 }}>
+              <ActiveTimeInput onChange={setActiveTime} />
+            </div>
             <div className="builder-bonus-container">
               <span className="builder-bonus-label">Builder Bonus:</span>
               <select

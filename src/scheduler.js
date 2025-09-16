@@ -143,6 +143,8 @@ function constructTasks(inputData, builderBoost = 0) {
 		tasks.push(...missingHLvls)
 	}
 
+	tasks = lockPredecessors(inputData, tasks);
+
 	return { tasks, numWorkers };
 }
 
@@ -160,12 +162,10 @@ function sortTasks(arr, scheme) {
 	return arr;
 }
 
-function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT') {
+function lockPredecessors(playerData, tasks) {
 	const heroes = ['Barbarian_King', 'Archer_Queen', 'Minion_Prince', 'Grand_Warden', 'Royal_Champion'];
 
 	tasks = tasks.map((t, idx) => ({ ...t, index: idx, worker: null, pred: [], key: `${t.id}_${t.iter}_${t.level}` }));
-	const taskLength = tasks.length;
-	let iterations = 0;
 
 	// Lock to predecessor - Buildings
 	for (const t of tasks) {
@@ -194,9 +194,43 @@ function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT') {
 		}
 	}
 
+	return tasks;
+}
+
+function getTimeString(epoch) {
+	const date = new Date(epoch * 1000); // convert to ms
+
+	const hh = String(date.getHours()).padStart(2, "0");
+	const mm = String(date.getMinutes()).padStart(2, "0");
+
+	const timeString = `${hh}:${mm}`;
+	return timeString
+}
+
+function setDateString(epoch, target) {
+	const targetSplit = target.split(":");
+	const date = new Date(epoch * 1000);
+
+	// Clone the date (so we don't mutate original directly)
+	const targetDate = new Date(date);
+
+	// Set target time (on the same day first)
+	targetDate.setHours(targetSplit[0], targetSplit[1], 0, 0);
+
+	// If target time is before or equal to current epoch time → add 1 day
+	if (targetDate.getTime() <= date.getTime()) {
+		targetDate.setDate(targetDate.getDate() + 1);
+	}
+
+	return Math.floor(targetDate.getTime() / 1000);
+}
+
+function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT', activeStart = "08:00", activeEnd = "23:59") {
 	// console.log(tasks.filter(t => heroes.includes(t.id)));
 	// console.log(hhTask);
 	// return;
+	const taskLength = tasks.length;
+	let iterations = 0;
 
 	let ready = tasks.filter(t => t.pred.length === 0);
 	let notReady = tasks.filter(t => t.pred.length !== 0);
@@ -208,6 +242,7 @@ function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT') {
 
 	let currTime = Math.floor(Date.now() / 1000);
 	const startTime = currTime;
+
 	while (ready.length > 0 || completed.length !== taskLength || notReady.length > 0) {
 		if (iterations > 100000) throw new Error("Loop overflow");
 		// console.log(`Total Tasks: ${taskLength}, Ready Tasks: ${ready.length}, Not Ready Tasks: ${notReady.length}, Running Tasks: ${running.length}, Completed Tasks: ${completed.length}`);
@@ -216,6 +251,7 @@ function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT') {
 		let freeWorkers = workers.map((w, idx) => ({ index: idx, value: w })).filter(w => w.value === null);
 
 		while (freeWorkers.length > 0 && ready.length > 0) {
+
 			let w = freeWorkers[0].index;
 			// Prioritize running tasks (priority 1)
 			if (runningTasks.length > 0) {
@@ -233,6 +269,9 @@ function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT') {
 				continue;
 			}
 
+			const currTimeString = getTimeString(currTime);
+
+			if (currTimeString < activeStart || currTimeString > activeEnd) break;
 			const currTask = ready[idx];
 			const predTask = completed.find(t => t.key === `${currTask.id}_${currTask.iter}_${currTask.level - 1}`);
 			if (predTask && workers[predTask.worker] === null) w = predTask.worker;
@@ -247,9 +286,11 @@ function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT') {
 			freeWorkers.splice(remIdx, 1);
 		}
 
-		const finishedTime = Math.min(...running.map(wd => wd.end));
+		let finishedTime = Math.min(...running.map(wd => wd.end));
+		let finishTimeString = getTimeString(finishedTime);
+		if (finishTimeString < activeStart) finishedTime = setDateString(finishedTime, activeStart);
 		currTime = finishedTime;
-		const finishedTask = workers.filter(wd => wd?.end === finishedTime);
+		const finishedTask = workers.filter(wd => wd?.end <= finishedTime);
 		for (let ft of finishedTask) {
 			completed.push(ft);
 			workers[ft.worker] = null;
@@ -352,7 +393,7 @@ function toISOString(seconds) {
 }
 
 
-export function generateSchedule(dataJSON, scheme = 'LPT', boost = 0) {
+export function generateSchedule(dataJSON, scheme = 'LPT', boost = 0, startTime = "00:00", endTime = "23:59") {
 
 	if (!dataJSON || !dataJSON.buildings || dataJSON.buildings?.length === 0) {
 		let resp = { schedule: [], makespan: 0 };
@@ -361,7 +402,7 @@ export function generateSchedule(dataJSON, scheme = 'LPT', boost = 0) {
 
 	const { tasks, numWorkers } = constructTasks(dataJSON, boost);
 
-	const schedule = myScheduler(dataJSON, tasks, numWorkers, scheme);
+	const schedule = myScheduler(dataJSON, tasks, numWorkers, scheme, startTime, endTime);
 
 	for (const t of schedule.schedule) {
 		t.start_iso = toISOString(t.start);
