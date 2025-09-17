@@ -210,14 +210,10 @@ function getTimeString(epoch) {
 function setDateString(epoch, target) {
 	const targetSplit = target.split(":");
 	const date = new Date(epoch * 1000);
-
-	// Clone the date (so we don't mutate original directly)
 	const targetDate = new Date(date);
 
-	// Set target time (on the same day first)
 	targetDate.setHours(targetSplit[0], targetSplit[1], 0, 0);
 
-	// If target time is before or equal to current epoch time → add 1 day
 	if (targetDate.getTime() <= date.getTime()) {
 		targetDate.setDate(targetDate.getDate() + 1);
 	}
@@ -225,7 +221,7 @@ function setDateString(epoch, target) {
 	return Math.floor(targetDate.getTime() / 1000);
 }
 
-function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT', activeStart = "08:00", activeEnd = "23:59") {
+function myScheduler(tasks, numWorkers = 3, scheme = 'LPT', activeStart = "08:00", activeEnd = "23:59", optimize = false) {
 	// console.log(tasks.filter(t => heroes.includes(t.id)));
 	// console.log(hhTask);
 	// return;
@@ -251,8 +247,8 @@ function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT', activeSt
 		let freeWorkers = workers.map((w, idx) => ({ index: idx, value: w })).filter(w => w.value === null);
 
 		while (freeWorkers.length > 0 && ready.length > 0) {
-
 			let w = freeWorkers[0].index;
+
 			// Prioritize running tasks (priority 1)
 			if (runningTasks.length > 0) {
 				const arrIdx = ready.findIndex(t => t.key === runningTasks[0].key);
@@ -270,8 +266,9 @@ function myScheduler(playerData, tasks, numWorkers = 3, scheme = 'LPT', activeSt
 			}
 
 			const currTimeString = getTimeString(currTime);
-
+			// Break out if current timestamp is during off-time
 			if (currTimeString < activeStart || currTimeString > activeEnd) break;
+
 			const currTask = ready[idx];
 			const predTask = completed.find(t => t.key === `${currTask.id}_${currTask.iter}_${currTask.level - 1}`);
 			if (predTask && workers[predTask.worker] === null) w = predTask.worker;
@@ -402,7 +399,7 @@ export function generateSchedule(dataJSON, scheme = 'LPT', boost = 0, startTime 
 
 	const { tasks, numWorkers } = constructTasks(dataJSON, boost);
 
-	const schedule = myScheduler(dataJSON, tasks, numWorkers, scheme, startTime, endTime);
+	const schedule = myScheduler(tasks, numWorkers, scheme, startTime, endTime, true);
 
 	for (const t of schedule.schedule) {
 		t.start_iso = toISOString(t.start);

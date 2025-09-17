@@ -176,15 +176,35 @@ a, a:hover, a:visited, a:active {
 }
 
 .builder-bonus-container {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
   padding: 10px 14px;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(37,99,235,0.25);
   background: #fff;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
 }
+
+.active-time-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 6px 10px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  box-sizing: border-box;
+  box-shadow: 0 6px 16px rgba(37,99,235,0.25);
+  width: 100%;
+}
+/* 
+.active-time-container input{
+  flex: 1;
+  min-width: 0;
+} */
 
 .builder-bonus-label {
   font-size: 14px;

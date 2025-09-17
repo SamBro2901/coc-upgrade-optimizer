@@ -112,13 +112,14 @@ export default function ActiveTimeInput({
 	]);
 
 	return (
-		<div style={{ marginBottom: 20 }}>
-			<h2 style={{ marginBottom: 10 }}>Active Time Range</h2>
+		<div style={{ width: '100%' }}>
+			<span>Active Time Range</span>
 			<label
 				style={{
 					display: 'flex',
 					alignItems: 'center',
 					gap: 6,
+					marginTop: 10,
 					marginBottom: 10,
 				}}
 			>
@@ -132,9 +133,9 @@ export default function ActiveTimeInput({
 
 			<div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
 				{/* Start Time */}
-				<div>
+				<div className="active-time-container">
 					<label>Start Time</label>
-					<div style={{ display: 'flex', gap: 6 }}>
+					<div style={{ display: 'flex', gap: 5, padding: 5 }}>
 						<input
 							type="number"
 							min="0"
@@ -144,7 +145,7 @@ export default function ActiveTimeInput({
 							onBlur={() => handleBlur(setStartHour, startHour, 23, 'start')}
 							placeholder="HH"
 							disabled={!enabled}
-							style={{ width: 60, padding: 6 }}
+							style={{ width: 38 }}
 						/>
 						:
 						<input
@@ -158,15 +159,15 @@ export default function ActiveTimeInput({
 							}
 							placeholder="MM"
 							disabled={!enabled}
-							style={{ width: 60, padding: 6 }}
+							style={{ width: 38 }}
 						/>
 					</div>
 				</div>
 
 				{/* End Time */}
-				<div>
+				<div className="active-time-container">
 					<label>End Time</label>
-					<div style={{ display: 'flex', gap: 6 }}>
+					<div style={{ display: 'flex', gap: 5, padding: 5 }}>
 						<input
 							type="number"
 							min="0"
@@ -176,7 +177,7 @@ export default function ActiveTimeInput({
 							onBlur={() => handleBlur(setEndHour, endHour, 23, 'end')}
 							placeholder="HH"
 							disabled={!enabled}
-							style={{ width: 60, padding: 6 }}
+							style={{ width: 38 }}
 						/>
 						:
 						<input
@@ -188,7 +189,7 @@ export default function ActiveTimeInput({
 							onBlur={() => handleBlur(setEndMinute, endMinute, 59, 'end')}
 							placeholder="MM"
 							disabled={!enabled}
-							style={{ width: 60, padding: 6 }}
+							style={{ width: 38 }}
 						/>
 					</div>
 				</div>

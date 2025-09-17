@@ -268,27 +268,27 @@ export default function App() {
             onValid={setJsonData}
             onValidityChange={setJsonValid}
           />
+          {/* Active Time Input */}
+          <div className="active-time-container" style={{ padding: 10, width: 220, maxWidth: 220, marginBottom: 20 }}>
+            <ActiveTimeInput onChange={setActiveTime} />
+          </div>
+          <div className="builder-bonus-container" style={{ marginBottom: 20, width: 220, maxWidth: 220 }}>
+            <span className="builder-bonus-label">Builder Bonus:</span>
+            <select
+              value={selectedPct}
+              onChange={(e) => setSelectedPct(Number(e.target.value))}
+              className="select-dropdown"
+            >
+              <option value={0}>0%</option>
+              <option value={0.05}>5%</option>
+              <option value={0.10}>10%</option>
+              <option value={0.15}>15%</option>
+              <option value={0.20}>20%</option>
+              <option value={0.25}>25%</option>
+              <option value={0.30}>30%</option>
+            </select>
+          </div>
           <div className="controls">
-            {/* Active Time Input */}
-            <div className="field" style={{ padding: 10 }}>
-              <ActiveTimeInput onChange={setActiveTime} />
-            </div>
-            <div className="builder-bonus-container">
-              <span className="builder-bonus-label">Builder Bonus:</span>
-              <select
-                value={selectedPct}
-                onChange={(e) => setSelectedPct(Number(e.target.value))}
-                className="select-dropdown"
-              >
-                <option value={0}>0%</option>
-                <option value={0.05}>5%</option>
-                <option value={0.10}>10%</option>
-                <option value={0.15}>15%</option>
-                <option value={0.20}>20%</option>
-                <option value={0.25}>25%</option>
-                <option value={0.30}>30%</option>
-              </select>
-            </div>
 
             <button disabled={!jsonValid} className="button" style={{ fontSize: 16, padding: "12px 22px", borderRadius: 12 }} onClick={() => runSchedule(jsonData, "SPT")}>Generate SPT</button>
             <button disabled={!jsonValid} className="button" style={{ fontSize: 16, padding: "12px 22px", borderRadius: 12 }} onClick={() => runSchedule(jsonData, "LPT")}>Generate LPT</button>
