@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/coc-upgrade-optimizer/static/css/main.c3c37134.css",
-    "main.js": "/coc-upgrade-optimizer/static/js/main.4a2220ad.js",
+    "main.css": "/coc-upgrade-optimizer/static/css/main.07f39b7c.css",
+    "main.js": "/coc-upgrade-optimizer/static/js/main.5b926623.js",
     "static/js/453.fe48b56a.chunk.js": "/coc-upgrade-optimizer/static/js/453.fe48b56a.chunk.js",
     "index.html": "/coc-upgrade-optimizer/index.html",
-    "main.c3c37134.css.map": "/coc-upgrade-optimizer/static/css/main.c3c37134.css.map",
-    "main.4a2220ad.js.map": "/coc-upgrade-optimizer/static/js/main.4a2220ad.js.map",
+    "main.07f39b7c.css.map": "/coc-upgrade-optimizer/static/css/main.07f39b7c.css.map",
+    "main.5b926623.js.map": "/coc-upgrade-optimizer/static/js/main.5b926623.js.map",
     "453.fe48b56a.chunk.js.map": "/coc-upgrade-optimizer/static/js/453.fe48b56a.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.c3c37134.css",
-    "static/js/main.4a2220ad.js"
+    "static/css/main.07f39b7c.css",
+    "static/js/main.5b926623.js"
   ]
 }
