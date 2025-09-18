@@ -96,7 +96,8 @@ export function TimelineCards({
 						}}
 					>
 						<div style={{ fontWeight: 600, fontSize: 15 }}>
-							{String(t.id).replaceAll('_', ' ')} · L{t.level}
+							{String(t.id).replaceAll('_', ' ').replace('Builder', '').trim()}{' '}
+							· L{t.level}
 						</div>
 						<div style={{ fontSize: 13, color: '#475569', marginTop: 2 }}>
 							Builder {Number(t.worker) + 1} · #{t.iter}

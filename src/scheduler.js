@@ -3,6 +3,7 @@ import trapConfig from './data/traps.json' with { type: "json" };
 import resConfig from './data/resources.json' with { type: "json" };
 import armyConfig from './data/army.json' with { type: "json" };
 import thConfig from './data/th.json' with { type: "json" };
+import bhConfig from './data/bh.json' with { type: "json" };
 import heroConfig from './data/heroes.json' with { type: "json" }
 import mapping from './data/mapping.json' with { type: "json" };
 
@@ -40,14 +41,11 @@ function applyBoost(durationSeconds, boost) {
 	let finalSeconds;
 
 	if (durationSeconds < thirtyMinutes) {
-		// Case 1: Less than 30 minutes
-		finalSeconds = Math.ceil(reducedTime); // round up fractional seconds
+		finalSeconds = Math.ceil(reducedTime);
 	} else if (durationSeconds <= oneDay) {
-		// Case 2: Between 30 minutes and 1 day
 		const tenMinutes = 10 * 60;
 		finalSeconds = Math.floor(reducedTime / tenMinutes) * tenMinutes;
 	} else {
-		// Case 3: More than 1 day
 		const oneHour = 60 * 60;
 		finalSeconds = Math.floor(reducedTime / oneHour) * oneHour;
 	}
@@ -55,15 +53,30 @@ function applyBoost(durationSeconds, boost) {
 	return finalSeconds;
 }
 
-function constructTasks(inputData, builderBoost = 0) {
+function constructTasks(inputData, base = "home", builderBoost = 0) {
 	let itemData = { ...defenseConfig, ...trapConfig, ...resConfig, ...armyConfig };
 
-	let pData = [...inputData.buildings];
-	if (inputData.traps) pData.push(...inputData.traps);
-	const hData = inputData.heroes;
+	let pData = [], hData = [];
+
+	if (base === "home") {
+		// Home Village
+		pData = [...inputData.buildings];
+		if (inputData.traps) pData.push(...inputData.traps);
+		hData = inputData.heroes;
+	} else {
+		// Builder Base
+		pData = [...inputData.buildings2];
+		if (inputData.traps2) pData.push(...inputData.traps2);
+		hData = inputData.heroes2;
+	}
+
+
 	let buildData = [], buildings = [], heroes = [], heroData = [], tasks = [];
 	for (let item of pData) {
-		if (mapping[item.data] === undefined) continue;
+		if (mapping[item.data] === undefined) {
+			console.log('Missing mapping', item.data);
+			continue;
+		}
 		if (!buildings.includes(mapping[item.data])) buildings.push(mapping[item.data])
 
 		buildData.push({ ...item, name: mapping[item.data] });
@@ -78,13 +91,31 @@ function constructTasks(inputData, builderBoost = 0) {
 		}
 	}
 
-	const currTH = buildData.find(b => b.name === 'Town_Hall').lvl;
-	const numWorkers = buildData.filter(b => b.name === 'Builders_Hut').reduce((sum, v) => sum + (v.timer ? 1 : v.cnt || v.gear_up), 0);
-	buildData = buildData.filter(b => b.name !== 'Town_Hall');
-	const maxBuilds = arrayToObject(thConfig[currTH])
+	let currTH = 1, numWorkers = 2;
+	if (base === "home") {
+		// Home Village
+		currTH = buildData.find(b => b.name === 'Town_Hall').lvl;
+		numWorkers = buildData.filter(b => b.name === 'Builders_Hut').reduce((sum, v) => sum + (v.timer ? 1 : v.cnt || v.gear_up), 0);
+		let BOB = buildData.filter(b => b.name === 'B.O.B_Hut')?.reduce((sum, v) => sum + (v.timer ? 1 : v.cnt || v.gear_up), 0);
+		BOB = BOB ? BOB : 0;
+		numWorkers += BOB;
+		buildData = buildData.filter(b => b.name !== 'Town_Hall');
+	}
+	else {
+		// Builder Base
+		currTH = buildData.find(b => b.name === "Builder_Hall").lvl;
+		numWorkers = 1
+		const OTTO = buildData.find(b => b.name === "O.T.T.O_Outpost");
+		numWorkers = OTTO ? numWorkers + 1 : numWorkers;
+		console.log(OTTO, numWorkers);
+		buildData = buildData.filter(b => b.name === "Builder_Hall");
+	}
+
+	const maxBuilds = base === "home" ? arrayToObject(thConfig[currTH]) : arrayToObject(bhConfig[currTH]);
 
 	for (let b of buildings) {
 		if (b === "Wall") continue;
+		if (!itemData[b]) continue;
 		let currBuild = buildData.filter(i => i.name === b);
 		let currCount = 0, char = 1;
 		if (currBuild.length !== 0) {
@@ -129,18 +160,20 @@ function constructTasks(inputData, builderBoost = 0) {
 		}
 	}
 
-	for (let h of heroes) {
-		const maxHeroHall = itemData['Hero_Hall'].filter(i => i.TH <= currTH)?.sort((a, b) => b.level - a.level).map(item => ({ id: 'Hero_Hall', level: item.level, duration: applyBoost(item.duration, builderBoost) }))[0] || 0;
-		let currHero = heroData.find(he => he.name === h);
+	if (base === "home") {
+		for (let h of heroes) {
+			const maxHeroHall = itemData['Hero_Hall'].filter(i => i.TH <= currTH)?.sort((a, b) => b.level - a.level).map(item => ({ id: 'Hero_Hall', level: item.level, duration: applyBoost(item.duration, builderBoost) }))[0] || 0;
+			let currHero = heroData.find(he => he.name === h);
 
-		if (currHero.timer) {
-			currHero.lvl += 1;
-			tasks.push({ id: h, level: currHero.lvl, duration: currHero.timer, priority: 1, iter: 1 })
+			if (currHero.timer) {
+				currHero.lvl += 1;
+				tasks.push({ id: h, level: currHero.lvl, duration: currHero.timer, priority: 1, iter: 1 })
+			}
+			let missingHLvls = heroConfig[h].filter(i => i.HH <= maxHeroHall.level && i.level > currHero.lvl);
+			missingHLvls = missingHLvls.map(he => ({ id: h, level: he.level, duration: applyBoost(he.duration, builderBoost), HH: he.HH, priority: priority[h] ? priority[h] : 100, iter: 1 }));
+
+			tasks.push(...missingHLvls)
 		}
-		let missingHLvls = heroConfig[h].filter(i => i.HH <= maxHeroHall.level && i.level > currHero.lvl);
-		missingHLvls = missingHLvls.map(he => ({ id: h, level: he.level, duration: applyBoost(he.duration, builderBoost), HH: he.HH, priority: priority[h] ? priority[h] : 100, iter: 1 }));
-
-		tasks.push(...missingHLvls)
 	}
 
 	tasks = lockPredecessors(inputData, tasks);
@@ -283,9 +316,12 @@ function myScheduler(tasks, numWorkers = 3, scheme = 'LPT', activeStart = "08:00
 			freeWorkers.splice(remIdx, 1);
 		}
 
-		let finishedTime = Math.min(...running.map(wd => wd.end));
+		let finishedTime = currTime;
+		if (running.length > 0) {
+			finishedTime = Math.min(...running.map(wd => wd.end));
+		}
 		let finishTimeString = getTimeString(finishedTime);
-		if (finishTimeString < activeStart) finishedTime = setDateString(finishedTime, activeStart);
+		if (finishTimeString < activeStart || finishTimeString > activeEnd) finishedTime = setDateString(finishedTime, activeStart);
 		currTime = finishedTime;
 		const finishedTask = workers.filter(wd => wd?.end <= finishedTime);
 		for (let ft of finishedTask) {
@@ -344,31 +380,31 @@ function formatDuration(seconds) {
 }
 
 
-// function printSchedule(schedule, printbyWorker = false) {
-// 	if (!Array.isArray(schedule) || schedule.length === 0) {
-// 		console.log("No tasks scheduled.");
-// 		return;
-// 	}
+function printSchedule(schedule, printbyWorker = false) {
+	if (!Array.isArray(schedule) || schedule.length === 0) {
+		console.log("No tasks scheduled.");
+		return;
+	}
 
-// 	console.log("=== Task Schedule ===");
-// 	console.log(
-// 		"Worker |  Task ID      | Level | Iter | Duration | Start | End"
-// 	);
-// 	console.log("------- | ------------- | ----- | ---- | -------- | ----- | ---");
+	console.log("=== Task Schedule ===");
+	console.log(
+		"Worker |  Task ID      | Level | Iter | Duration | Start | End"
+	);
+	console.log("------- | ------------- | ----- | ---- | -------- | ----- | ---");
 
-// 	if (printbyWorker) {
-// 		schedule = schedule.sort((a, b) => a.worker - b.worker || a.start - b.start);
+	if (printbyWorker) {
+		schedule = schedule.sort((a, b) => a.worker - b.worker || a.start - b.start);
 
-// 	}
+	}
 
-// 	for (const t of schedule) {
-// 		console.log(
-// 			`${t.worker.toString().padEnd(6)} | ${t.id.padEnd(12)} | ${t.level
-// 				.toString()
-// 				.padEnd(5)} | ${t.iter} | ${t.duration_iso.padEnd(8)} | ${t.start_iso.padEnd(7)} | ${t.end_iso}`
-// 		);
-// 	}
-// }
+	for (const t of schedule) {
+		console.log(
+			`${t.worker.toString().padEnd(6)} | ${t.id.padEnd(12)} | ${t.level
+				.toString()
+				.padEnd(5)} | ${t.iter} | ${t.duration_iso.padEnd(8)} | ${t.start_iso.padEnd(7)} | ${t.end_iso}`
+		);
+	}
+}
 
 function toISOString(seconds) {
 	const d = Math.floor(seconds / 86400);
@@ -390,14 +426,14 @@ function toISOString(seconds) {
 }
 
 
-export function generateSchedule(dataJSON, scheme = 'LPT', boost = 0, startTime = "00:00", endTime = "23:59") {
+export function generateSchedule(dataJSON, scheme = 'LPT', base = "home", boost = 0.05, startTime = "07:00", endTime = "23:00") {
 
 	if (!dataJSON || !dataJSON.buildings || dataJSON.buildings?.length === 0) {
 		let resp = { schedule: [], makespan: 0 };
 		return { sch: resp, err: [true, "Failed to parse building data from JSON"] }
 	}
 
-	const { tasks, numWorkers } = constructTasks(dataJSON, boost);
+	const { tasks, numWorkers } = constructTasks(dataJSON, base, boost);
 
 	const schedule = myScheduler(tasks, numWorkers, scheme, startTime, endTime, true);
 
@@ -407,10 +443,10 @@ export function generateSchedule(dataJSON, scheme = 'LPT', boost = 0, startTime 
 		t.duration_iso = toISOString(t.duration);
 	}
 
-	// printSchedule(schedule.schedule)
+	printSchedule(schedule.schedule)
 
 	return { sch: schedule, numBuilders: numWorkers, err: [false] }
 
 }
 
-generateSchedule(playerData, "LPT");
+generateSchedule(playerData, "LPT", 'builder');

@@ -21,17 +21,17 @@ export function JsonInput({ label = "JSON Input", initial = "", onValid, onValid
 
 
   // --- load saved width/height (optional) ---
-  const [boxSize, setBoxSize] = React.useState(() => {
-    try {
-      const saved = storageKey && JSON.parse(localStorage.getItem(storageKey) || "{}");
-      return {
-        width: saved.width || 560,   // starting size
-        height: saved.height || 200,
-      };
-    } catch {
-      return { width: 560, height: 200 };
-    }
-  });
+  // const [boxSize, setBoxSize] = React.useState(() => {
+  //   try {
+  //     const saved = storageKey && JSON.parse(localStorage.getItem(storageKey) || "{}");
+  //     return {
+  //       width: saved.width || 560,   // starting size
+  //       height: saved.height || 200,
+  //     };
+  //   } catch {
+  //     return { width: 560, height: 200 };
+  //   }
+  // });
 
   const areaRef = React.useRef(null);
 
@@ -60,16 +60,16 @@ export function JsonInput({ label = "JSON Input", initial = "", onValid, onValid
   }, [isValid, text, onValid, onValidityChange]);
 
   // Persist size after user resizes (mouseup is enough for native resize handles)
-  const saveSize = () => {
-    const el = areaRef.current;
-    if (!el || !storageKey) return;
-    const width = el.offsetWidth;
-    const height = el.offsetHeight;
-    setBoxSize({ width, height });
-    try {
-      localStorage.setItem(storageKey, JSON.stringify({ width, height }));
-    } catch { }
-  };
+  // const saveSize = () => {
+  //   const el = areaRef.current;
+  //   if (!el || !storageKey) return;
+  //   const width = el.offsetWidth;
+  //   const height = el.offsetHeight;
+  //   setBoxSize({ width, height });
+  //   try {
+  //     localStorage.setItem(storageKey, JSON.stringify({ width, height }));
+  //   } catch { }
+  // };
 
   const handleFormat = () => {
     try {
@@ -94,19 +94,19 @@ export function JsonInput({ label = "JSON Input", initial = "", onValid, onValid
         ref={areaRef}
         value={text}
         onChange={(e) => setText(e.target.value)}
-        onMouseUp={saveSize}                 // save new size after drag
+        // onMouseUp={saveSize}                 // save new size after drag
         placeholder='{"foo": 1, "bar": [2,3]}'
         spellCheck={false}
         style={{
           display: "block",                   // stays in normal flow so others reflow
-          width: boxSize.width,               // initial/persisted size
-          height: boxSize.height,
+          width: "100%",               // initial/persisted size
+          height: "20vh",
           minWidth: "30vw",
           minHeight: "10vh",
-          maxWidth: "70vw",    // 👈 cap width
-          maxHeight: "30vh",
+          maxWidth: "100%",    // 👈 cap width
+          maxHeight: "20vh",
           boxSizing: "border-box",
-          resize: "both",                     // 👈 enables horizontal + vertical resize
+          resize: "none",                     // 👈 enables horizontal + vertical resize
           overflow: "auto",
           fontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
           fontSize: 13,
@@ -179,9 +179,15 @@ export default function App() {
     return saved ? Number(saved) : 0; // default 0% if nothing saved
   });
 
+  const [village, setVillage] = useState(() => {
+    const saved = localStorage.getItem("baseVillage");
+    return saved ? saved : "home";
+  })
+
   React.useEffect(() => {
     localStorage.setItem("builderBonusPct", selectedPct);
-  }, [selectedPct]);
+    localStorage.setItem("baseVillage", village);
+  }, [selectedPct, village]);
 
   const [activeTime, setActiveTime] = useState({ enabled: false, start: null, end: null });
 
@@ -198,7 +204,7 @@ export default function App() {
       return next;
     });
   };
-  // let workers = 3, dynamicHeight = 300;
+
   const runSchedule = (jD, strategy) => {
     if (!jD) {
       console.error("No JSON data provided");
@@ -206,8 +212,8 @@ export default function App() {
       return;
     }
     let activeWindowStart = activeTime.enabled ? activeTime.start : "00:00";
-    let activewwindowEnd = activeTime.enabled ? activeTime.end : "23:59";
-    const { sch, numBuilders, err } = generateSchedule(jsonData, strategy, selectedPct, activeWindowStart, activewwindowEnd);
+    let activeWindowEnd = activeTime.enabled ? activeTime.end : "23:59";
+    const { sch, numBuilders, err } = generateSchedule(jsonData, strategy, village, selectedPct, activeWindowStart, activeWindowEnd);
     setErr(err);
     setTasks(sch.schedule);
     setMakespan(sch.makespan);
@@ -215,10 +221,6 @@ export default function App() {
     const rowHeight = 40;
     const basePadding = 90; // space for axis/labels
     setHeight(numBuilders * rowHeight + basePadding);
-
-    if (activeTime.enabled) {
-      console.log("Active Time Range:", activeTime.start, "-", activeTime.end);
-    }
 
     sch.schedule.forEach(t => { colorForId(t.id); });
   };
@@ -261,35 +263,51 @@ export default function App() {
         </div>
 
         {/* Controls */}
-        <div className="field">
+        <div className="field" style={{ maxWidth: "100%" }}>
           <JsonInput
             label="Paste village JSON data"
             initial='{"tag":"#GU2QV0Y8Q","timestamp":1757084582,"buildings":[{"data":1000008,"lvl":10,"gear_up":1},{"data":1000011,"lvl":5,"timer":24973},{"data":1000019,"lvl":4,"timer":28511},{"data":1000019,"lvl":4,"timer":28517},{"data":1000005,"lvl":8,"timer":12591},{"data":1000011,"lvl":4,"timer":5143},{"data":1000000,"lvl":6,"cnt":4},{"data":1000001,"lvl":8,"cnt":1},{"data":1000002,"lvl":11,"cnt":6},{"data":1000003,"lvl":8,"cnt":1},{"data":1000003,"lvl":11,"cnt":2},{"data":1000004,"lvl":11,"cnt":2},{"data":1000004,"lvl":12,"cnt":4},{"data":1000005,"lvl":11,"cnt":2},{"data":1000006,"lvl":10,"cnt":1},{"data":1000007,"lvl":6,"cnt":1},{"data":1000008,"lvl":10,"cnt":4},{"data":1000009,"lvl":9,"cnt":5},{"data":1000010,"lvl":8,"cnt":225},{"data":1000011,"lvl":6,"cnt":1},{"data":1000012,"lvl":6,"cnt":3},{"data":1000013,"lvl":6,"cnt":4},{"data":1000014,"lvl":4,"cnt":1},{"data":1000015,"lvl":1,"cnt":5},{"data":1000019,"lvl":1,"cnt":1},{"data":1000020,"lvl":3,"cnt":1},{"data":1000023,"lvl":3,"cnt":2},{"data":1000024,"lvl":4,"cnt":1},{"data":1000026,"lvl":4,"cnt":1},{"data":1000028,"lvl":4,"cnt":1},{"data":1000029,"lvl":2,"cnt":1},{"data":1000032,"lvl":2,"cnt":1},{"data":1000070,"lvl":1,"cnt":1},{"data":1000071,"lvl":2,"cnt":1}],"traps":[{"data":12000000,"lvl":5,"cnt":6},{"data":12000001,"lvl":1,"cnt":2},{"data":12000001,"lvl":2,"cnt":4},{"data":12000002,"lvl":1,"cnt":1},{"data":12000002,"lvl":2,"cnt":2},{"data":12000005,"lvl":1,"cnt":2},{"data":12000005,"lvl":3,"cnt":2},{"data":12000006,"lvl":1,"cnt":2},{"data":12000008,"lvl":1,"cnt":2}],"decos":[{"data":18000184,"cnt":1}],"obstacles":[{"data":8000000,"cnt":5},{"data":8000004,"cnt":3},{"data":8000006,"cnt":3},{"data":8000007,"cnt":1},{"data":8000008,"cnt":3},{"data":8000010,"cnt":6},{"data":8000013,"cnt":2},{"data":8000131,"cnt":2}],"units":[{"data":4000000,"lvl":4},{"data":4000001,"lvl":4},{"data":4000002,"lvl":4},{"data":4000003,"lvl":4},{"data":4000004,"lvl":4},{"data":4000005,"lvl":4,"timer":17157},{"data":4000006,"lvl":5},{"data":4000007,"lvl":2},{"data":4000008,"lvl":3},{"data":4000009,"lvl":2,"timer":4931},{"data":4000010,"lvl":2},{"data":4000011,"lvl":4},{"data":4000012,"lvl":2},{"data":4000013,"lvl":2}],"siege_machines":[],"heroes":[{"data":28000000,"lvl":11},{"data":28000001,"lvl":6}],"spells":[{"data":26000000,"lvl":4},{"data":26000001,"lvl":4},{"data":26000002,"lvl":5},{"data":26000009,"lvl":2},{"data":26000010,"lvl":2}],"pets":[],"equipment":[{"data":90000000,"lvl":1},{"data":90000001,"lvl":1},{"data":90000002,"lvl":1},{"data":90000003,"lvl":1},{"data":90000004,"lvl":1},{"data":90000005,"lvl":1},{"data":90000006,"lvl":1},{"data":90000007,"lvl":1},{"data":90000008,"lvl":5},{"data":90000010,"lvl":1},{"data":90000013,"lvl":1},{"data":90000014,"lvl":5},{"data":90000015,"lvl":1},{"data":90000019,"lvl":1},{"data":90000022,"lvl":1},{"data":90000032,"lvl":1},{"data":90000035,"lvl":1},{"data":90000039,"lvl":1},{"data":90000040,"lvl":1},{"data":90000041,"lvl":1},{"data":90000042,"lvl":1},{"data":90000043,"lvl":1},{"data":90000048,"lvl":1}],"house_parts":[82000000,82000008,82000009,82000011,82000048,82000058,82000059],"skins":[],"sceneries":[],"buildings2":[{"data":1000039,"lvl":2,"timer":198},{"data":1000033,"lvl":3,"cnt":75},{"data":1000034,"lvl":4,"cnt":1},{"data":1000035,"lvl":4,"cnt":1},{"data":1000036,"lvl":3,"cnt":1},{"data":1000037,"lvl":4,"cnt":1},{"data":1000038,"lvl":4,"cnt":1},{"data":1000040,"lvl":6,"cnt":1},{"data":1000041,"lvl":4,"cnt":1},{"data":1000042,"lvl":1,"cnt":4},{"data":1000043,"lvl":2,"cnt":1},{"data":1000044,"lvl":3,"cnt":2},{"data":1000046,"lvl":4,"cnt":1},{"data":1000048,"lvl":3,"cnt":2},{"data":1000050,"lvl":1,"cnt":1},{"data":1000051,"lvl":2,"cnt":1},{"data":1000054,"lvl":2,"cnt":1},{"data":1000055,"lvl":2,"cnt":1},{"data":1000058,"lvl":2,"cnt":1}],"traps2":[{"data":12000010,"lvl":1,"cnt":2},{"data":12000011,"lvl":1,"cnt":2},{"data":12000011,"lvl":2,"cnt":1},{"data":12000013,"lvl":1,"cnt":3},{"data":12000014,"lvl":1,"cnt":1}],"decos2":[],"obstacles2":[{"data":8000041,"cnt":8},{"data":8000042,"cnt":1},{"data":8000047,"cnt":1},{"data":8000049,"cnt":3},{"data":8000050,"cnt":2},{"data":8000051,"cnt":1},{"data":8000053,"cnt":1},{"data":8000055,"cnt":1},{"data":8000056,"cnt":2},{"data":8000057,"cnt":5},{"data":8000058,"cnt":7},{"data":8000059,"cnt":4},{"data":8000060,"cnt":3},{"data":8000061,"cnt":1},{"data":8000062,"cnt":2},{"data":8000063,"cnt":13},{"data":8000064,"cnt":12}],"units2":[{"data":4000031,"lvl":6},{"data":4000032,"lvl":6},{"data":4000033,"lvl":8},{"data":4000034,"lvl":7},{"data":4000035,"lvl":5},{"data":4000041,"lvl":6,"timer":55487}],"heroes2":[],"skins2":[],"sceneries2":[]}'
             onValid={setJsonData}
             onValidityChange={setJsonValid}
           />
-          {/* Active Time Input */}
-          <div className="active-time-container" style={{ padding: 10, width: 220, maxWidth: 220, marginBottom: 20 }}>
-            <ActiveTimeInput onChange={setActiveTime} />
-          </div>
-          <div className="builder-bonus-container" style={{ marginBottom: 20, width: 220, maxWidth: 220 }}>
-            <span className="builder-bonus-label">Builder Bonus:</span>
-            <select
-              value={selectedPct}
-              onChange={(e) => setSelectedPct(Number(e.target.value))}
-              className="select-dropdown"
-            >
-              <option value={0}>0%</option>
-              <option value={0.05}>5%</option>
-              <option value={0.10}>10%</option>
-              <option value={0.15}>15%</option>
-              <option value={0.20}>20%</option>
-              <option value={0.25}>25%</option>
-              <option value={0.30}>30%</option>
-            </select>
-          </div>
-          <div className="controls">
+          <div className="input-div" style={{ marginBottom: 20 }}>
+            {/* Active Time Input */}
+            <div className="active-time-container" style={{ padding: 10, maxWidth: 270, marginBottom: 20 }}>
+              <ActiveTimeInput onChange={setActiveTime} />
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", height: "100%", gap: 20, justifyContent: "space-between" }}>
+              <div className="builder-bonus-container" style={{ width: 270 }}>
+                <span className="builder-bonus-label">Builder Bonus:</span>
+                <select
+                  value={selectedPct}
+                  onChange={(e) => setSelectedPct(Number(e.target.value))}
+                  className="builder-bonus-container"
+                >
+                  <option value={0}>0%</option>
+                  <option value={0.05}>5%</option>
+                  <option value={0.10}>10%</option>
+                  <option value={0.15}>15%</option>
+                  <option value={0.20}>20%</option>
+                  <option value={0.25}>25%</option>
+                  <option value={0.30}>30%</option>
+                </select>
+              </div>
+              <div className="builder-bonus-container" style={{ maxWidth: 270 }}>
+                <span className="builder-bonus-label">Select Village:</span>
+                <select
+                  value={village}
+                  onChange={(e) => setVillage(e.target.value)}
+                  className="builder-bonus-container"
+                >
+                  <option value={"home"}>Home Village</option>
+                  <option value={"builder"}>Builder Base</option>
+                </select>
+              </div>
+            </div>
 
+          </div>
+
+          <div className="controls">
             <button disabled={!jsonValid} className="button" style={{ fontSize: 16, padding: "12px 22px", borderRadius: 12 }} onClick={() => runSchedule(jsonData, "SPT")}>Generate SPT</button>
             <button disabled={!jsonValid} className="button" style={{ fontSize: 16, padding: "12px 22px", borderRadius: 12 }} onClick={() => runSchedule(jsonData, "LPT")}>Generate LPT</button>
           </div>

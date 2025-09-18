@@ -49,9 +49,10 @@ export default function BuilderTimeline({ tasks = [], height = 520 }) {
 			const nameKey = t.id || t.text || t.name || '';
 			const color = BUILDING_COLORS[nameKey] || '#60a5fa'; // fallback blue
 
-			const label = `${String(t.id).replaceAll('_', ' ')}${
-				t.level ? ` L${t.level}` : ''
-			} ${t.iter ? `#${t.iter}` : ''}`;
+			const label = `${String(t.id)
+				.replaceAll('_', ' ')
+				.replace('Builder', '')
+				.trim()}${t.level ? ` L${t.level}` : ''} ${t.iter ? `#${t.iter}` : ''}`;
 			const durLabel = formatDuration(
 				Number(t.duration || endEpoch - (t.start || 0))
 			);

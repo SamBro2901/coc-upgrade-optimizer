@@ -113,7 +113,7 @@ export default function ActiveTimeInput({
 
 	return (
 		<div style={{ width: '100%' }}>
-			<span>Active Time Range</span>
+			<span className="builder-bonus-label">Active Time Range</span>
 			<label
 				style={{
 					display: 'flex',
