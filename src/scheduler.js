@@ -58,6 +58,7 @@ function constructTasks(inputData, scheme = "LPT", priori = false, base = "home"
 	let itemData = { ...defenseConfig, ...trapConfig, ...resConfig, ...armyConfig };
 
 	let pData = [], hData = [];
+	const builderArmy = ["Builder_Army_Camp", "Reinforcement_Camp"];
 
 	if (base === "home") {
 		// Home Village
@@ -111,7 +112,9 @@ function constructTasks(inputData, scheme = "LPT", priori = false, base = "home"
 		buildData = buildData.filter(b => b.name !== "Builder_Hall");
 	}
 
+	const prevBuilds = base === "home" ? arrayToObject(thConfig[currTH - 1]) : arrayToObject(bhConfig[currTH - 1]);
 	const maxBuilds = base === "home" ? arrayToObject(thConfig[currTH]) : arrayToObject(bhConfig[currTH]);
+	const diff = Object.fromEntries(Object.keys(maxBuilds).map(k => [k, (maxBuilds[k] || 0) - (prevBuilds[k] || 0)]))
 
 	for (let b of buildings) {
 		if (b === "Wall") continue;
@@ -124,16 +127,23 @@ function constructTasks(inputData, scheme = "LPT", priori = false, base = "home"
 
 		// Missing Buildings
 		if (currCount < maxBuilds[b]) {
-			let task = itemData[b].filter(item => item.TH > 0 && item.TH <= currTH).map(item => ({ id: b, level: item.level, duration: applyBoost(item.duration, builderBoost), priority: priority[b] && priori ? priority[b] : 100 })); // Immediate priority to build
-			if (task.length > 1) { // Splice first task only
-				let popTask = task.splice(0, 1)[0];
-				popTask.priority = 2;
-				popTask.iter = char
-				tasks.push(popTask)
+			if (builderArmy.includes(b)) {
+				let task = itemData[b].filter(item => item.TH > 0 && item.TH <= currTH).sort((a, b) => b.level - a.level);
+				task = task.splice(0, maxBuilds[b] - currCount).map(item => ({ id: b, level: item.level, duration: applyBoost(item.duration, builderBoost), priority: priority[b] && priori ? priority[b] : 100, iter: char }));
+				tasks.push(...task);
 			}
-			const resp = objToArray(task, maxBuilds[b] - currCount, char);
-			char = resp.char;
-			tasks.push(...resp.arr);
+			else {
+				let task = itemData[b].filter(item => item.TH > 0 && item.TH <= currTH).map(item => ({ id: b, level: item.level, duration: applyBoost(item.duration, builderBoost), priority: priority[b] && priori ? priority[b] : 100 })); // Immediate priority to build
+				if (task.length > 1) { // Splice first task only
+					let popTask = task.splice(0, 1)[0];
+					popTask.priority = 2;
+					popTask.iter = char
+					tasks.push(popTask)
+				}
+				const resp = objToArray(task, maxBuilds[b] - currCount, char);
+				char = resp.char;
+				tasks.push(...resp.arr);
+			}
 		}
 
 		// Existing Buildings
@@ -144,6 +154,7 @@ function constructTasks(inputData, scheme = "LPT", priori = false, base = "home"
 				tasks.push(task);
 				c.lvl += 1;
 			}
+			if (builderArmy.includes(b)) continue;
 
 			let currTask = itemData[b]?.filter(item => item.TH <= currTH)?.sort((a, b) => b.level - a.level).map(item => ({ id: b, level: item.level, duration: applyBoost(item.duration, builderBoost) }))[0];
 			let missingLvls = currTask?.level - c.lvl || 0;
@@ -159,6 +170,15 @@ function constructTasks(inputData, scheme = "LPT", priori = false, base = "home"
 			}
 		}
 	}
+
+	// Add new buildings
+	for (const [d, val] of Object.entries(diff)) {
+		if (val === 1 && !buildings.includes(d)) {
+			let newTask = itemData[d]?.filter(item => item.level === 1)?.map(item => ({ id: d, level: item.level, duration: applyBoost(item.duration, builderBoost), iter: 1 })) || [];
+			tasks.push(...newTask);
+		}
+	}
+
 
 	if (base === "home") {
 		for (let h of heroes) {
@@ -449,4 +469,4 @@ export function generateSchedule(dataJSON, debug = false, scheme = 'LPT', priori
 
 }
 
-// generateSchedule(playerData, true, "LPT", 'builder');
+generateSchedule(playerData, true, "LPT", false, 'builder');
