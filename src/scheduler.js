@@ -53,7 +53,7 @@ function applyBoost(durationSeconds, boost) {
 	return finalSeconds;
 }
 
-function constructTasks(inputData, base = "home", builderBoost = 0) {
+function constructTasks(inputData, scheme = "LPT", base = "home", builderBoost = 0) {
 	let itemData = { ...defenseConfig, ...trapConfig, ...resConfig, ...armyConfig };
 
 	let pData = [], hData = [];
@@ -124,7 +124,7 @@ function constructTasks(inputData, base = "home", builderBoost = 0) {
 
 		// Missing Buildings
 		if (currCount < maxBuilds[b]) {
-			let task = itemData[b].filter(item => item.TH > 0 && item.TH <= currTH).map(item => ({ id: b, level: item.level, duration: applyBoost(item.duration, builderBoost), priority: priority[b] ? priority[b] : 100 })); // Immediate priority to build
+			let task = itemData[b].filter(item => item.TH > 0 && item.TH <= currTH).map(item => ({ id: b, level: item.level, duration: applyBoost(item.duration, builderBoost), priority: priority[b] && scheme === "LPT" ? priority[b] : 100 })); // Immediate priority to build
 			if (task.length > 1) { // Splice first task only
 				let popTask = task.splice(0, 1)[0];
 				popTask.priority = 2;
@@ -149,7 +149,7 @@ function constructTasks(inputData, base = "home", builderBoost = 0) {
 			let missingLvls = currTask?.level - c.lvl || 0;
 			if (missingLvls > 0) {
 				let missingTask = itemData[b].filter(item => item.level > c.lvl && item.level <= currTask.level && item.TH <= currTH);
-				missingTask = missingTask.map(item => ({ id: b, level: item.level, duration: applyBoost(item.duration, builderBoost), priority: priority[b] ? priority[b] : 100 }));
+				missingTask = missingTask.map(item => ({ id: b, level: item.level, duration: applyBoost(item.duration, builderBoost), priority: priority[b] && scheme === "LPT" ? priority[b] : 100 }));
 				const resp1 = objToArray(missingTask, (c.timer ? 1 : c.cnt || c.gear_up || 1), char);
 				char = resp1.char;
 				tasks.push(...resp1.arr);
@@ -170,7 +170,7 @@ function constructTasks(inputData, base = "home", builderBoost = 0) {
 				tasks.push({ id: h, level: currHero.lvl, duration: currHero.timer, priority: 1, iter: 1 })
 			}
 			let missingHLvls = heroConfig[h].filter(i => i.HH <= maxHeroHall.level && i.level > currHero.lvl);
-			missingHLvls = missingHLvls.map(he => ({ id: h, level: he.level, duration: applyBoost(he.duration, builderBoost), HH: he.HH, priority: priority[h] ? priority[h] : 100, iter: 1 }));
+			missingHLvls = missingHLvls.map(he => ({ id: h, level: he.level, duration: applyBoost(he.duration, builderBoost), HH: he.HH, priority: priority[h] && scheme === "LPT" ? priority[h] : 100, iter: 1 }));
 
 			tasks.push(...missingHLvls)
 		}

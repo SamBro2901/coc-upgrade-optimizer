@@ -31,6 +31,18 @@ export const BUILDING_COLORS = {
   "Monolith": "#ADA8C2", //
   "Workshop": "#D78D74",//
   "Pet_House": "#66B3A3",
+  "Builder_Gold_Mine": "#FEEB80",
+  "Builder_Gold_Storage": "#F3D697",
+  "Builder_Elixir_Collector": "#CAB1E9",
+  "Builder_Elixir_Storage": "#FFD2FF",
+  "Gem_Mine": "#90E06B",
+  "Builder_Barracks": "#dc7870",
+  "Builder_Army_Camp": "#f6b055",
+  "Star_Laboratory": "#739ad8",
+  "Battle_Machine_Altar": "#dd7e6e",
+  "Reinforcement_Camp": "#cf7c93",
+  "Healing_Hut": "#e0c36c",
+  "Battle_Copter_Altar": "#da7871",
 
   "Blacksmith": "#9ED7D2",
   "Hero_Hall": "#BDA09D",
