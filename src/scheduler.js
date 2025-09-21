@@ -9,6 +9,7 @@ import mapping from './data/mapping.json' with { type: "json" };
 
 import priority from './data/priority.json' with { type: "json" }
 
+// eslint-disable-next-line no-unused-vars
 import playerData from './data/coc_data.json' with { type: "json" };
 
 function arrayToObject(arr) {
@@ -53,7 +54,7 @@ function applyBoost(durationSeconds, boost) {
 	return finalSeconds;
 }
 
-function constructTasks(inputData, scheme = "LPT", base = "home", builderBoost = 0) {
+function constructTasks(inputData, scheme = "LPT", priori = false, base = "home", builderBoost = 0) {
 	let itemData = { ...defenseConfig, ...trapConfig, ...resConfig, ...armyConfig };
 
 	let pData = [], hData = [];
@@ -107,8 +108,7 @@ function constructTasks(inputData, scheme = "LPT", base = "home", builderBoost =
 		numWorkers = 1
 		const OTTO = buildData.find(b => b.name === "O.T.T.O_Outpost");
 		numWorkers = OTTO ? numWorkers + 1 : numWorkers;
-		console.log(OTTO, numWorkers);
-		buildData = buildData.filter(b => b.name === "Builder_Hall");
+		buildData = buildData.filter(b => b.name !== "Builder_Hall");
 	}
 
 	const maxBuilds = base === "home" ? arrayToObject(thConfig[currTH]) : arrayToObject(bhConfig[currTH]);
@@ -124,7 +124,7 @@ function constructTasks(inputData, scheme = "LPT", base = "home", builderBoost =
 
 		// Missing Buildings
 		if (currCount < maxBuilds[b]) {
-			let task = itemData[b].filter(item => item.TH > 0 && item.TH <= currTH).map(item => ({ id: b, level: item.level, duration: applyBoost(item.duration, builderBoost), priority: priority[b] && scheme === "LPT" ? priority[b] : 100 })); // Immediate priority to build
+			let task = itemData[b].filter(item => item.TH > 0 && item.TH <= currTH).map(item => ({ id: b, level: item.level, duration: applyBoost(item.duration, builderBoost), priority: priority[b] && priori ? priority[b] : 100 })); // Immediate priority to build
 			if (task.length > 1) { // Splice first task only
 				let popTask = task.splice(0, 1)[0];
 				popTask.priority = 2;
@@ -149,7 +149,7 @@ function constructTasks(inputData, scheme = "LPT", base = "home", builderBoost =
 			let missingLvls = currTask?.level - c.lvl || 0;
 			if (missingLvls > 0) {
 				let missingTask = itemData[b].filter(item => item.level > c.lvl && item.level <= currTask.level && item.TH <= currTH);
-				missingTask = missingTask.map(item => ({ id: b, level: item.level, duration: applyBoost(item.duration, builderBoost), priority: priority[b] && scheme === "LPT" ? priority[b] : 100 }));
+				missingTask = missingTask.map(item => ({ id: b, level: item.level, duration: applyBoost(item.duration, builderBoost), priority: priority[b] && priori ? priority[b] : 100 }));
 				const resp1 = objToArray(missingTask, (c.timer ? 1 : c.cnt || c.gear_up || 1), char);
 				char = resp1.char;
 				tasks.push(...resp1.arr);
@@ -170,7 +170,7 @@ function constructTasks(inputData, scheme = "LPT", base = "home", builderBoost =
 				tasks.push({ id: h, level: currHero.lvl, duration: currHero.timer, priority: 1, iter: 1 })
 			}
 			let missingHLvls = heroConfig[h].filter(i => i.HH <= maxHeroHall.level && i.level > currHero.lvl);
-			missingHLvls = missingHLvls.map(he => ({ id: h, level: he.level, duration: applyBoost(he.duration, builderBoost), HH: he.HH, priority: priority[h] && scheme === "LPT" ? priority[h] : 100, iter: 1 }));
+			missingHLvls = missingHLvls.map(he => ({ id: h, level: he.level, duration: applyBoost(he.duration, builderBoost), HH: he.HH, priority: priority[h] && priori ? priority[h] : 100, iter: 1 }));
 
 			tasks.push(...missingHLvls)
 		}
@@ -426,14 +426,14 @@ function toISOString(seconds) {
 }
 
 
-export function generateSchedule(dataJSON, scheme = 'LPT', base = "home", boost = 0.05, startTime = "07:00", endTime = "23:00") {
+export function generateSchedule(dataJSON, debug = false, scheme = 'LPT', priority = false, base = "home", boost = 0.05, startTime = "07:00", endTime = "23:00") {
 
 	if (!dataJSON || !dataJSON.buildings || dataJSON.buildings?.length === 0) {
 		let resp = { schedule: [], makespan: 0 };
 		return { sch: resp, err: [true, "Failed to parse building data from JSON"] }
 	}
 
-	const { tasks, numWorkers } = constructTasks(dataJSON, base, boost);
+	const { tasks, numWorkers } = constructTasks(dataJSON, scheme, priority, base, boost);
 
 	const schedule = myScheduler(tasks, numWorkers, scheme, startTime, endTime, true);
 
@@ -443,10 +443,10 @@ export function generateSchedule(dataJSON, scheme = 'LPT', base = "home", boost 
 		t.duration_iso = toISOString(t.duration);
 	}
 
-	printSchedule(schedule.schedule)
+	if (debug) printSchedule(schedule.schedule)
 
 	return { sch: schedule, numBuilders: numWorkers, err: [false] }
 
 }
 
-generateSchedule(playerData, "LPT", 'builder');
+// generateSchedule(playerData, true, "LPT", 'builder');

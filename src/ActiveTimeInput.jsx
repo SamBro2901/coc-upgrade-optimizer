@@ -112,7 +112,7 @@ export default function ActiveTimeInput({
 	]);
 
 	return (
-		<div style={{ width: '100%' }}>
+		<div style={{ width: '100%', height: '100%' }}>
 			<span className="builder-bonus-label">Active Time Range</span>
 			<label
 				style={{
@@ -131,7 +131,16 @@ export default function ActiveTimeInput({
 				Enable Active Time
 			</label>
 
-			<div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+			<div
+				style={{
+					display: 'flex',
+					flexDirection: 'column',
+					gap: 10,
+					alignItems: 'flex-start',
+					justifyContent: 'space-between',
+					height: 130,
+				}}
+			>
 				{/* Start Time */}
 				<div className="active-time-container">
 					<label>Start Time</label>

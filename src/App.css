@@ -239,11 +239,29 @@ a, a:hover, a:visited, a:active {
 .input-div{
   display: flex;
   gap: 20px;
+  align-items: center;
 }
 
-@media (max-width:768px) {
+@media (max-width:936px) {
   .input-div{
-    display: block;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+}
+
+.input-div-inner{
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+@media (max-width: 638px) {
+  .input-div-inner{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 20px;
   }
 }
