@@ -115,6 +115,7 @@ function constructTasks(inputData, scheme = "LPT", priori = false, base = "home"
 	const prevBuilds = base === "home" ? arrayToObject(thConfig[currTH - 1]) : arrayToObject(bhConfig[currTH - 1]);
 	const maxBuilds = base === "home" ? arrayToObject(thConfig[currTH]) : arrayToObject(bhConfig[currTH]);
 	const diff = Object.fromEntries(Object.keys(maxBuilds).map(k => [k, (maxBuilds[k] || 0) - (prevBuilds[k] || 0)]))
+	console.log(diff);
 
 	for (let b of buildings) {
 		if (b === "Wall") continue;
@@ -173,9 +174,18 @@ function constructTasks(inputData, scheme = "LPT", priori = false, base = "home"
 
 	// Add new buildings
 	for (const [d, val] of Object.entries(diff)) {
-		if (val === 1 && !buildings.includes(d)) {
-			let newTask = itemData[d]?.filter(item => item.level === 1)?.map(item => ({ id: d, level: item.level, duration: applyBoost(item.duration, builderBoost), iter: 1 })) || [];
-			tasks.push(...newTask);
+		if (!buildings.includes(d) && ((prevBuilds[d] ? prevBuilds[d] === 0 : true) && maxBuilds[d] > 0)) {
+			console.log(d, val);
+			let newTask = itemData[d]?.filter(item => item.TH <= currTH)?.map(item => ({ id: d, level: item.level, duration: applyBoost(item.duration, builderBoost), priority: priority[d] && priori ? priority[d] : 100 })) || [];
+			console.log(newTask);
+			if (newTask.length > 1) { // Splice first task only
+				let popTask = newTask.splice(0, 1)[0];
+				popTask.priority = 2;
+				const resp1 = objToArray([popTask], val, 1);
+				tasks.push(...resp1.arr);
+			}
+			const resp = objToArray(newTask, val, 1);
+			tasks.push(...resp.arr);
 		}
 	}
 
