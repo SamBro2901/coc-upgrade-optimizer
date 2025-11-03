@@ -9,30 +9,39 @@ import ActiveTimeInput from "./ActiveTimeInput.jsx";
 
 
 export function JsonInput({ label = "JSON Input", initial = "", onValid, onValidityChange, storageKey = "JSON" }) {
-  // const [text, setText] = React.useState(initial);
-  const [text, setText] = React.useState(
-    typeof initial === "string"
-      ? initial
-      : initial
-        ? JSON.stringify(initial, null, 2)
-        : ""
-  );
+  const SIX_HOURS_MS = 6 * 60 * 60 * 1000;
+
+  // Initialize text from localStorage → initial → default ""
+  const [text, setText] = React.useState(() => {
+    try {
+      const stored = localStorage.getItem(storageKey);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+
+        // Check timestamp validity
+        if (parsed.timestamp) {
+          const age = Date.now() - new Date(parsed.timestamp).getTime();
+          if (age > SIX_HOURS_MS) {
+            console.warn("Stored JSON expired. Clearing localStorage.");
+            localStorage.removeItem(storageKey);
+          } else {
+            return stored;
+          }
+        } else {
+          // No timestamp field → keep it (optional)
+          return stored;
+        }
+      }
+
+      if (typeof initial === "string") return initial;
+      return initial ? JSON.stringify(initial, null, 2) : "";
+    } catch (err) {
+      console.error("Error loading from localStorage:", err);
+      return "";
+    }
+  });
+
   const [error, setError] = React.useState("");
-
-
-  // --- load saved width/height (optional) ---
-  // const [boxSize, setBoxSize] = React.useState(() => {
-  //   try {
-  //     const saved = storageKey && JSON.parse(localStorage.getItem(storageKey) || "{}");
-  //     return {
-  //       width: saved.width || 560,   // starting size
-  //       height: saved.height || 200,
-  //     };
-  //   } catch {
-  //     return { width: 560, height: 200 };
-  //   }
-  // });
-
   const areaRef = React.useRef(null);
 
   // Check validity on every change
@@ -52,24 +61,13 @@ export function JsonInput({ label = "JSON Input", initial = "", onValid, onValid
     if (isValid) {
       try {
         const obj = JSON.parse(text);
-        onValid?.(obj);   // 🔥 automatically push parsed JSON up
+        onValid?.(obj);
+        localStorage.setItem(storageKey, JSON.stringify(obj, null, 2));
       } catch {
         /* should not happen since isValid is true */
       }
     }
-  }, [isValid, text, onValid, onValidityChange]);
-
-  // Persist size after user resizes (mouseup is enough for native resize handles)
-  // const saveSize = () => {
-  //   const el = areaRef.current;
-  //   if (!el || !storageKey) return;
-  //   const width = el.offsetWidth;
-  //   const height = el.offsetHeight;
-  //   setBoxSize({ width, height });
-  //   try {
-  //     localStorage.setItem(storageKey, JSON.stringify({ width, height }));
-  //   } catch { }
-  // };
+  }, [isValid, text, onValid, onValidityChange, storageKey]);
 
   const handleFormat = () => {
     try {
@@ -84,6 +82,7 @@ export function JsonInput({ label = "JSON Input", initial = "", onValid, onValid
   const handleClear = () => {
     setText("");
     setError("");
+    localStorage.removeItem(storageKey);
   };
 
   return (
@@ -171,6 +170,7 @@ export default function App() {
 
   const [tasks, setTasks] = useState([]);
   const [makespan, setMakespan] = useState(0);
+  const [startTime, setStartTime] = useState(Math.floor(Date.now() / 1000));
   const [err, setErr] = useState(false);
   const [scheduleType, setScheduleType] = useState("Longest Processing Time (LPT)");
   const [dynamicHeight, setHeight] = useState(300);
@@ -220,10 +220,11 @@ export default function App() {
     }
     let activeWindowStart = activeTime.enabled ? activeTime.start : "00:00";
     let activeWindowEnd = activeTime.enabled ? activeTime.end : "23:59";
-    const { sch, numBuilders, err } = generateSchedule(jsonData, false, strategy, priority, village, selectedPct, activeWindowStart, activeWindowEnd);
+    const { sch, numBuilders, startTime, err } = generateSchedule(jsonData, false, strategy, priority, village, selectedPct, activeWindowStart, activeWindowEnd);
     setErr(err);
     setTasks(sch.schedule);
     setMakespan(sch.makespan);
+    setStartTime(startTime);
     setScheduleType(strategy === "SPT" ? "Shortest Processing Time (SPT)" : "Longest Processing Time (LPT)");
     const rowHeight = 40;
     const basePadding = 90; // space for axis/labels
@@ -275,7 +276,7 @@ export default function App() {
             <div className="active-time-container" style={{ maxWidth: 936 }}>
               <JsonInput
                 label="Paste village JSON data"
-                initial='{"tag":"#GU2QV0Y8Q","timestamp":1757084582,"buildings":[{"data":1000008,"lvl":10,"gear_up":1},{"data":1000011,"lvl":5,"timer":24973},{"data":1000019,"lvl":4,"timer":28511},{"data":1000019,"lvl":4,"timer":28517},{"data":1000005,"lvl":8,"timer":12591},{"data":1000011,"lvl":4,"timer":5143},{"data":1000000,"lvl":6,"cnt":4},{"data":1000001,"lvl":8,"cnt":1},{"data":1000002,"lvl":11,"cnt":6},{"data":1000003,"lvl":8,"cnt":1},{"data":1000003,"lvl":11,"cnt":2},{"data":1000004,"lvl":11,"cnt":2},{"data":1000004,"lvl":12,"cnt":4},{"data":1000005,"lvl":11,"cnt":2},{"data":1000006,"lvl":10,"cnt":1},{"data":1000007,"lvl":6,"cnt":1},{"data":1000008,"lvl":10,"cnt":4},{"data":1000009,"lvl":9,"cnt":5},{"data":1000010,"lvl":8,"cnt":225},{"data":1000011,"lvl":6,"cnt":1},{"data":1000012,"lvl":6,"cnt":3},{"data":1000013,"lvl":6,"cnt":4},{"data":1000014,"lvl":4,"cnt":1},{"data":1000015,"lvl":1,"cnt":5},{"data":1000019,"lvl":1,"cnt":1},{"data":1000020,"lvl":3,"cnt":1},{"data":1000023,"lvl":3,"cnt":2},{"data":1000024,"lvl":4,"cnt":1},{"data":1000026,"lvl":4,"cnt":1},{"data":1000028,"lvl":4,"cnt":1},{"data":1000029,"lvl":2,"cnt":1},{"data":1000032,"lvl":2,"cnt":1},{"data":1000070,"lvl":1,"cnt":1},{"data":1000071,"lvl":2,"cnt":1}],"traps":[{"data":12000000,"lvl":5,"cnt":6},{"data":12000001,"lvl":1,"cnt":2},{"data":12000001,"lvl":2,"cnt":4},{"data":12000002,"lvl":1,"cnt":1},{"data":12000002,"lvl":2,"cnt":2},{"data":12000005,"lvl":1,"cnt":2},{"data":12000005,"lvl":3,"cnt":2},{"data":12000006,"lvl":1,"cnt":2},{"data":12000008,"lvl":1,"cnt":2}],"decos":[{"data":18000184,"cnt":1}],"obstacles":[{"data":8000000,"cnt":5},{"data":8000004,"cnt":3},{"data":8000006,"cnt":3},{"data":8000007,"cnt":1},{"data":8000008,"cnt":3},{"data":8000010,"cnt":6},{"data":8000013,"cnt":2},{"data":8000131,"cnt":2}],"units":[{"data":4000000,"lvl":4},{"data":4000001,"lvl":4},{"data":4000002,"lvl":4},{"data":4000003,"lvl":4},{"data":4000004,"lvl":4},{"data":4000005,"lvl":4,"timer":17157},{"data":4000006,"lvl":5},{"data":4000007,"lvl":2},{"data":4000008,"lvl":3},{"data":4000009,"lvl":2,"timer":4931},{"data":4000010,"lvl":2},{"data":4000011,"lvl":4},{"data":4000012,"lvl":2},{"data":4000013,"lvl":2}],"siege_machines":[],"heroes":[{"data":28000000,"lvl":11},{"data":28000001,"lvl":6}],"spells":[{"data":26000000,"lvl":4},{"data":26000001,"lvl":4},{"data":26000002,"lvl":5},{"data":26000009,"lvl":2},{"data":26000010,"lvl":2}],"pets":[],"equipment":[{"data":90000000,"lvl":1},{"data":90000001,"lvl":1},{"data":90000002,"lvl":1},{"data":90000003,"lvl":1},{"data":90000004,"lvl":1},{"data":90000005,"lvl":1},{"data":90000006,"lvl":1},{"data":90000007,"lvl":1},{"data":90000008,"lvl":5},{"data":90000010,"lvl":1},{"data":90000013,"lvl":1},{"data":90000014,"lvl":5},{"data":90000015,"lvl":1},{"data":90000019,"lvl":1},{"data":90000022,"lvl":1},{"data":90000032,"lvl":1},{"data":90000035,"lvl":1},{"data":90000039,"lvl":1},{"data":90000040,"lvl":1},{"data":90000041,"lvl":1},{"data":90000042,"lvl":1},{"data":90000043,"lvl":1},{"data":90000048,"lvl":1}],"house_parts":[82000000,82000008,82000009,82000011,82000048,82000058,82000059],"skins":[],"sceneries":[],"buildings2":[{"data":1000039,"lvl":2,"timer":198},{"data":1000033,"lvl":3,"cnt":75},{"data":1000034,"lvl":4,"cnt":1},{"data":1000035,"lvl":4,"cnt":1},{"data":1000036,"lvl":3,"cnt":1},{"data":1000037,"lvl":4,"cnt":1},{"data":1000038,"lvl":4,"cnt":1},{"data":1000040,"lvl":6,"cnt":1},{"data":1000041,"lvl":4,"cnt":1},{"data":1000042,"lvl":1,"cnt":4},{"data":1000043,"lvl":2,"cnt":1},{"data":1000044,"lvl":3,"cnt":2},{"data":1000046,"lvl":4,"cnt":1},{"data":1000048,"lvl":3,"cnt":2},{"data":1000050,"lvl":1,"cnt":1},{"data":1000051,"lvl":2,"cnt":1},{"data":1000054,"lvl":2,"cnt":1},{"data":1000055,"lvl":2,"cnt":1},{"data":1000058,"lvl":2,"cnt":1}],"traps2":[{"data":12000010,"lvl":1,"cnt":2},{"data":12000011,"lvl":1,"cnt":2},{"data":12000011,"lvl":2,"cnt":1},{"data":12000013,"lvl":1,"cnt":3},{"data":12000014,"lvl":1,"cnt":1}],"decos2":[],"obstacles2":[{"data":8000041,"cnt":8},{"data":8000042,"cnt":1},{"data":8000047,"cnt":1},{"data":8000049,"cnt":3},{"data":8000050,"cnt":2},{"data":8000051,"cnt":1},{"data":8000053,"cnt":1},{"data":8000055,"cnt":1},{"data":8000056,"cnt":2},{"data":8000057,"cnt":5},{"data":8000058,"cnt":7},{"data":8000059,"cnt":4},{"data":8000060,"cnt":3},{"data":8000061,"cnt":1},{"data":8000062,"cnt":2},{"data":8000063,"cnt":13},{"data":8000064,"cnt":12}],"units2":[{"data":4000031,"lvl":6},{"data":4000032,"lvl":6},{"data":4000033,"lvl":8},{"data":4000034,"lvl":7},{"data":4000035,"lvl":5},{"data":4000041,"lvl":6,"timer":55487}],"heroes2":[],"skins2":[],"sceneries2":[]}'
+                initial={`{"tag":"#GU2QV0Y8Q","timestamp":${Math.floor(Date.now() / 1000)},"buildings":[{"data":1000008,"lvl":10,"gear_up":1},{"data":1000011,"lvl":5,"timer":24973},{"data":1000019,"lvl":4,"timer":28511},{"data":1000019,"lvl":4,"timer":28517},{"data":1000005,"lvl":8,"timer":12591},{"data":1000011,"lvl":4,"timer":5143},{"data":1000000,"lvl":6,"cnt":4},{"data":1000001,"lvl":8,"cnt":1},{"data":1000002,"lvl":11,"cnt":6},{"data":1000003,"lvl":8,"cnt":1},{"data":1000003,"lvl":11,"cnt":2},{"data":1000004,"lvl":11,"cnt":2},{"data":1000004,"lvl":12,"cnt":4},{"data":1000005,"lvl":11,"cnt":2},{"data":1000006,"lvl":10,"cnt":1},{"data":1000007,"lvl":6,"cnt":1},{"data":1000008,"lvl":10,"cnt":4},{"data":1000009,"lvl":9,"cnt":5},{"data":1000010,"lvl":8,"cnt":225},{"data":1000011,"lvl":6,"cnt":1},{"data":1000012,"lvl":6,"cnt":3},{"data":1000013,"lvl":6,"cnt":4},{"data":1000014,"lvl":4,"cnt":1},{"data":1000015,"lvl":1,"cnt":5},{"data":1000019,"lvl":1,"cnt":1},{"data":1000020,"lvl":3,"cnt":1},{"data":1000023,"lvl":3,"cnt":2},{"data":1000024,"lvl":4,"cnt":1},{"data":1000026,"lvl":4,"cnt":1},{"data":1000028,"lvl":4,"cnt":1},{"data":1000029,"lvl":2,"cnt":1},{"data":1000032,"lvl":2,"cnt":1},{"data":1000070,"lvl":1,"cnt":1},{"data":1000071,"lvl":2,"cnt":1}],"traps":[{"data":12000000,"lvl":5,"cnt":6},{"data":12000001,"lvl":1,"cnt":2},{"data":12000001,"lvl":2,"cnt":4},{"data":12000002,"lvl":1,"cnt":1},{"data":12000002,"lvl":2,"cnt":2},{"data":12000005,"lvl":1,"cnt":2},{"data":12000005,"lvl":3,"cnt":2},{"data":12000006,"lvl":1,"cnt":2},{"data":12000008,"lvl":1,"cnt":2}],"decos":[{"data":18000184,"cnt":1}],"obstacles":[{"data":8000000,"cnt":5},{"data":8000004,"cnt":3},{"data":8000006,"cnt":3},{"data":8000007,"cnt":1},{"data":8000008,"cnt":3},{"data":8000010,"lvl":6},{"data":8000013,"cnt":2},{"data":8000131,"cnt":2}],"units":[{"data":4000000,"lvl":4},{"data":4000001,"lvl":4},{"data":4000002,"lvl":4},{"data":4000003,"lvl":4},{"data":4000004,"lvl":4},{"data":4000005,"lvl":4,"timer":17157},{"data":4000006,"lvl":5},{"data":4000007,"lvl":2},{"data":4000008,"lvl":3},{"data":4000009,"lvl":2,"timer":4931},{"data":4000010,"lvl":2},{"data":4000011,"lvl":4},{"data":4000012,"lvl":2},{"data":4000013,"lvl":2}],"siege_machines":[],"heroes":[{"data":28000000,"lvl":11},{"data":28000001,"lvl":6}],"spells":[{"data":26000000,"lvl":4},{"data":26000001,"lvl":4},{"data":26000002,"lvl":5},{"data":26000009,"lvl":2},{"data":26000010,"lvl":2}],"pets":[],"equipment":[{"data":90000000,"lvl":1},{"data":90000001,"lvl":1},{"data":90000002,"lvl":1},{"data":90000003,"lvl":1},{"data":90000004,"lvl":1},{"data":90000005,"lvl":1},{"data":90000006,"lvl":1},{"data":90000007,"lvl":1},{"data":90000008,"lvl":5},{"data":90000010,"lvl":1},{"data":90000013,"lvl":1},{"data":90000014,"lvl":5},{"data":90000015,"lvl":1},{"data":90000019,"lvl":1},{"data":90000022,"lvl":1},{"data":90000032,"lvl":1},{"data":90000035,"lvl":1},{"data":90000039,"lvl":1},{"data":90000040,"lvl":1},{"data":90000041,"lvl":1},{"data":90000042,"lvl":1},{"data":90000043,"lvl":1},{"data":90000048,"lvl":1}],"house_parts":[82000000,82000008,82000009,82000011,82000048,82000058,82000059],"skins":[],"sceneries":[],"buildings2":[{"data":1000039,"lvl":2,"timer":198},{"data":1000033,"lvl":3,"cnt":75},{"data":1000034,"lvl":4,"cnt":1},{"data":1000035,"lvl":4,"cnt":1},{"data":1000036,"lvl":3,"cnt":1},{"data":1000037,"lvl":4,"cnt":1},{"data":1000038,"lvl":4,"cnt":1},{"data":1000040,"lvl":6,"cnt":1},{"data":1000041,"lvl":4,"cnt":1},{"data":1000042,"lvl":1,"cnt":4},{"data":1000043,"lvl":2,"cnt":1},{"data":1000044,"lvl":3,"cnt":2},{"data":1000046,"lvl":4,"cnt":1},{"data":1000048,"lvl":3,"cnt":2},{"data":1000050,"lvl":1,"cnt":1},{"data":1000051,"lvl":2,"cnt":1},{"data":1000054,"lvl":2,"cnt":1},{"data":1000055,"lvl":2,"cnt":1},{"data":1000058,"lvl":2,"cnt":1}],"traps2":[{"data":12000010,"lvl":1,"cnt":2},{"data":12000011,"lvl":1,"cnt":2},{"data":12000011,"lvl":2,"cnt":1},{"data":12000013,"lvl":1,"cnt":3},{"data":12000014,"lvl":1,"cnt":1}],"decos2":[],"obstacles2":[{"data":8000041,"cnt":8},{"data":8000042,"cnt":1},{"data":8000047,"cnt":1},{"data":8000049,"cnt":3},{"data":8000050,"cnt":2},{"data":8000051,"cnt":1},{"data":8000053,"cnt":1},{"data":8000055,"cnt":1},{"data":8000056,"cnt":2},{"data":8000057,"cnt":5},{"data":8000058,"cnt":7},{"data":8000059,"cnt":4},{"data":8000060,"cnt":3},{"data":8000061,"cnt":1},{"data":8000062,"cnt":2},{"data":8000063,"cnt":13},{"data":8000064,"cnt":12}],"units2":[{"data":4000031,"lvl":6},{"data":4000032,"lvl":6},{"data":4000033,"lvl":8},{"data":4000034,"lvl":7},{"data":4000035,"lvl":5},{"data":4000041,"lvl":6,"timer":55487}],"heroes2":[],"skins2":[],"sceneries2":[]}`}
                 onValid={setJsonData}
                 onValidityChange={setJsonValid}
               />
@@ -359,7 +360,7 @@ export default function App() {
               </div>
               <span>Tip: Pinch or Ctrl + Mouse Wheel to zoom in and out</span>
               <div className="chart-shell" style={{ background: "#fff", borderRadius: 16, boxShadow: "0 2px 12px #e0e7ff" }}>
-                <BuilderTimeline tasks={tasks} height={dynamicHeight} doneKeys={doneKeys} onToggle={toggleDone} taskKeyFn={taskKey} />
+                <BuilderTimeline tasks={tasks} start={startTime} height={dynamicHeight} doneKeys={doneKeys} onToggle={toggleDone} taskKeyFn={taskKey} />
               </div>
             </div>
 

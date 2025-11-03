@@ -207,8 +207,9 @@ function constructTasks(inputData, scheme = "LPT", priori = false, base = "home"
 	}
 
 	tasks = lockPredecessors(inputData, tasks);
+	const timestamp = inputData.timestamp || Math.floor(Date.now() / 1000);
 
-	return { tasks, numWorkers };
+	return { tasks, numWorkers, timestamp };
 }
 
 function sortTasks(arr, scheme) {
@@ -284,7 +285,7 @@ function setDateString(epoch, target) {
 	return Math.floor(targetDate.getTime() / 1000);
 }
 
-function myScheduler(tasks, numWorkers = 3, scheme = 'LPT', activeStart = "08:00", activeEnd = "23:59", optimize = false) {
+function myScheduler(tasks, numWorkers = 3, timestamp, scheme = 'LPT', activeStart = "08:00", activeEnd = "23:59", optimize = false) {
 	// console.log(tasks.filter(t => heroes.includes(t.id)));
 	// console.log(hhTask);
 	// return;
@@ -299,7 +300,7 @@ function myScheduler(tasks, numWorkers = 3, scheme = 'LPT', activeStart = "08:00
 
 	ready = sortTasks(ready, scheme)
 
-	let currTime = Math.floor(Date.now() / 1000);
+	let currTime = timestamp;
 	const startTime = currTime;
 
 	while (ready.length > 0 || completed.length !== taskLength || notReady.length > 0) {
@@ -463,9 +464,9 @@ export function generateSchedule(dataJSON, debug = false, scheme = 'LPT', priori
 		return { sch: resp, err: [true, "Failed to parse building data from JSON"] }
 	}
 
-	const { tasks, numWorkers } = constructTasks(dataJSON, scheme, priority, base, boost);
+	const { tasks, numWorkers, timestamp } = constructTasks(dataJSON, scheme, priority, base, boost);
 
-	const schedule = myScheduler(tasks, numWorkers, scheme, startTime, endTime, true);
+	const schedule = myScheduler(tasks, numWorkers, timestamp, scheme, startTime, endTime, true);
 
 	for (const t of schedule.schedule) {
 		t.start_iso = toISOString(t.start);
@@ -475,7 +476,7 @@ export function generateSchedule(dataJSON, debug = false, scheme = 'LPT', priori
 
 	if (debug) printSchedule(schedule.schedule)
 
-	return { sch: schedule, numBuilders: numWorkers, err: [false] }
+	return { sch: schedule, numBuilders: numWorkers, startTime: timestamp, err: [false] }
 
 }
 

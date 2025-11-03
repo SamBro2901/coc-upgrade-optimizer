@@ -15,7 +15,7 @@ function formatDuration(seconds) {
 	return `${s}s`;
 }
 
-export default function BuilderTimeline({ tasks = [], height = 520 }) {
+export default function BuilderTimeline({ tasks = [], start, height = 520 }) {
 	const ref = useRef(null);
 	const timelineRef = useRef(null);
 
@@ -96,8 +96,8 @@ export default function BuilderTimeline({ tasks = [], height = 520 }) {
 			zoomable: true,
 			zoomMax: scheduleSpan,
 			zoomMin: 3600000,
-			min: new Date(),
-			start: new Date(),
+			min: new Date(start * 1000),
+			start: new Date(start * 1000),
 			end: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
 		};
 
@@ -147,7 +147,7 @@ export default function BuilderTimeline({ tasks = [], height = 520 }) {
 				styleEl.parentNode.removeChild(styleEl);
 			}
 		};
-	}, [tasks, height]);
+	}, [tasks, start, height]);
 
 	return (
 		<div
