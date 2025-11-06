@@ -1,128 +1,128 @@
 [
-  {
-    "level":1,
-    "cost":300,
-    "currency":"coins",
-    "duration":10,
-    "TH":1
-  },
-  {
-    "level":2,
-    "cost":750,
-    "currency":"coins",
-    "duration":120,
-    "TH":2
-  },
-  {
-    "level":3,
-    "cost":1500,
-    "currency":"coins",
-    "duration":300,
-    "TH":2
-  },
-  {
-    "level":4,
-    "cost":3000,
-    "currency":"coins",
-    "duration":900,
-    "TH":3
-  },
-  {
-    "level":5,
-    "cost":6000,
-    "currency":"coins",
-    "duration":1800,
-    "TH":3
-  },
-  {
-    "level":6,
-    "cost":12000,
-    "currency":"coins",
-    "duration":3600,
-    "TH":3
-  },
-  {
-    "level":7,
-    "cost":25000,
-    "currency":"coins",
-    "duration":7200,
-    "TH":4
-  },
-  {
-    "level":8,
-    "cost":50000,
-    "currency":"coins",
-    "duration":10800,
-    "TH":4
-  },
-  {
-    "level":9,
-    "cost":100000,
-    "currency":"coins",
-    "duration":14400,
-    "TH":5
-  },
-  {
-    "level":10,
-    "cost":250000,
-    "currency":"coins",
-    "duration":18000,
-    "TH":6
-  },
-  {
-    "level":11,
-    "cost":500000,
-    "currency":"coins",
-    "duration":21600,
-    "TH":7
-  },
-  {
-    "level":12,
-    "cost":1000000,
-    "currency":"coins",
-    "duration":43200,
-    "TH":11
-  },
-  {
-    "level":13,
-    "cost":1800000,
-    "currency":"coins",
-    "duration":86400,
-    "TH":12
-  },
-  {
-    "level":14,
-    "cost":2800000,
-    "currency":"coins",
-    "duration":172800,
-    "TH":13
-  },
-  {
-    "level":15,
-    "cost":3000000,
-    "currency":"coins",
-    "duration":259200,
-    "TH":14
-  },
-  {
-    "level":16,
-    "cost":4000000,
-    "currency":"coins",
-    "duration":345600,
-    "TH":15
-  },
-  {
-    "level":17,
-    "cost":5500000,
-    "currency":"coins",
-    "duration":432000,
-    "TH":16
-  },
-  {
-    "level":18,
-    "cost":10000000,
-    "currency":"coins",
-    "duration":1080000,
-    "TH":17
-  }
+	{
+		"level": 1,
+		"cost": 300,
+		"currency": "gold",
+		"duration": 10,
+		"TH": 1
+	},
+	{
+		"level": 2,
+		"cost": 750,
+		"currency": "gold",
+		"duration": 120,
+		"TH": 2
+	},
+	{
+		"level": 3,
+		"cost": 1500,
+		"currency": "gold",
+		"duration": 300,
+		"TH": 2
+	},
+	{
+		"level": 4,
+		"cost": 3000,
+		"currency": "gold",
+		"duration": 900,
+		"TH": 3
+	},
+	{
+		"level": 5,
+		"cost": 6000,
+		"currency": "gold",
+		"duration": 1800,
+		"TH": 3
+	},
+	{
+		"level": 6,
+		"cost": 12000,
+		"currency": "gold",
+		"duration": 3600,
+		"TH": 3
+	},
+	{
+		"level": 7,
+		"cost": 25000,
+		"currency": "gold",
+		"duration": 7200,
+		"TH": 4
+	},
+	{
+		"level": 8,
+		"cost": 50000,
+		"currency": "gold",
+		"duration": 10800,
+		"TH": 4
+	},
+	{
+		"level": 9,
+		"cost": 100000,
+		"currency": "gold",
+		"duration": 14400,
+		"TH": 5
+	},
+	{
+		"level": 10,
+		"cost": 250000,
+		"currency": "gold",
+		"duration": 18000,
+		"TH": 6
+	},
+	{
+		"level": 11,
+		"cost": 500000,
+		"currency": "gold",
+		"duration": 21600,
+		"TH": 7
+	},
+	{
+		"level": 12,
+		"cost": 1000000,
+		"currency": "gold",
+		"duration": 43200,
+		"TH": 11
+	},
+	{
+		"level": 13,
+		"cost": 1800000,
+		"currency": "gold",
+		"duration": 86400,
+		"TH": 12
+	},
+	{
+		"level": 14,
+		"cost": 2800000,
+		"currency": "gold",
+		"duration": 172800,
+		"TH": 13
+	},
+	{
+		"level": 15,
+		"cost": 3000000,
+		"currency": "gold",
+		"duration": 259200,
+		"TH": 14
+	},
+	{
+		"level": 16,
+		"cost": 4000000,
+		"currency": "gold",
+		"duration": 345600,
+		"TH": 15
+	},
+	{
+		"level": 17,
+		"cost": 5500000,
+		"currency": "gold",
+		"duration": 432000,
+		"TH": 16
+	},
+	{
+		"level": 18,
+		"cost": 10000000,
+		"currency": "gold",
+		"duration": 1080000,
+		"TH": 17
+	}
 ]

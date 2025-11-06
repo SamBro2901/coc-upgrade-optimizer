@@ -2,49 +2,49 @@
 	{
 		"level": 1,
 		"cost": 0,
-		"currency": "coins",
+		"currency": "gold",
 		"duration": 0,
 		"TH": 1
 	},
 	{
 		"level": 2,
 		"cost": 4000000,
-		"currency": "coins",
+		"currency": "gold",
 		"duration": 259200,
 		"TH": 14
 	},
 	{
 		"level": 3,
 		"cost": 5000000,
-		"currency": "coins",
+		"currency": "gold",
 		"duration": 345600,
 		"TH": 14
 	},
 	{
 		"level": 4,
 		"cost": 7000000,
-		"currency": "coins",
+		"currency": "gold",
 		"duration": 432000,
 		"TH": 14
 	},
 	{
 		"level": 5,
 		"cost": 8000000,
-		"currency": "coins",
+		"currency": "gold",
 		"duration": 518400,
 		"TH": 15
 	},
 	{
 		"level": 6,
 		"cost": 9000000,
-		"currency": "coins",
+		"currency": "gold",
 		"duration": 604800,
 		"TH": 16
 	},
 	{
 		"level": 7,
 		"cost": 21000000,
-		"currency": "coins",
+		"currency": "gold",
 		"duration": 1317600,
 		"TH": 17
 	}

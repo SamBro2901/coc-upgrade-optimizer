@@ -127,6 +127,55 @@
 			"currency": "gold",
 			"duration": 43200,
 			"TH": 10
+		},
+		{
+			"level": 6,
+			"cost": 1000000,
+			"currency": "gold",
+			"duration": 43200,
+			"TH": 11
+		},
+		{
+			"level": 7,
+			"cost": 1700000,
+			"currency": "gold",
+			"duration": 86400,
+			"TH": 12
+		},
+		{
+			"level": 8,
+			"cost": 2000000,
+			"currency": "gold",
+			"duration": 129600,
+			"TH": 13
+		},
+		{
+			"level": 9,
+			"cost": 3000000,
+			"currency": "gold",
+			"duration": 172800,
+			"TH": 14
+		},
+		{
+			"level": 10,
+			"cost": 4000000,
+			"currency": "gold",
+			"duration": 216000,
+			"TH": 15
+		},
+		{
+			"level": 11,
+			"cost": 6000000,
+			"currency": "gold",
+			"duration": 388800,
+			"TH": 16
+		},
+		{
+			"level": 12,
+			"cost": 13000000,
+			"currency": "gold",
+			"duration": 820800,
+			"TH": 17
 		}
 	],
 	"Giant_Bomb": [

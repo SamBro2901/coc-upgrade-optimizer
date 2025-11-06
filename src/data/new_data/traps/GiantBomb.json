@@ -1,79 +1,79 @@
 [
-  {
-    "level":1,
-    "cost":12500,
-    "currency":"coins",
-    "duration":0,
-    "TH":6
-  },
-  {
-    "level":2,
-    "cost":75000,
-    "currency":"coins",
-    "duration":3600,
-    "TH":6
-  },
-  {
-    "level":3,
-    "cost":220000,
-    "currency":"coins",
-    "duration":10800,
-    "TH":8
-  },
-  {
-    "level":4,
-    "cost":750000,
-    "currency":"coins",
-    "duration":28800,
-    "TH":10
-  },
-  {
-    "level":5,
-    "cost":900000,
-    "currency":"coins",
-    "duration":36000,
-    "TH":11
-  },
-  {
-    "level":6,
-    "cost":1300000,
-    "currency":"coins",
-    "duration":39600,
-    "TH":13
-  },
-  {
-    "level":7,
-    "cost":1500000,
-    "currency":"coins",
-    "duration":43200,
-    "TH":13
-  },
-  {
-    "level":8,
-    "cost":2500000,
-    "currency":"coins",
-    "duration":172800,
-    "TH":14
-  },
-  {
-    "level":9,
-    "cost":4000000,
-    "currency":"coins",
-    "duration":259200,
-    "TH":15
-  },
-  {
-    "level":10,
-    "cost":5500000,
-    "currency":"coins",
-    "duration":345600,
-    "TH":16
-  },
-  {
-    "level":11,
-    "cost":12000000,
-    "currency":"coins",
-    "duration":777600,
-    "TH":17
-  }
+	{
+		"level": 1,
+		"cost": 12500,
+		"currency": "gold",
+		"duration": 0,
+		"TH": 6
+	},
+	{
+		"level": 2,
+		"cost": 75000,
+		"currency": "gold",
+		"duration": 3600,
+		"TH": 6
+	},
+	{
+		"level": 3,
+		"cost": 220000,
+		"currency": "gold",
+		"duration": 10800,
+		"TH": 8
+	},
+	{
+		"level": 4,
+		"cost": 750000,
+		"currency": "gold",
+		"duration": 28800,
+		"TH": 10
+	},
+	{
+		"level": 5,
+		"cost": 900000,
+		"currency": "gold",
+		"duration": 36000,
+		"TH": 11
+	},
+	{
+		"level": 6,
+		"cost": 1300000,
+		"currency": "gold",
+		"duration": 39600,
+		"TH": 13
+	},
+	{
+		"level": 7,
+		"cost": 1500000,
+		"currency": "gold",
+		"duration": 43200,
+		"TH": 13
+	},
+	{
+		"level": 8,
+		"cost": 2500000,
+		"currency": "gold",
+		"duration": 172800,
+		"TH": 14
+	},
+	{
+		"level": 9,
+		"cost": 4000000,
+		"currency": "gold",
+		"duration": 259200,
+		"TH": 15
+	},
+	{
+		"level": 10,
+		"cost": 5500000,
+		"currency": "gold",
+		"duration": 345600,
+		"TH": 16
+	},
+	{
+		"level": 11,
+		"cost": 12000000,
+		"currency": "gold",
+		"duration": 777600,
+		"TH": 17
+	}
 ]
