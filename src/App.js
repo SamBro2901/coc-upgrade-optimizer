@@ -20,7 +20,9 @@ export function JsonInput({ label = "JSON Input", initial = "", onValid, onValid
 
         // Check timestamp validity
         if (parsed.timestamp) {
-          const age = Date.now() - new Date(parsed.timestamp).getTime();
+          const ts = parsed.timestamp;
+          const ms = ts < 1e12 ? ts * 1000 : ts;
+          const age = Date.now() - ms;
           if (age > SIX_HOURS_MS) {
             console.warn("Stored JSON expired. Clearing localStorage.");
             localStorage.removeItem(storageKey);
@@ -34,7 +36,7 @@ export function JsonInput({ label = "JSON Input", initial = "", onValid, onValid
       }
 
       if (typeof initial === "string") return initial;
-      return initial ? JSON.stringify(initial, null, 2) : "";
+      return initial ? JSON.stringify(initial) : "";
     } catch (err) {
       console.error("Error loading from localStorage:", err);
       return "";
@@ -62,7 +64,7 @@ export function JsonInput({ label = "JSON Input", initial = "", onValid, onValid
       try {
         const obj = JSON.parse(text);
         onValid?.(obj);
-        localStorage.setItem(storageKey, JSON.stringify(obj, null, 2));
+        localStorage.setItem(storageKey, JSON.stringify(obj));
       } catch {
         /* should not happen since isValid is true */
       }
