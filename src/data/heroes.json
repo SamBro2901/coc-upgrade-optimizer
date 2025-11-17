@@ -696,7 +696,13 @@
 		}
 	],
 	"Archer_Queen": [
-		{ "level": 1, "cost": 0, "currency": "darkelixir", "duration": 0, "HH": 2 },
+		{
+			"level": 1,
+			"cost": 0,
+			"currency": "darkelixir",
+			"duration": 0,
+			"HH": 2
+		},
 		{
 			"level": 2,
 			"cost": 5000,
@@ -862,7 +868,7 @@
 			"level": 25,
 			"cost": 25000,
 			"currency": "darkelixir",
-			"duration": 108000,
+			"duration": 86400,
 			"HH": 3
 		},
 		{
@@ -904,455 +910,455 @@
 			"level": 31,
 			"cost": 37000,
 			"currency": "darkelixir",
-			"duration": 216000,
+			"duration": 194400,
 			"HH": 4
 		},
 		{
 			"level": 32,
 			"cost": 39000,
 			"currency": "darkelixir",
-			"duration": 216000,
+			"duration": 194400,
 			"HH": 4
 		},
 		{
 			"level": 33,
 			"cost": 41000,
 			"currency": "darkelixir",
-			"duration": 216000,
+			"duration": 194400,
 			"HH": 4
 		},
 		{
 			"level": 34,
 			"cost": 43000,
 			"currency": "darkelixir",
-			"duration": 216000,
+			"duration": 194400,
 			"HH": 4
 		},
 		{
 			"level": 35,
 			"cost": 45000,
 			"currency": "darkelixir",
-			"duration": 216000,
+			"duration": 194400,
 			"HH": 4
 		},
 		{
 			"level": 36,
 			"cost": 47000,
 			"currency": "darkelixir",
-			"duration": 259200,
+			"duration": 216000,
 			"HH": 4
 		},
 		{
 			"level": 37,
 			"cost": 49000,
 			"currency": "darkelixir",
-			"duration": 259200,
+			"duration": 216000,
 			"HH": 4
 		},
 		{
 			"level": 38,
 			"cost": 51000,
 			"currency": "darkelixir",
-			"duration": 259200,
+			"duration": 216000,
 			"HH": 4
 		},
 		{
 			"level": 39,
 			"cost": 53000,
 			"currency": "darkelixir",
-			"duration": 259200,
+			"duration": 216000,
 			"HH": 4
 		},
 		{
 			"level": 40,
 			"cost": 55000,
 			"currency": "darkelixir",
-			"duration": 259200,
+			"duration": 216000,
 			"HH": 4
 		},
 		{
 			"level": 41,
 			"cost": 58000,
 			"currency": "darkelixir",
-			"duration": 345600,
+			"duration": 259200,
 			"HH": 5
 		},
 		{
 			"level": 42,
 			"cost": 61000,
 			"currency": "darkelixir",
-			"duration": 345600,
+			"duration": 259200,
 			"HH": 5
 		},
 		{
 			"level": 43,
 			"cost": 64000,
 			"currency": "darkelixir",
-			"duration": 345600,
+			"duration": 259200,
 			"HH": 5
 		},
 		{
 			"level": 44,
 			"cost": 67000,
 			"currency": "darkelixir",
-			"duration": 345600,
+			"duration": 259200,
 			"HH": 5
 		},
 		{
 			"level": 45,
 			"cost": 70000,
 			"currency": "darkelixir",
-			"duration": 345600,
+			"duration": 259200,
 			"HH": 5
 		},
 		{
 			"level": 46,
 			"cost": 73000,
 			"currency": "darkelixir",
-			"duration": 432000,
+			"duration": 259200,
 			"HH": 5
 		},
 		{
 			"level": 47,
 			"cost": 76000,
 			"currency": "darkelixir",
-			"duration": 432000,
+			"duration": 259200,
 			"HH": 5
 		},
 		{
 			"level": 48,
 			"cost": 79000,
 			"currency": "darkelixir",
-			"duration": 432000,
+			"duration": 259200,
 			"HH": 5
 		},
 		{
 			"level": 49,
 			"cost": 82000,
 			"currency": "darkelixir",
-			"duration": 432000,
+			"duration": 259200,
 			"HH": 5
 		},
 		{
 			"level": 50,
 			"cost": 85000,
 			"currency": "darkelixir",
-			"duration": 432000,
+			"duration": 259200,
 			"HH": 5
 		},
 		{
 			"level": 51,
 			"cost": 88000,
 			"currency": "darkelixir",
-			"duration": 475200,
+			"duration": 302400,
 			"HH": 6
 		},
 		{
 			"level": 52,
 			"cost": 91000,
 			"currency": "darkelixir",
-			"duration": 475200,
+			"duration": 302400,
 			"HH": 6
 		},
 		{
 			"level": 53,
 			"cost": 94000,
 			"currency": "darkelixir",
-			"duration": 475200,
+			"duration": 302400,
 			"HH": 6
 		},
 		{
 			"level": 54,
 			"cost": 97000,
 			"currency": "darkelixir",
-			"duration": 475200,
+			"duration": 302400,
 			"HH": 6
 		},
 		{
 			"level": 55,
 			"cost": 100000,
 			"currency": "darkelixir",
-			"duration": 475200,
+			"duration": 302400,
 			"HH": 6
 		},
 		{
 			"level": 56,
 			"cost": 103000,
 			"currency": "darkelixir",
-			"duration": 496800,
+			"duration": 302400,
 			"HH": 6
 		},
 		{
 			"level": 57,
 			"cost": 106000,
 			"currency": "darkelixir",
-			"duration": 496800,
+			"duration": 302400,
 			"HH": 6
 		},
 		{
 			"level": 58,
 			"cost": 109000,
 			"currency": "darkelixir",
-			"duration": 496800,
+			"duration": 302400,
 			"HH": 6
 		},
 		{
 			"level": 59,
 			"cost": 112000,
 			"currency": "darkelixir",
-			"duration": 496800,
+			"duration": 302400,
 			"HH": 6
 		},
 		{
 			"level": 60,
 			"cost": 115000,
 			"currency": "darkelixir",
-			"duration": 496800,
+			"duration": 302400,
 			"HH": 6
 		},
 		{
 			"level": 61,
 			"cost": 119000,
 			"currency": "darkelixir",
-			"duration": 518400,
+			"duration": 345600,
 			"HH": 6
 		},
 		{
 			"level": 62,
 			"cost": 123000,
 			"currency": "darkelixir",
-			"duration": 518400,
+			"duration": 345600,
 			"HH": 6
 		},
 		{
 			"level": 63,
 			"cost": 127000,
 			"currency": "darkelixir",
-			"duration": 518400,
+			"duration": 345600,
 			"HH": 6
 		},
 		{
 			"level": 64,
 			"cost": 131000,
 			"currency": "darkelixir",
-			"duration": 518400,
+			"duration": 345600,
 			"HH": 6
 		},
 		{
 			"level": 65,
 			"cost": 135000,
 			"currency": "darkelixir",
-			"duration": 518400,
+			"duration": 345600,
 			"HH": 6
 		},
 		{
 			"level": 66,
 			"cost": 139000,
 			"currency": "darkelixir",
-			"duration": 561600,
+			"duration": 345600,
 			"HH": 7
 		},
 		{
 			"level": 67,
 			"cost": 143000,
 			"currency": "darkelixir",
-			"duration": 561600,
+			"duration": 345600,
 			"HH": 7
 		},
 		{
 			"level": 68,
 			"cost": 147000,
 			"currency": "darkelixir",
-			"duration": 561600,
+			"duration": 345600,
 			"HH": 7
 		},
 		{
 			"level": 69,
 			"cost": 151000,
 			"currency": "darkelixir",
-			"duration": 561600,
+			"duration": 345600,
 			"HH": 7
 		},
 		{
 			"level": 70,
 			"cost": 155000,
 			"currency": "darkelixir",
-			"duration": 561600,
+			"duration": 345600,
 			"HH": 7
 		},
 		{
 			"level": 71,
 			"cost": 160000,
 			"currency": "darkelixir",
-			"duration": 604800,
+			"duration": 388800,
 			"HH": 7
 		},
 		{
 			"level": 72,
 			"cost": 165000,
 			"currency": "darkelixir",
-			"duration": 604800,
+			"duration": 388800,
 			"HH": 7
 		},
 		{
 			"level": 73,
 			"cost": 170000,
 			"currency": "darkelixir",
-			"duration": 604800,
+			"duration": 388800,
 			"HH": 7
 		},
 		{
 			"level": 74,
 			"cost": 175000,
 			"currency": "darkelixir",
-			"duration": 604800,
+			"duration": 388800,
 			"HH": 7
 		},
 		{
 			"level": 75,
 			"cost": 180000,
 			"currency": "darkelixir",
-			"duration": 604800,
+			"duration": 388800,
 			"HH": 7
 		},
 		{
 			"level": 76,
 			"cost": 185000,
 			"currency": "darkelixir",
-			"duration": 648000,
+			"duration": 432000,
 			"HH": 8
 		},
 		{
 			"level": 77,
 			"cost": 190000,
 			"currency": "darkelixir",
-			"duration": 648000,
+			"duration": 432000,
 			"HH": 8
 		},
 		{
 			"level": 78,
 			"cost": 195000,
 			"currency": "darkelixir",
-			"duration": 648000,
+			"duration": 432000,
 			"HH": 8
 		},
 		{
 			"level": 79,
 			"cost": 200000,
 			"currency": "darkelixir",
-			"duration": 648000,
+			"duration": 432000,
 			"HH": 8
 		},
 		{
 			"level": 80,
 			"cost": 205000,
 			"currency": "darkelixir",
-			"duration": 648000,
+			"duration": 432000,
 			"HH": 8
 		},
 		{
 			"level": 81,
 			"cost": 210000,
 			"currency": "darkelixir",
-			"duration": 691200,
-			"HH": 9
+			"duration": 518400,
+			"HH": 8
 		},
 		{
 			"level": 82,
 			"cost": 215000,
 			"currency": "darkelixir",
-			"duration": 691200,
-			"HH": 9
+			"duration": 518400,
+			"HH": 8
 		},
 		{
 			"level": 83,
 			"cost": 220000,
 			"currency": "darkelixir",
-			"duration": 691200,
-			"HH": 9
+			"duration": 518400,
+			"HH": 8
 		},
 		{
 			"level": 84,
 			"cost": 225000,
 			"currency": "darkelixir",
-			"duration": 691200,
-			"HH": 9
+			"duration": 518400,
+			"HH": 8
 		},
 		{
 			"level": 85,
 			"cost": 230000,
 			"currency": "darkelixir",
-			"duration": 691200,
-			"HH": 9
+			"duration": 518400,
+			"HH": 8
 		},
 		{
 			"level": 86,
 			"cost": 240000,
 			"currency": "darkelixir",
-			"duration": 691200,
+			"duration": 604800,
 			"HH": 9
 		},
 		{
 			"level": 87,
 			"cost": 250000,
 			"currency": "darkelixir",
-			"duration": 691200,
+			"duration": 604800,
 			"HH": 9
 		},
 		{
 			"level": 88,
 			"cost": 260000,
 			"currency": "darkelixir",
-			"duration": 691200,
+			"duration": 604800,
 			"HH": 9
 		},
 		{
 			"level": 89,
 			"cost": 270000,
 			"currency": "darkelixir",
-			"duration": 691200,
+			"duration": 604800,
 			"HH": 9
 		},
 		{
 			"level": 90,
 			"cost": 280000,
 			"currency": "darkelixir",
-			"duration": 691200,
+			"duration": 604800,
 			"HH": 9
 		},
 		{
 			"level": 91,
 			"cost": 290000,
 			"currency": "darkelixir",
-			"duration": 691200,
+			"duration": 648000,
 			"HH": 10
 		},
 		{
 			"level": 92,
 			"cost": 300000,
 			"currency": "darkelixir",
-			"duration": 691200,
+			"duration": 648000,
 			"HH": 10
 		},
 		{
 			"level": 93,
 			"cost": 320000,
 			"currency": "darkelixir",
-			"duration": 691200,
+			"duration": 648000,
 			"HH": 10
 		},
 		{
 			"level": 94,
 			"cost": 320000,
 			"currency": "darkelixir",
-			"duration": 691200,
+			"duration": 648000,
 			"HH": 10
 		},
 		{
 			"level": 95,
 			"cost": 330000,
 			"currency": "darkelixir",
-			"duration": 691200,
+			"duration": 648000,
 			"HH": 10
 		},
 		{
