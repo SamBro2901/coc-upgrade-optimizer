@@ -6,7 +6,6 @@ import thConfig from './data/th.json' with { type: "json" };
 import bhConfig from './data/bh.json' with { type: "json" };
 import heroConfig from './data/heroes.json' with { type: "json" }
 import mapping from './data/mapping.json' with { type: "json" };
-import { recommendWindow } from './builderWindow.js'; // or place function in scheduler.js and import it
 
 
 import priority from './data/priority.json' with { type: "json" }
@@ -480,21 +479,21 @@ export function generateSchedule(dataJSON, debug = false, scheme = 'LPT', priori
 
 
 	// after you have schedule (tasks) from generateSchedule:
-	const windowSec = 10 * 3600; // 10 hours
+	// const windowSec = 10 * 3600; // 10 hours
 	// find the best 10-hour window by total overlapped duration
-	const rec = recommendWindow(tasks, windowSec, 'duration', 1);
-	console.log(rec);
-	if (rec.length > 0) {
-		const best = rec[0];
-		console.log('Best window start (epoch):', best.start);
-		console.log('Best window end (epoch):', best.end);
-		console.log('Total overlapped seconds in window:', best.totalSeconds);
-		console.log('Tasks in that window:', best.tasks);
-		// you can format start/end to human time with your existing helpers
-	}
+	// const rec = recommendWindow(tasks, windowSec, 'duration', 1);
+	// console.log(rec);
+	// if (rec.length > 0) {
+	// 	const best = rec[0];
+	// 	console.log('Best window start (epoch):', best.start);
+	// 	console.log('Best window end (epoch):', best.end);
+	// 	console.log('Total overlapped seconds in window:', best.totalSeconds);
+	// 	console.log('Tasks in that window:', best.tasks);
+	// 	// you can format start/end to human time with your existing helpers
+	// }
 
 
-	return { sch: schedule, numBuilders: numWorkers, recWindow: rec, startTime: timestamp, err: [false] };
+	return { sch: schedule, numBuilders: numWorkers, startTime: timestamp, err: [false] };
 
 }
 
